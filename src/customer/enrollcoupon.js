@@ -1,11 +1,18 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
+import TopBar from '../components/topbar';
 import { BLACK_COLOR } from '../models/colors';
 
-const CouponEnroll = () => {
+const EnrollCoupon = ({ route, navigation }) => {
   return (
     <>
+      <TopBar
+        title="쿠폰 등록"
+        navigation={navigation}
+        drawerShown={true}
+        myaccountShown={true}
+      />
       <View style={styles.container}>
         <Text style={styles.mainText}>쿠폰 등록 화면</Text>
       </View>
@@ -24,4 +31,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CouponEnroll;
+export default EnrollCoupon;

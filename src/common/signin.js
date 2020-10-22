@@ -1,9 +1,10 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import TopBar from '../components/topbar';
 
 import { BLACK_COLOR } from '../models/colors';
 
-const SignIn = () => {
+const SignIn = ({ route, navigation }) => {
   return (
     <>
       <View style={styles.container}>

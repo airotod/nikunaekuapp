@@ -19,27 +19,27 @@ const App = () => {
           <Stack.Screen
             name="메인화면"
             component={MainScreen}
-            options={{ title: '메인 화면' }}
+            options={{ headerShown: false }}
           />
           <Stack.Screen
             name="로그인"
             component={SignIn}
-            options={{ title: '로그인' }}
+            options={{ headerShown: false }}
           />
           <Stack.Screen
             name="회원가입"
             component={SignUp}
-            options={{ title: '회원가입' }}
+            options={{ headerShown: false }}
           />
           <Stack.Screen
             name="고객 화면"
             component={CustomerMain}
-            options={{ title: '고객 화면' }}
+            options={{ headerShown: false }}
           />
           <Stack.Screen
             name="사장님 화면"
             component={OwnerMain}
-            options={{ title: '사장님 화면' }}
+            options={{ headerShown: false }}
           />
         </Stack.Navigator>
       </NavigationContainer>

@@ -1,11 +1,18 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
+import TopBar from '../components/topbar';
 import { BLACK_COLOR } from '../models/colors';
 
-const MyPoint = () => {
+const MyPoint = ({ route, navigation }) => {
   return (
     <>
+      <TopBar
+        title="My 포인트"
+        navigation={navigation}
+        drawerShown={true}
+        myaccountShown={true}
+      />
       <View style={styles.container}>
         <Text style={styles.mainText}>My 포인트 화면</Text>
       </View>
