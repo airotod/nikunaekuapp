@@ -18,6 +18,7 @@ const MainScreen = ({ route, navigation }) => {
       <NavigateButton text="회원가입" navigation={navigation} />
       <NavigateButton text="고객 화면" navigation={navigation} />
       <NavigateButton text="사장님 화면" navigation={navigation} />
+      <NavigateButton text="테스트 화면" navigation={navigation} />
     </View>
   );
 };

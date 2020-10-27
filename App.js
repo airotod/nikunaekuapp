@@ -5,6 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import MainScreen from './src/main';
 import CustomerMain from './src/customermain';
 import OwnerMain from './src/ownermain';
+import TestMain from './src/testmain';
 
 import SignIn from './src/common/signin';
 import SignUp from './src/common/signup';
@@ -39,6 +40,11 @@ const App = () => {
           <Stack.Screen
             name="사장님 화면"
             component={OwnerMain}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="테스트 화면"
+            component={TestMain}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>
