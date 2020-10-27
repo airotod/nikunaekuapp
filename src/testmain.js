@@ -4,6 +4,7 @@ import 'react-native-gesture-handler';
 
 import FirestoreGetTest from './test/firestoregettest';
 import TestHome from './test/home';
+import FirestoreAddTest from './test/firestoreaddtest';
 
 const Drawer = createDrawerNavigator();
 
@@ -19,6 +20,11 @@ const TestMain = ({ route, navigation }) => {
         <Drawer.Screen
           name="Firestore 데이터 가져오기"
           component={FirestoreGetTest}
+          options={{ headerShown: false }}
+        />
+        <Drawer.Screen
+          name="Firestore 데이터 추가하기"
+          component={FirestoreAddTest}
           options={{ headerShown: false }}
         />
       </Drawer.Navigator>
