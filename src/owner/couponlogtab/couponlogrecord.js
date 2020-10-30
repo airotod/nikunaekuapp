@@ -1,15 +1,13 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import TopBar from '../components/topbar';
 
-import { BLACK_COLOR } from '../models/colors';
+import { BLACK_COLOR } from '../../models/colors';
 
-const SignUp = ({ route, navigation }) => {
+const CouponLogRecord = ({ route, navigation }) => {
   return (
     <>
-      <TopBar title="회원가입" navigation={navigation} barColor={BLACK_COLOR} />
       <View style={styles.container}>
-        <Text style={styles.mainText}>회원가입 화면</Text>
+        <Text style={styles.mainText}>쿠폰 사용량 기록 화면</Text>
       </View>
     </>
   );
@@ -26,4 +24,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SignUp;
+export default CouponLogRecord;

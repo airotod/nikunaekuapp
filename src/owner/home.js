@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
+import TopBar from '../components/topbar';
 
 import { BLACK_COLOR } from '../models/colors';
 import firestore from "@react-native-firebase/firestore";
@@ -47,6 +48,14 @@ const OwnerHome = ({route, navigation}) => {
 
   return (
     <>
+      <TopBar
+        title={SHOP_NAME}
+        navigation={navigation}
+        drawerShown={true}
+        myaccountShown={true}
+        titleColor={RED_COLOR}
+        myaccountColor={GREY_60_COLOR}
+      />
       <View style={styles.container}>
         {/* 가게 이미지 */}
         <Image
