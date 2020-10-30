@@ -1,11 +1,22 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { BLACK_COLOR } from '../models/colors';
+import TopBar from '../components/topbar';
+import { BLACK_COLOR, GREY_60_COLOR, RED_COLOR } from '../models/colors';
 
-const OwnerHome = () => {
+const SHOP_NAME = '안다르 커피';
+
+const OwnerHome = ({ route, navigation }) => {
   return (
     <>
+      <TopBar
+        title={SHOP_NAME}
+        navigation={navigation}
+        drawerShown={true}
+        myaccountShown={true}
+        titleColor={RED_COLOR}
+        myaccountColor={GREY_60_COLOR}
+      />
       <View style={styles.container}>
         <Text style={styles.mainText}>사장님 HOME 화면</Text>
       </View>
