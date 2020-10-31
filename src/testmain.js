@@ -6,12 +6,26 @@ import FirestoreGetTest from './test/firestoregettest';
 import TestHome from './test/home';
 import FirestoreAddTest from './test/firestoreaddtest';
 
+import { GREY_80_COLOR, GREY_90_COLOR, WHITE_COLOR } from './models/colors';
+
 const Drawer = createDrawerNavigator();
 
 const TestMain = ({ route, navigation }) => {
   return (
     <>
-      <Drawer.Navigator initialRouteName="홈">
+      <Drawer.Navigator
+        initialRouteName="홈"
+        drawerStyle={{
+          backgroundColor: GREY_90_COLOR,
+        }}
+        drawerContentOptions={{
+          activeBackgroundColor: GREY_80_COLOR,
+          activeTintColor: WHITE_COLOR,
+          inactiveTintColor: WHITE_COLOR,
+          labelStyle: {
+            fontSize: 18,
+          },
+        }}>
         <Drawer.Screen
           name="홈"
           component={TestHome}
