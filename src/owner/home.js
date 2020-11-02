@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 
-import { BLACK_COLOR } from '../models/colors';
+import { BLACK_COLOR, RED_COLOR, GREY_60_COLOR } from '../models/colors';
 import firestore from "@react-native-firebase/firestore";
 
 
@@ -48,7 +48,7 @@ const OwnerHome = ({route, navigation}) => {
   return (
     <>
       <TopBar
-        title={SHOP_NAME}
+        title={owner.storeName}
         navigation={navigation}
         drawerShown={true}
         myaccountShown={true}
