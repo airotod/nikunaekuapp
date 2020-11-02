@@ -7,6 +7,7 @@ import TestHome from './test/home';
 import FirestoreAddTest from './test/firestoreaddtest';
 
 import { GREY_80_COLOR, GREY_90_COLOR, WHITE_COLOR } from './models/colors';
+import FirestoreUploadTest from './test/firestoreuploadtest';
 
 const Drawer = createDrawerNavigator();
 
@@ -39,6 +40,11 @@ const TestMain = ({ route, navigation }) => {
         <Drawer.Screen
           name="Firestore 데이터 추가하기"
           component={FirestoreAddTest}
+          options={{ headerShown: false }}
+        />
+        <Drawer.Screen
+          name="Firestore 데이터 업로드하기"
+          component={FirestoreUploadTest}
           options={{ headerShown: false }}
         />
       </Drawer.Navigator>
