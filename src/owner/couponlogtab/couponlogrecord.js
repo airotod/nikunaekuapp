@@ -2,9 +2,7 @@ import React from 'react';
 import { Text, View, Dimensions, StyleSheet, SafeAreaView  } from 'react-native';
 import { BLACK_COLOR, ORANGE_10_COLOR, GREY_60_COLOR, ORANGE_COLOR } from '../../models/colors';
 
-import { AreaChart, BarChart, YAxis, Grid, XAxis } from 'react-native-svg-charts';
-
-import moment from 'moment';
+import { BarChart, Grid} from 'react-native-svg-charts';
 import { Circle } from 'react-native-svg';
 
 import { DATA } from './Data';
@@ -120,24 +118,6 @@ class Area extends React.PureComponent {
     );
   }
 };
-
-// export function BarChartExample() {
-//     const fill = ORANGE_10_COLOR
-//     const data = [0, 0, 5, 8, 10, 10 ,20 ,30, 50, 20, 10, 20, 12, 15, 15, 20, 25, 10, 30, 20, 20, 10, 0, 0]
-
-
-//     return (
-//       <View style={styles.grpah}>
-//         <BarChart style={styles.barStyle} 
-//           data={data} 
-//           svg={
-//             {fill, onPress: () => console.log(data)}
-//           } 
-//           contentInset={{ top: 30, bottom: 30 }} />
-        
-//       </View>
-//     )
-// }
 
 const CouponLogRecord = ({ route, navigation }) => {
   return (
