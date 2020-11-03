@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 
-import { BLACK_COLOR, RED_COLOR, GREY_60_COLOR } from '../models/colors';
+import { BLACK_COLOR, RED_COLOR, DARK_RED_COLOR, WHITE_COLOR, GREEN_COLOR, YELLO_COLOR, GREY_10_COLOR, GREY_60_COLOR, GREY_80_COLOR, GREY_100_COLOR, BLUE_COLOR } from '../models/colors';
 import firestore from "@react-native-firebase/firestore";
 
 
@@ -65,33 +65,33 @@ const OwnerHome = ({route, navigation}) => {
           <Text style= {styles.mainText}> 매장 좌석 체크 </Text>
           <View style={styles.buttonLayout}>
             <TouchableOpacity
-              style={[styles.seatButton, { backgroundColor: '#2AC940', 
+              style={[styles.seatButton, { backgroundColor: GREEN_COLOR, 
               borderWidth: owner.checkSeat === 1 ? 3 : 0, 
-              borderColor: owner.checkSeat === 1 ? "#000": ""}]}
+              borderColor: owner.checkSeat === 1 ? BLACK_COLOR: ""}]}
               onPress={()=>{_changeSeat(1)}}>
               <Text style={styles.buttonText}>널널</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.seatButton, { backgroundColor: '#39F', 
+              style={[styles.seatButton, { backgroundColor: BLUE_COLOR, 
               borderWidth: owner.checkSeat === 2 ? 3 : 0, 
-              borderColor: owner.checkSeat === 2 ? "#000": ""}]}
+              borderColor: owner.checkSeat === 2 ? BLACK_COLOR: ""}]}
               onPress={()=>{_changeSeat(2)}}>
               <Text style={styles.buttonText}>보통</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.seatButton, { backgroundColor: '#FA9917', 
+              style={[styles.seatButton, { backgroundColor: YELLO_COLOR, 
               borderWidth: owner.checkSeat === 3 ? 3 : 0, 
-              borderColor: owner.checkSeat === 3 ? "#000": ""}]}
+              borderColor: owner.checkSeat === 3 ? BLACK_COLOR: ""}]}
               onPress={()=>{_changeSeat(3)}}>
               <Text style={styles.buttonText}>부족</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.seatButton, { backgroundColor: '#F00', 
+              style={[styles.seatButton, { backgroundColor: DARK_RED_COLOR, 
               borderWidth: owner.checkSeat === 4 ? 3 : 0, 
-              borderColor: owner.checkSeat === 4 ? "#000": ""}]}
+              borderColor: owner.checkSeat === 4 ? BLACK_COLOR: ""}]}
               onPress={()=>{_changeSeat(4)}}>
               <Text style={styles.buttonText}>만석</Text>
             </TouchableOpacity>
@@ -101,7 +101,7 @@ const OwnerHome = ({route, navigation}) => {
         {/* 쿠폰 사용량 */}
         <View style={styles.coupon}>
           <Text style={styles.mainText}>실시간 쿠폰 사용량 (주별/전원)</Text>
-          <Text style={{fontSize:40}}><Text style={{color: "red"}}>{owner.weekCount}</Text> / <Text style={{color: "#828282"}}>{owner.totalCount}</Text></Text>
+          <Text style={{fontSize:40}}><Text style={{color: "red"}}>{owner.weekCount}</Text> / <Text style={{color: GREY_100_COLOR}}>{owner.totalCount}</Text></Text>
           <TouchableOpacity
             style={styles.couponButton}
             onPress={()=>{navigation.navigate("쿠폰 사용량")}}>
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
   seat : {
     flex : 0.8,
     alignItems: 'center',
-    backgroundColor : "#F2F2F2"
+    backgroundColor : GREY_10_COLOR
   },
   coupon : {
     flex : 1,
@@ -152,13 +152,13 @@ const styles = StyleSheet.create({
     marginHorizontal: 3,
   },
   buttonText: {
-    color: '#fff',
+    color: WHITE_COLOR,
     fontSize: 22,
   },
   sideText: {
     marginTop : 15,
     fontSize : 15,
-    color : "#4F4F4F",
+    color : GREY_80_COLOR,
     fontWeight : "800"
   },
   couponButton: {
