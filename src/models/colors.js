@@ -19,3 +19,4 @@ export const RED_COLOR = '#ff5f58';
 export const WHITE_COLOR = '#fff';
 
 export const YELLO_COLOR = "#fa9917";
+export const YELLO_COLOR_BRIGHT = "#F3CA3E";
