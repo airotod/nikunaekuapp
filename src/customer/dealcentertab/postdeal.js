@@ -1,8 +1,18 @@
-import React, { useState } from 'react';
-import { Alert, StyleSheet, Text, TextInput, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+  Alert,
+  FlatList,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import firestore from '@react-native-firebase/firestore';
 import { Picker } from '@react-native-community/picker';
+
+import Loading from '../../components/loading';
+import DealItem from '../../components/dealitem';
 
 import {
   BLACK_COLOR,
@@ -14,6 +24,7 @@ import {
 import { username } from '../../models/current';
 import { shopList } from '../../models/shops';
 
+import { sortByDate } from '../../utils/sortby';
 import { checkNumber } from '../../utils/validate';
 
 const Question = ({ text }) => {
@@ -22,6 +33,8 @@ const Question = ({ text }) => {
 
 const PostDeal = ({ route, navigation }) => {
   const [brandName, setBrandName] = useState(shopList[0]);
+  const [itemList, setItemList] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [msg, setMsg] = useState('');
   const [price, setPrice] = useState('');
   const [priceMsg, setPriceMsg] = useState('');
@@ -60,6 +73,39 @@ const PostDeal = ({ route, navigation }) => {
       ]);
     }
   }
+
+  useEffect(() => {
+    return ref.where('postedBy', '==', username).onSnapshot((querySnapshot) => {
+      let items = [];
+      querySnapshot.forEach((doc) => {
+        const {
+          brandName,
+          possibleNum,
+          price,
+          purchased,
+          postedAt,
+          postedBy,
+          totalNum,
+        } = doc.data();
+        items.push({
+          brandName: brandName,
+          currentUser: username,
+          couponId: doc.id,
+          date: postedAt,
+          possibleNum: possibleNum,
+          postedBy: postedBy,
+          price: price,
+          purchased: purchased,
+          totalNum: totalNum,
+        });
+      });
+      setItemList(sortByDate(items));
+
+      if (loading) {
+        setLoading(false);
+      }
+    });
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -144,6 +190,21 @@ const PostDeal = ({ route, navigation }) => {
         <Text style={styles.postLogTitle}>내가 판매 등록한 쿠폰 내역</Text>
         <View style={styles.postLogTitleLine}></View>
       </View>
+      {loading ? (
+        <Loading />
+      ) : itemList ? (
+        <View style={styles.itemListContainer}>
+          <FlatList
+            data={itemList}
+            renderItem={({ item }) => <DealItem page="postdeal" {...item} />}
+            keyExtractor={(item) => item.couponId}
+          />
+        </View>
+      ) : (
+        <View style={styles.empty}>
+          <Text style={styles.emptyText}>데이터가 존재하지 않습니다.</Text>
+        </View>
+      )}
     </View>
   );
 };
@@ -170,6 +231,14 @@ const styles = StyleSheet.create({
     backgroundColor: WHITE_COLOR,
     flex: 1,
   },
+  empty: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emptyText: {
+    color: BLACK_COLOR,
+    fontSize: 14,
+  },
   errMsgContainer: {
     marginTop: 20,
   },
@@ -186,6 +255,10 @@ const styles = StyleSheet.create({
     marginVertical: 2,
     paddingHorizontal: 8,
     paddingVertical: 2,
+  },
+  itemListContainer: {
+    backgroundColor: GREY_10_COLOR,
+    flex: 1,
   },
   msg: {
     color: RED_COLOR,
