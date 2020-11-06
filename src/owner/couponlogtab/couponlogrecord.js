@@ -55,7 +55,7 @@ class Area extends React.PureComponent {
           key={index}
           cx={x(item.id)+7}
           cy={y(item.score)}
-          r={3}
+          r={2}
           stroke='#ffd700'
           fill='#ffd700'
           onPress={() =>
