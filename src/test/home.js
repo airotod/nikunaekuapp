@@ -27,6 +27,10 @@ const TestHome = ({ route, navigation }) => {
           text="Firestore 데이터 추가하기"
           navigation={navigation}
         />
+        <NavigateButton
+          text="Firestore 데이터 업로드하기"
+          navigation={navigation}
+        />
       </View>
     </>
   );
