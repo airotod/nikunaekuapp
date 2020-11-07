@@ -12,6 +12,7 @@ import {
   RED_COLOR,
   WHITE_COLOR,
 } from '../models/colors';
+import { numWithCommas } from '../utils/comma';
 
 const ItemInfo = ({ title, content, color }) => {
   return (
@@ -115,15 +116,21 @@ const DealItem = ({
           {page == 'postdeal' ? (
             <>
               <ItemInfo title="쿠폰 판매 등록 날짜" content={postdealDate} />
-              <ItemInfo title="총 쿠폰 개수" content={`${totalNum}개`} />
+              <ItemInfo
+                title="총 쿠폰 개수"
+                content={`${numWithCommas(totalNum)}개`}
+              />
             </>
           ) : (
             <ItemInfo
               title="구매 가능 수량 (1인당)"
-              content={`${possibleNum}개`}
+              content={`${numWithCommas(possibleNum)}개`}
             />
           )}
-          <ItemInfo title="제시가 (1쿠폰 가격)" content={`${price}원`} />
+          <ItemInfo
+            title="제시가 (1쿠폰 가격)"
+            content={`${numWithCommas(price)}원`}
+          />
         </View>
       </View>
       {!purchased && currentUser !== postedBy ? (

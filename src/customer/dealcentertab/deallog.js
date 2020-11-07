@@ -19,6 +19,7 @@ import {
 } from '../../models/colors';
 import { username, userpoint } from '../../models/current';
 import { sortByDate } from '../../utils/sortby';
+import { numWithCommas } from '../../utils/comma';
 
 const DealLog = ({ route, navigation }) => {
   const [loading, setLoading] = useState(true);
@@ -88,7 +89,7 @@ const DealLog = ({ route, navigation }) => {
       <View style={styles.container}>
         <View style={styles.pointContainer}>
           <Text style={styles.pointTitle}>My 포인트</Text>
-          <Text style={styles.point}>{userpoint}</Text>
+          <Text style={styles.point}>{numWithCommas(userpoint)}</Text>
           <TouchableOpacity
             onPress={() => {
               console.log('포인트 내역 상세보기');
@@ -120,11 +121,11 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: WHITE_COLOR,
     flex: 1,
-    justifyContent: "center",
+    justifyContent: 'center',
   },
   empty: {
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   emptyText: {
     color: BLACK_COLOR,
@@ -136,11 +137,11 @@ const styles = StyleSheet.create({
   point: {
     color: BLACK_COLOR,
     fontSize: 45,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginVertical: 10,
   },
   pointContainer: {
-    alignItems: "center",
+    alignItems: 'center',
     backgroundColor: WHITE_COLOR,
     borderBottomColor: GREY_20_COLOR,
     borderBottomWidth: 2,
@@ -152,13 +153,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   pointDetailContainer: {
-    alignItems: "center",
+    alignItems: 'center',
     borderColor: BLACK_COLOR,
     borderWidth: 1,
     height: 40,
-    justifyContent: "center",
+    justifyContent: 'center',
     marginTop: 6,
-    width: "80%",
+    width: '80%',
   },
   pointTitle: {
     color: GREY_60_COLOR,
