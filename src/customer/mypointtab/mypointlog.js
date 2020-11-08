@@ -6,39 +6,54 @@ import firestore from '@react-native-firebase/firestore';
 import { 
   BLACK_COLOR,
   WHITE_COLOR, 
+  RED_COLOR,
+  GREY_70_COLOR
 } from '../../models/colors';
 
 const PointLogItem = ({ is_usage, date, point, logtitle, detail, balance  }) => {
+  let IconItem = null;
+
+  if ({is_usage}) {
+    IconItem = <View style={styles.itemcontainer}>
+                  <Image
+                  style={styles.imageItem}
+                  source={require('./mypoint_images/use_image.png')} />
+                  <Text style={styles.pointText_use}>{point}원</Text>
+                </View>;
+  } else {
+    IconItem = <View style={styles.itemcontainer}>
+                  <Image
+                  style={styles.imageItem}
+                  source={require('./mypoint_images/reward_image.png')} />
+                  <Text style={styles.pointText_reward}>{point}원</Text>
+                </View>;}
+  
   return (
-    <View style={styles.listcontainer}>
-      <View style={styles.itemcontainer}>
-        <Image
-          style={styles.imageItem}
-          source={require('./mypoint_images/use_image.png')} />
-        <Text style={styles.pointText}>{point}</Text>
-      </View>
+    <View style={styles.listcontainer}>     
+      {IconItem}      
       <View style={styles.linecontainer}>
         <Image
           style={styles.lineItem}
           source={require('./mypoint_images/line_image.png')} />
       </View>
-      <View style={styles.detailcontainer}>
-        <Text style={styles.dateText}>{date}</Text>
-        <Text style={styles.logtitleText}>{logtitle}</Text>
-        <Text style={styles.detailText}>{detail}</Text>
+      <View style={styles.contextcontainer}>
+        <View style={styles.detailcontainer}>
+          <Text style={styles.dateText}>{date}</Text>
+          <Text style={styles.logtitleText}>{logtitle}</Text>
+        </View>
+        <View style={styles.balancecontainer}>
+          <Text style={styles.detailText}>{detail}</Text>
+          <Text style={styles.balanceText}>잔액 {balance}원</Text>
+        </View>
       </View>
-      <View style={styles.balancecontainer}>
-        <Text style={styles.balanceText}>{balance}</Text>
-      </View>
-  </View>
+    </View>
   );
 };
 
 const MyPointLog = ({ route, navigation }) => {
   const [pointLogList, setPointLogList] = useState([]);
   const [selectedValue, setSelectedValue] = useState("전체");
-  
-  const ref = firestore().collection('client').doc('nGnPbG8xIg7onVaowgyr').collection('point_log');
+  const ref = firestore().doc('nGnPbG8xIg7onVaowgyr').collection('pointlog');
 
   useEffect(() => {
     return ref.onSnapshot((querySnapshot) => {
@@ -51,9 +66,9 @@ const MyPointLog = ({ route, navigation }) => {
           point: point,
           logtitle: logtitle,
           detail: detail,
-          balance: balance
+          balance: balance,
         });
-      });
+       });
       setPointLogList(items);
     });
   }, []);
@@ -68,14 +83,14 @@ const MyPointLog = ({ route, navigation }) => {
             onValueChange={(itemValue, itemIndex) => 
               setSelectedValue(itemValue)
             }>
-            <Picker.Item label='전체' value='전체' />
-            <Picker.Item label='적립' value='적립' />
-            <Picker.Item label='사용' value='사용' />
-            
+            <Picker.Item label='전체' value='전체'/>
+            <Picker.Item label='적립' value='적립'/>
+            <Picker.Item label='사용' value='사용'/>
           </Picker>
         </View>
         <View style={styles.maincontainer}>
-          <FlatList
+          <PointLogItem
+            // is_usage={true} date={"2020년 10월 20일"} point={-600} logtitle={"결제 시 사용"} detail={"스타벅스 6개"} balance={1200}
             data={pointLogList}
             renderItem={({ item }) => <PointLogItem {...item} />}
             keyExtractor={(item) => {item.is_usage, item.date, item.point, item.logtitle, item.detail, item.balance }}
@@ -107,56 +122,78 @@ const styles = StyleSheet.create({
   },
   listcontainer: {
     height: 100,
-    width: 380,
+    width: 400,
     flexDirection: 'row',
     marginBottom: 2,
     backgroundColor: WHITE_COLOR,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
   },
   itemcontainer: {
-    flex: 3,
+    height: 100,
+    width: 100,
     flexDirection: 'column',
     margin: 1,
+    justifyContent: 'center',
     alignItems: 'center',
   },
   imageItem: { 
-    height: 30,
-    width: 30,
+    height: 40,
+    width: 40,
     margin: 2,
   },
-  pointText: {
+  pointText_use: {
     margin: 5,
     fontSize: 18,
+    color: RED_COLOR,
+    fontWeight: "bold"
+  },
+  pointText_reward: {
+    margin: 5,
+    fontSize: 18,
+    color: BLACK_COLOR,
+    fontWeight: "bold"
   },
   linecontainer: {
-    flex: 1
+    height: 100,
+    width: 20,
+    justifyContent: 'center',
   },
   lineItem: {
     height: 70,
     width: 2,
     margin: 2,
   },
+  contextcontainer: {
+    height: 100,
+    width: 280,
+    flexDirection: 'column',
+  },
   detailcontainer: {
-    flex: 6,
+    flex: 1,
+    flexDirection: 'column',
+    marginVertical: 10,
+    justifyContent: 'center'
   },
   dateText: {
-    
-    margin: 3,
+    color: GREY_70_COLOR,
+    marginVertical: 8,
   },
   logtitleText: {
     fontSize: 18,
-    margin: 3,
-  },
-  detailText: {
-    
-    margin: 3,
   },
   balancecontainer: {
-    flex: 2,
+    flex: 1,
+    marginRight: 15,
+    flexDirection: "row",
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  detailText: {
+    color: GREY_70_COLOR,
   },
   balanceText: {
-
+    color: GREY_70_COLOR,
   }
 });
 
