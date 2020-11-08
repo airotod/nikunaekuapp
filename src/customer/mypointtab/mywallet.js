@@ -21,13 +21,14 @@ const PointItems = ({ point }) => {
 };
 
 const MyWallet = ({ route, navigation }) => {
+  const [totalPoint, setTotalPoint] = useState(null);
   const [isVisible1, setIsVisible1] = useState(false);
   const [isVisible2, setIsVisible2] = useState(false);
   const [isVisible3, setIsVisible3] = useState(false);
   const [plusPoint, setPlusPoint] = useState(null);
   const [friendID, setFriendID] = useState(null);
 
-  const ref = firestore().collection('client').where('id','==','hwa0327');
+  const ref = firestore().collection('client').where('clientID', '==' ,'hwayoung1');
 
 
   function _addPointHandler(){
@@ -83,6 +84,19 @@ const MyWallet = ({ route, navigation }) => {
       },
     ]);
   }
+ //useEffect 값 하나면 가져오는 방법!!!
+  // useEffect(() => {
+  //   return ref.onSnapshot((querySnapshot) => {
+  //     let items = [];
+  //     querySnapshot.forEach((doc) => {
+  //       const { totalpoint } = doc.data();
+  //       items.push({
+  //         totalpoint: totalpoint,
+  //       });
+  //     });
+  //       setTotalPoint(items);
+  //   });
+  // }, []);
 
   return (
     <>

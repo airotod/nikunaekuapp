@@ -7,13 +7,16 @@ import {
   BLACK_COLOR,
   WHITE_COLOR, 
   RED_COLOR,
-  GREY_70_COLOR
+  GREY_70_COLOR,
+  GREEN_COLOR
 } from '../../models/colors';
+import { and } from 'react-native-reanimated';
 
-const PointLogItem = ({ is_usage, date, point, logtitle, detail, balance  }) => {
+const PointLogItem = ({is_usage, date, point, logtitle, detail, balance  }) => {
   let IconItem = null;
+  let dateItems = date.split(" ");
 
-  if ({is_usage}) {
+  if (is_usage) {
     IconItem = <View style={styles.itemcontainer}>
                   <Image
                   style={styles.imageItem}
@@ -25,75 +28,102 @@ const PointLogItem = ({ is_usage, date, point, logtitle, detail, balance  }) => 
                   <Image
                   style={styles.imageItem}
                   source={require('./mypoint_images/reward_image.png')} />
-                  <Text style={styles.pointText_reward}>{point}원</Text>
-                </View>;}
-  
+                  <Text style={styles.pointText_reward}>+{point}원</Text>
+                </View>;};
+
   return (
-    <View style={styles.listcontainer}>     
-      {IconItem}      
-      <View style={styles.linecontainer}>
-        <Image
-          style={styles.lineItem}
-          source={require('./mypoint_images/line_image.png')} />
-      </View>
-      <View style={styles.contextcontainer}>
-        <View style={styles.detailcontainer}>
-          <Text style={styles.dateText}>{date}</Text>
-          <Text style={styles.logtitleText}>{logtitle}</Text>
+      <View style={styles.listcontainer}>     
+        {IconItem}      
+        <View style={styles.linecontainer}>
+          <Image
+            style={styles.lineItem}
+            source={require('./mypoint_images/line_image.png')} />
         </View>
-        <View style={styles.balancecontainer}>
-          <Text style={styles.detailText}>{detail}</Text>
-          <Text style={styles.balanceText}>잔액 {balance}원</Text>
+        <View style={styles.contextcontainer}>
+          <View style={styles.detailcontainer}>
+            <Text style={styles.dateText}>{dateItems[3]}년 {dateItems[1]}월 {dateItems[2]}일 {dateItems[0]}요일</Text>
+            <Text style={styles.logtitleText}>{logtitle}</Text>
+          </View>
+          <View style={styles.balancecontainer}>
+            <Text style={styles.detailText}>{detail}</Text>
+            <Text style={styles.balanceText}>잔액 {balance}원</Text>
+          </View>
         </View>
       </View>
-    </View>
   );
 };
 
 const MyPointLog = ({ route, navigation }) => {
   const [pointLogList, setPointLogList] = useState([]);
   const [selectedValue, setSelectedValue] = useState("전체");
-  const ref = firestore().doc('nGnPbG8xIg7onVaowgyr').collection('pointlog');
-
+  const ref = firestore().collection('client').where('clientID','==','yonsei4').orderBy('date', 'desc');
+  
   useEffect(() => {
     return ref.onSnapshot((querySnapshot) => {
       let items = [];
       querySnapshot.forEach((doc) => {
         const { is_usage, date, point, logtitle, detail, balance } = doc.data();
-        items.push({
-          is_usage: is_usage,
-          date: date,
-          point: point,
-          logtitle: logtitle,
-          detail: detail,
-          balance: balance,
-        });
+        if ((selectedValue) == "전체") {
+          items.push({
+            is_usage: is_usage,
+            date: date.toDate().toString(),
+            point: point,
+            logtitle: logtitle,
+            detail: detail,
+            balance: balance,
+          });
+        }
+        else if ((selectedValue) == "적립"){
+          if(!(is_usage)){
+            items.push({
+              is_usage: is_usage,
+              date: date.toDate().toString(),
+              point: point,
+              logtitle: logtitle,
+              detail: detail,
+              balance: balance,
+            });
+          }
+        }
+        else if ((selectedValue) == "사용"){
+          if((is_usage)){
+            items.push({
+              is_usage: is_usage,
+              date: date.toDate().toString(),
+              point: point,
+              logtitle: logtitle,
+              detail: detail,
+              balance: balance,
+            });
+          }
+        }
        });
       setPointLogList(items);
+      console.log(selectedValue);
     });
-  }, []);
+  }, [selectedValue]);
 
   return (
     <>
       <View style={styles.container}>
         <View style={styles.selectcontainer}>
           <Picker 
+            mode = 'dropdown'
             selectedValue={selectedValue}
             style={styles.pickerstyle}
-            onValueChange={(itemValue, itemIndex) => 
-              setSelectedValue(itemValue)
-            }>
+            onValueChange={(itemValue, itemIndex) => {
+              setSelectedValue(itemValue)              
+            }}>
             <Picker.Item label='전체' value='전체'/>
             <Picker.Item label='적립' value='적립'/>
             <Picker.Item label='사용' value='사용'/>
           </Picker>
         </View>
         <View style={styles.maincontainer}>
-          <PointLogItem
-            // is_usage={true} date={"2020년 10월 20일"} point={-600} logtitle={"결제 시 사용"} detail={"스타벅스 6개"} balance={1200}
+          <FlatList
             data={pointLogList}
             renderItem={({ item }) => <PointLogItem {...item} />}
-            keyExtractor={(item) => {item.is_usage, item.date, item.point, item.logtitle, item.detail, item.balance }}
+
           />
         </View>
       </View>
@@ -144,15 +174,13 @@ const styles = StyleSheet.create({
   },
   pointText_use: {
     margin: 5,
-    fontSize: 18,
+    fontSize: 16,
     color: RED_COLOR,
-    fontWeight: "bold"
   },
   pointText_reward: {
     margin: 5,
-    fontSize: 18,
-    color: BLACK_COLOR,
-    fontWeight: "bold"
+    fontSize: 16,
+    color: GREEN_COLOR,
   },
   linecontainer: {
     height: 100,
@@ -180,11 +208,11 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   logtitleText: {
-    fontSize: 18,
+    fontSize: 16,
   },
   balancecontainer: {
     flex: 1,
-    marginRight: 15,
+    marginRight: 12,
     flexDirection: "row",
     justifyContent: 'space-between',
     alignItems: 'center',
