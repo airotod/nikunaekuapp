@@ -2,11 +2,12 @@ import React from 'react';
 import { Text, View, Dimensions, StyleSheet, SafeAreaView  } from 'react-native';
 import { BLACK_COLOR, ORANGE_10_COLOR, GREY_60_COLOR, ORANGE_COLOR } from '../../models/colors';
 
-import { BarChart, Grid} from 'react-native-svg-charts';
+import { LineChart, Path, XAxis, Grid} from 'react-native-svg-charts';
 import { Circle } from 'react-native-svg';
 
 import { DATA } from './Data';
 import Tooltip from './Tooltip';
+import * as scale from 'd3-scale'
 
 const { height } = Dimensions.get('window');
 
@@ -45,19 +46,30 @@ class Area extends React.PureComponent {
     });
   };
 
+
   render() {
     const { data, tooltipX, tooltipY, tooltipIndex } = this.state;
     const contentInset = { left: 10, right: 10, top: 10, bottom: 7 };
+    const Shadow = ({ line }) => (
+      <Path
+          key={'shadow'}
+          y={1}
+          d={line}
+          fill={'none'}
+          strokeWidth={2}
+          stroke={ORANGE_10_COLOR}
+      />
+    )
 
     const ChartPoints = ({ x, y }) =>
       data.map((item, index) => (
         <Circle
           key={index}
-          cx={x(item.id)+7}
+          cx={x(item.id)}
           cy={y(item.score)}
-          r={3}
-          stroke='#ffd700'
-          fill='#ffd700'
+          r={2.3}
+          stroke={ORANGE_10_COLOR}
+          fill={ORANGE_10_COLOR}
           onPress={() =>
             this.setState({
               tooltipX: item.id,
@@ -73,16 +85,18 @@ class Area extends React.PureComponent {
       <SafeAreaView style={styles.graph}>
         <View style={styles.container2}>
           {data.length !== 0 ? (
-            <BarChart
+            <>
+            <LineChart
               style={{ height: '100%' }}
               data={data}
               yAccessor={({ item }) => item.score}
               xAccessor={({ item }) => item.id}
               contentInset={contentInset}
-              svg={{ fill: ORANGE_10_COLOR } }
+              svg={{ stroke: ORANGE_10_COLOR } }
               yMin={0}
             >
-              <Grid svg={{ stroke: 'rgba(151, 151, 151, 0.09)' }} belowChart={false} />
+              <Grid svg={{ stroke: 'rgba(151, 151, 151, 0.09)' }} belowChart={false} /> 
+              <Shadow/>
               <ChartPoints color="#003F5A" />
               {tooltipX !== null? ( // 이 조건문이 있어야 처음에 tooltip이 뜨는 것을 방지할 수 있음
                 <Tooltip
@@ -94,7 +108,18 @@ class Area extends React.PureComponent {
                 />
                 ) : null
               } 
-            </BarChart>
+            </LineChart>
+            <XAxis
+              style={{marginHorizontal : 10}}
+              data={ data }
+              scale={scale.scaleBand}
+              formatLabel = { ( value, index ) => {
+                if( index%3==0 ) return value; //returns the data for the odd indexes
+                else return ""; //returns an empty string for the even indexes
+                } }
+              labelStyle={ { color: 'black' } }
+            />
+          </>
           ) : (
             <View
               style={{
@@ -188,9 +213,6 @@ const styles = StyleSheet.create({
   explainText : {
     fontSize : 13,
     color : GREY_60_COLOR
-  },
-  barStyle : {
-    height: 200
   },
   graph : {
     flex : 0.8
