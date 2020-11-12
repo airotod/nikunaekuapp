@@ -12,6 +12,7 @@ import {
   GREY_90_COLOR,
   WHITE_COLOR,
 } from '../models/colors';
+import { AuthContext } from '../utils/context';
 
 const PHONE = '+82 10-1234-1234';
 
@@ -31,49 +32,60 @@ const OwnerAccount = ({ route, navigation }) => {
     getUserIdAsync();
   }, []);
 
+  async function _handleSignOut() {
+    await AsyncStorage.removeItem('userId');
+  }
+
   return (
-    <>
-      <TopBar
-        title="내 정보"
-        navigation={navigation}
-        drawerShown={true}
-        titleColor={GREY_90_COLOR}
-      />
-      <View style={styles.container}>
-        <View style={styles.myinfoContainer}>
-          <View style={styles.personIconContainer}>
-            <Icon name="person" size={50} color={GREY_40_COLOR} />
+    <AuthContext.Consumer>
+      {({ signOut }) => (
+        <>
+          <TopBar
+            title="내 정보"
+            navigation={navigation}
+            drawerShown={true}
+            titleColor={GREY_90_COLOR}
+          />
+          <View style={styles.container}>
+            <View style={styles.myinfoContainer}>
+              <View style={styles.personIconContainer}>
+                <Icon name="person" size={50} color={GREY_40_COLOR} />
+              </View>
+              <View style={styles.myinfoTextContainer}>
+                <Text style={styles.myinfoText}>{userId}</Text>
+                <Text style={styles.myinfoText}>{PHONE}</Text>
+              </View>
+            </View>
+            <View style={styles.navigationItemContainer}>
+              <AccountItem
+                text="로그아웃"
+                onPress={() => {
+                  signOut();
+                  _handleSignOut();
+                }}
+              />
+              <AccountItem
+                text="비밀번호 변경"
+                onPress={() => console.log('비밀번호 변경')}
+              />
+              <AccountItem
+                text="내 카페 관리"
+                onPress={() => console.log('내 카페 관리')}
+              />
+              <AccountItem
+                text="결제수단 관리"
+                onPress={() => console.log('결제수단 관리')}
+              />
+              <AccountItem
+                text="탈퇴하기"
+                onPress={() => console.log('탈퇴하기')}
+              />
+            </View>
+            <View style={styles.flexContainer}></View>
           </View>
-          <View style={styles.myinfoTextContainer}>
-            <Text style={styles.myinfoText}>{userId}</Text>
-            <Text style={styles.myinfoText}>{PHONE}</Text>
-          </View>
-        </View>
-        <View style={styles.navigationItemContainer}>
-          <AccountItem
-            text="로그아웃"
-            onPress={() => console.log('로그아웃')}
-          />
-          <AccountItem
-            text="비밀번호 변경"
-            onPress={() => console.log('비밀번호 변경')}
-          />
-          <AccountItem
-            text="내 카페 관리"
-            onPress={() => console.log('내 카페 관리')}
-          />
-          <AccountItem
-            text="결제수단 관리"
-            onPress={() => console.log('결제수단 관리')}
-          />
-          <AccountItem
-            text="탈퇴하기"
-            onPress={() => console.log('탈퇴하기')}
-          />
-        </View>
-        <View style={styles.flexContainer}></View>
-      </View>
-    </>
+        </>
+      )}
+    </AuthContext.Consumer>
   );
 };
 
