@@ -1,9 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { BLACK_COLOR, GREY_90_COLOR, RED_COLOR } from '../models/colors';
 
 const SignIn = ({ route, navigation }) => {
+  const [userId, setUserId] = useState(null);
+  const [userPw, setUserPw] = useState(null);
+  const [msg, setMsg] = useState(null);
+
+  async function _handleSignIn(evet) {
+    if (!userId) {
+      setMsg('이메일 또는 전화번호를 입력해주세요.');
+    } else if (!userPw) {
+      setMsg('비밀번호를 입력해주세요.');
+    } else {
+      setMsg(null);
+      await AsyncStorage.setItem('userId', userId);
+    }
+  }
+
   return (
     <>
       <View style={styles.container}>
@@ -14,19 +30,22 @@ const SignIn = ({ route, navigation }) => {
         <TextInput
           style={styles.input}
           placeholder="이메일 또는 전화번호"
-          onChangeText={(text) => console.log(text)}
+          onChangeText={(text) => setUserId(text)}
           autoFocus={true}
         />
         <TextInput
           style={styles.input}
           placeholder="비밀번호"
-          onChangeText={(text) => console.log(text)}
+          onChangeText={(text) => setUserPw(text)}
           secureTextEntry={true}
         />
+        <View>
+          <Text style={styles.msg}>{msg}</Text>
+        </View>
         <View style={styles.buttonContainer}>
           <Button
             title="로그인"
-            onPress={() => console.log('로그인')}
+            onPress={() => _handleSignIn()}
             color={GREY_90_COLOR}
           />
         </View>
@@ -53,6 +72,10 @@ const styles = StyleSheet.create({
     margin: 3,
     padding: 2,
     width: '60%',
+  },
+  msg: {
+    color: RED_COLOR,
+    fontSize: 13,
   },
   title: {
     color: BLACK_COLOR,
