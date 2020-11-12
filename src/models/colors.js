@@ -13,8 +13,10 @@ export const GREY_60_COLOR = "#888";
 export const GREY_70_COLOR = "#808080";
 export const GREY_80_COLOR = "#4f4f4f";
 export const GREY_90_COLOR = "#333";
+export const GREY_100_COLOR = "#828282";
 
 export const RED_COLOR = '#ff5f58';
+export const DARK_RED_COLOR = '#F00';
 
 export const WHITE_COLOR = '#fff';
 

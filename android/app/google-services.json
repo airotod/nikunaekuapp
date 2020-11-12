@@ -1,34 +1,34 @@
 {
   "project_info": {
-    "project_number": "744711934163",
-    "firebase_url": "https://nikunaeku-f3aa2.firebaseio.com",
-    "project_id": "nikunaeku-f3aa2",
-    "storage_bucket": "nikunaeku-f3aa2.appspot.com"
+    "project_number": "1021476285358",
+    "firebase_url": "https://nikunaeku.firebaseio.com",
+    "project_id": "nikunaeku",
+    "storage_bucket": "nikunaeku.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:744711934163:android:5824962b2a670d00078426",
+        "mobilesdk_app_id": "1:1021476285358:android:6baefe64f0199e07e7763f",
         "android_client_info": {
           "package_name": "com.nikunaekuapp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "744711934163-4m3a6s05v7ggq5mc6n2tj6iv0d0s31t8.apps.googleusercontent.com",
+          "client_id": "1021476285358-i3tch7ud8g4eegjfkk4hs0i8i95itrs1.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBOJYJoV_fz0gPxLrhbPB1q7Vvd0u0v0sU"
+          "current_key": "AIzaSyAV476-nsCQu_OhYovmmTq39QVENNmh2Uk"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "744711934163-4m3a6s05v7ggq5mc6n2tj6iv0d0s31t8.apps.googleusercontent.com",
+              "client_id": "1021476285358-i3tch7ud8g4eegjfkk4hs0i8i95itrs1.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
