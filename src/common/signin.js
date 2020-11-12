@@ -3,6 +3,7 @@ import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { BLACK_COLOR, GREY_90_COLOR, RED_COLOR } from '../models/colors';
+import { AuthContext } from '../utils/context';
 
 const SignIn = ({ route, navigation }) => {
   const [userId, setUserId] = useState(null);
@@ -21,36 +22,41 @@ const SignIn = ({ route, navigation }) => {
   }
 
   return (
-    <>
-      <View style={styles.container}>
-        <Text style={styles.title}>
-          안녕하세요.{'\n'}
-          <Text style={{ color: RED_COLOR }}>니쿠내쿠</Text> 입니다.
-        </Text>
-        <TextInput
-          style={styles.input}
-          placeholder="이메일 또는 전화번호"
-          onChangeText={(text) => setUserId(text)}
-          autoFocus={true}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="비밀번호"
-          onChangeText={(text) => setUserPw(text)}
-          secureTextEntry={true}
-        />
-        <View>
-          <Text style={styles.msg}>{msg}</Text>
-        </View>
-        <View style={styles.buttonContainer}>
-          <Button
-            title="로그인"
-            onPress={() => _handleSignIn()}
-            color={GREY_90_COLOR}
+    <AuthContext.Consumer>
+      {({ signIn }) => (
+        <View style={styles.container}>
+          <Text style={styles.title}>
+            안녕하세요.{'\n'}
+            <Text style={{ color: RED_COLOR }}>니쿠내쿠</Text> 입니다.
+          </Text>
+          <TextInput
+            style={styles.input}
+            placeholder="이메일 또는 전화번호"
+            onChangeText={(text) => setUserId(text)}
+            autoFocus={true}
           />
+          <TextInput
+            style={styles.input}
+            placeholder="비밀번호"
+            onChangeText={(text) => setUserPw(text)}
+            secureTextEntry={true}
+          />
+          <View>
+            <Text style={styles.msg}>{msg}</Text>
+          </View>
+          <View style={styles.buttonContainer}>
+            <Button
+              title="로그인"
+              onPress={() => {
+                signIn({ userId, userPw });
+                _handleSignIn();
+              }}
+              color={GREY_90_COLOR}
+            />
+          </View>
         </View>
-      </View>
-    </>
+      )}
+    </AuthContext.Consumer>
   );
 };
 
