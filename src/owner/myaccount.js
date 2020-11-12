@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import AccountItem from '../components/accountitem';
@@ -12,10 +13,24 @@ import {
   WHITE_COLOR,
 } from '../models/colors';
 
-const USER = '한승희';
 const PHONE = '+82 10-1234-1234';
 
 const OwnerAccount = ({ route, navigation }) => {
+  const [userId, setUserId] = useState(null);
+
+  useEffect(() => {
+    const getUserIdAsync = async () => {
+      try {
+        const getUserId = await AsyncStorage.getItem('userId');
+        setUserId(getUserId);
+      } catch (e) {
+        // Restoring Id failed
+        console.log('Restoring Id failed');
+      }
+    };
+    getUserIdAsync();
+  }, []);
+
   return (
     <>
       <TopBar
@@ -30,7 +45,7 @@ const OwnerAccount = ({ route, navigation }) => {
             <Icon name="person" size={50} color={GREY_40_COLOR} />
           </View>
           <View style={styles.myinfoTextContainer}>
-            <Text style={styles.myinfoText}>{USER}</Text>
+            <Text style={styles.myinfoText}>{userId}</Text>
             <Text style={styles.myinfoText}>{PHONE}</Text>
           </View>
         </View>
