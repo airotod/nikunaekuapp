@@ -114,8 +114,4 @@ const styles = StyleSheet.create({
   },
 });
 
-<<<<<<< HEAD
 export default TopBar;
-=======
-export default TopBar;
->>>>>>> 489996f... for merge

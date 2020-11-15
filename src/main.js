@@ -14,8 +14,6 @@ const MainScreen = ({ route, navigation }) => {
           <Text style={{ color: RED_COLOR }}>니쿠내쿠</Text> 입니다
         </Text>
       </View>
-      <NavigateButton text="로그인" navigation={navigation} />
-      <NavigateButton text="회원가입" navigation={navigation} />
       <NavigateButton text="고객 화면" navigation={navigation} />
       <NavigateButton text="사장님 화면" navigation={navigation} />
       <NavigateButton text="테스트 화면" navigation={navigation} />
