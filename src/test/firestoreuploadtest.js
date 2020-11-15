@@ -26,6 +26,8 @@ const UploadFirestoreButton = () => {
           onPress: () => {
             for (let key in collections[0]) {
               let ref = db.collection(key);
+              // let ref = db.collection('client').doc('hwa0327').update(collections);
+
               let value = collections[0][key];
               value.forEach((doc) => {
                 console.log(doc);
