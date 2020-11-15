@@ -1,6 +1,7 @@
 import React, {useEffect, useState}  from 'react';
 import { StyleSheet, Text, View, TextInput, Button, Alert, Modal, TouchableOpacity, KeyboardAvoidingView} from 'react-native';
 import firestore from '@react-native-firebase/firestore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { 
   GREY_10_COLOR,
@@ -21,15 +22,35 @@ const PointItems = ({ point }) => {
 };
 
 const MyWallet = ({ route, navigation }) => {
-  const [totalPoint, setTotalPoint] = useState(null);
+  const [userId, setUserId] = useState(null);
+  const [totalPoint, setTotalPoint] = useState(0);
   const [isVisible1, setIsVisible1] = useState(false);
   const [isVisible2, setIsVisible2] = useState(false);
   const [isVisible3, setIsVisible3] = useState(false);
   const [plusPoint, setPlusPoint] = useState(null);
-  const [friendID, setFriendID] = useState(null);
+  const [friendID, setFriendID] = useState("(없음)");
+  const [ref, setRef] = useState(null);
+  const [friendRef, setFriendRef] = useState(null);
+  const [friendPoint, setFriendPoint] = useState(0);
 
-  const ref = firestore().collection('client').where('clientID', '==' ,'hwayoung1');
-
+//  useEffect 값 하나면 가져오는 방법!!!
+useEffect(() => {
+  const getUserIdAsync = async () => {
+    try {
+      const getUserId = await AsyncStorage.getItem('userId');
+      setUserId(getUserId);
+      setRef(firestore().collection('client').doc(userId));
+      ref.onSnapshot((doc) => {
+        const {totalpoint} = doc.data();
+        setTotalPoint(totalpoint);
+      })
+    } catch (e) {
+      // Restoring Id failed
+      console.log('Restoring Id failed');
+    }
+  };
+  getUserIdAsync();
+}, []);
 
   function _addPointHandler(){
     Alert.alert('포인트 충전', plusPoint+'(원) 포인트를 충전하시겠습니까?', [
@@ -41,9 +62,10 @@ const MyWallet = ({ route, navigation }) => {
         text: '충전',
         onPress: async () => {
           await ref.update({
-            point: point+plusPoint,
+            totalpoint: totalPoint+Number(plusPoint),
           });
-          setPlusPoint(null);
+          setPlusPoint(0);
+          setIsVisible1(false);
         },
       },
     ]);
@@ -58,10 +80,30 @@ const MyWallet = ({ route, navigation }) => {
       {
         text: '선물',
         onPress: async () => {
-          await ref.update({
-            point: point-plusPoint,
+          if (friendID == userId) {
+            Alert.alert('자기 자신에게 포인트를 선물할 수 없습니다.');
+            return;
+          }
+          let getDoc = firestore().collection('client').doc(friendID);
+          if (getDoc == null) {
+            console.log('No such friendID!');
+            Alert.alert('해당 아이디는 존재하지 않습니다.')
+            return;
+          }
+          setFriendRef(getDoc);
+          friendRef.onSnapshot((doc) => {
+            const {totalpoint} = doc.data();
+            setFriendPoint(totalpoint);
+          })
+
+          await ref.update({  
+            totalpoint: totalPoint-Number(plusPoint),
           });
-          setPlusPoint(null);
+          await friendRef.update({
+            totalpoint: friendPoint+Number(plusPoint),
+          })
+          setPlusPoint(0);
+          setIsVisible2(false);
         },
       },
     ]);
@@ -77,26 +119,14 @@ const MyWallet = ({ route, navigation }) => {
         text: '인출',
         onPress: async () => {
           await ref.update({
-            point: point-plusPoint,
+            totalpoint: totalPoint-Number(plusPoint),
           });
-          setPlusPoint(null);
+          setPlusPoint(0);
+          setIsVisible3(false);
         },
       },
     ]);
   }
- //useEffect 값 하나면 가져오는 방법!!!
-  // useEffect(() => {
-  //   return ref.onSnapshot((querySnapshot) => {
-  //     let items = [];
-  //     querySnapshot.forEach((doc) => {
-  //       const { totalpoint } = doc.data();
-  //       items.push({
-  //         totalpoint: totalpoint,
-  //       });
-  //     });
-  //       setTotalPoint(items);
-  //   });
-  // }, []);
 
   return (
     <>
@@ -105,7 +135,7 @@ const MyWallet = ({ route, navigation }) => {
           <View style={styles.topcontainer}>
             <View style={styles.pointcontainer}>
               <Text style={styles.topText}>보유 포인트</Text>
-              <PointItems point={1200}/>
+              <PointItems point={totalPoint}/>
             </View>
             <View style={styles.buttoncontainer}>  
               <View style={styles.threebuttons}>
@@ -161,12 +191,11 @@ const MyWallet = ({ route, navigation }) => {
                 style={styles.input}
                 placeholder="충전금액(원)"
                 onChangeText={(text) => {
-                  setPlusPoint(plusPoint);
-                  console.log(plusPoint);
-                }}
-                value={plusPoint}
-                clearButtonMode="always"
+                  setPlusPoint(text);
+                  console.log(plusPoint);}}
                 autoFocus={true}
+                // value={plusPoint}
+                clearButtonMode="always"
               />
             </View>
             <View style={styles.modalBottomView}>
@@ -196,21 +225,19 @@ const MyWallet = ({ route, navigation }) => {
                 style={styles.input}
                 placeholder="선물받을 아이디(id)"
                 onChangeText={(text) => {
-                  setFriendID(friendID)
-                }}
-                value={friendID}
-                clearButtonMode="always"
+                  setFriendID(text);
+                  console.log(friendID);}}
                 autoFocus={true}
+                clearButtonMode="always"
               />
               <TextInput
                 style={styles.input}
                 placeholder="선물할 금액(원)"
                 onChangeText={(text) => {
-                  setPlusPoint(plusPoint);
-                }}
-                value={plusPoint}
-                clearButtonMode="always"
+                  setPlusPoint(text);
+                  console.log(plusPoint);}}
                 autoFocus={true}
+                clearButtonMode="always"
               />
             </View>
             <View style={styles.modalBottomView2}>
@@ -240,11 +267,11 @@ const MyWallet = ({ route, navigation }) => {
                 style={styles.input}
                 placeholder="인출할 금액(원)"
                 onChangeText={(text) => {
-                  setPlusPoint(points);
-                }}
-                value={plusPoint}
-                clearButtonMode="always"
+                  setPlusPoint(text);
+                  console.log(plusPoint);}}
                 autoFocus={true}
+                // value={plusPoint}
+                clearButtonMode="always"
               />
             </View>
             <View style={styles.modalBottomView}>

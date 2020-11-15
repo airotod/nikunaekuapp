@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import { FlatList, StyleSheet, Text, View, Image, Picker} from 'react-native';
-// import {Picker} from '@react-native-picker/picker';
+import { FlatList, StyleSheet, Text, View, Image} from 'react-native';
+import { Picker } from '@react-native-community/picker';
 import firestore from '@react-native-firebase/firestore';
 
 import { 
@@ -10,7 +10,6 @@ import {
   GREY_70_COLOR,
   GREEN_COLOR
 } from '../../models/colors';
-import { and } from 'react-native-reanimated';
 
 const PointLogItem = ({is_usage, date, point, logtitle, detail, balance  }) => {
   let IconItem = null;
@@ -56,7 +55,7 @@ const PointLogItem = ({is_usage, date, point, logtitle, detail, balance  }) => {
 const MyPointLog = ({ route, navigation }) => {
   const [pointLogList, setPointLogList] = useState([]);
   const [selectedValue, setSelectedValue] = useState("전체");
-  const ref = firestore().collection('client').where('clientID','==','yonsei4').orderBy('date', 'desc');
+  const ref = firestore().collection('client').doc('hwa0327').collection('pointlog').orderBy('date', 'desc');
   
   useEffect(() => {
     return ref.onSnapshot((querySnapshot) => {
@@ -107,7 +106,7 @@ const MyPointLog = ({ route, navigation }) => {
     <>
       <View style={styles.container}>
         <View style={styles.selectcontainer}>
-          {/* <Picker 
+          <Picker 
             mode = 'dropdown'
             selectedValue={selectedValue}
             style={styles.pickerstyle}
@@ -117,12 +116,13 @@ const MyPointLog = ({ route, navigation }) => {
             <Picker.Item label='전체' value='전체'/>
             <Picker.Item label='적립' value='적립'/>
             <Picker.Item label='사용' value='사용'/>
-          </Picker> */}
+          </Picker>
         </View>
         <View style={styles.maincontainer}>
           <FlatList
             data={pointLogList}
-            renderItem={({ item }) => <PointLogItem {...item} />}
+            renderItem={({ item }) => <PointLogItem {...item}
+            keyExtractor={(item) => item.id} />}
           />
         </View>
       </View>
