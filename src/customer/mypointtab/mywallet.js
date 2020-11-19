@@ -29,17 +29,20 @@ const MyWallet = ({ route, navigation }) => {
   const [isVisible3, setIsVisible3] = useState(false);
   const [plusPoint, setPlusPoint] = useState(null);
   const [friendID, setFriendID] = useState("(없음)");
-  const [ref, setRef] = useState(null);
+  const [ref_copy, setRef_copy] = useState(null);
   const [friendRef, setFriendRef] = useState(null);
   const [friendPoint, setFriendPoint] = useState(0);
 
+  let ref = firestore().collection('client');
 //  useEffect 값 하나면 가져오는 방법!!!
 useEffect(() => {
   const getUserIdAsync = async () => {
     try {
       const getUserId = await AsyncStorage.getItem('userId');
-      setUserId(getUserId);
-      setRef(firestore().collection('client').doc(userId));
+      setUserId(getUserId); //null??????????????????????
+      // setRef(firestore().collection('client').doc(getUserId));
+      ref = ref.doc(getUserId);
+      setRef_copy(ref);
       ref.onSnapshot((doc) => {
         const {totalpoint} = doc.data();
         setTotalPoint(totalpoint);
@@ -61,7 +64,7 @@ useEffect(() => {
       {
         text: '충전',
         onPress: async () => {
-          await ref.update({
+          await ref_copy.update({
             totalpoint: totalPoint+Number(plusPoint),
           });
           setPlusPoint(0);
@@ -84,22 +87,23 @@ useEffect(() => {
             Alert.alert('자기 자신에게 포인트를 선물할 수 없습니다.');
             return;
           }
-          let getDoc = firestore().collection('client').doc(friendID);
-          if (getDoc == null) {
+          let getDoc = await firestore().collection('client').doc(friendID);
+
+          if (!(await getDoc.get()).exists) {
             console.log('No such friendID!');
             Alert.alert('해당 아이디는 존재하지 않습니다.')
             return;
           }
-          setFriendRef(getDoc);
-          friendRef.onSnapshot((doc) => {
+          // setFriendRef(getDoc);
+          getDoc.onSnapshot((doc) => {
             const {totalpoint} = doc.data();
             setFriendPoint(totalpoint);
           })
 
-          await ref.update({  
+          await ref_copy.update({  
             totalpoint: totalPoint-Number(plusPoint),
           });
-          await friendRef.update({
+          await getDoc.update({
             totalpoint: friendPoint+Number(plusPoint),
           })
           setPlusPoint(0);
@@ -118,7 +122,7 @@ useEffect(() => {
       {
         text: '인출',
         onPress: async () => {
-          await ref.update({
+          await ref_copy.update({
             totalpoint: totalPoint-Number(plusPoint),
           });
           setPlusPoint(0);
