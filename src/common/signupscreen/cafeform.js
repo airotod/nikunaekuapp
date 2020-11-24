@@ -4,6 +4,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-community/picker';
 import 'react-native-gesture-handler';
 
+import CheckInfo from '../../components/checkinfo';
 import StepButton from '../../components/stepbutton';
 import TopBar from '../../components/topbar';
 import {
@@ -20,6 +21,8 @@ export default function CafeForm({ route, navigation }) {
   const [birthdate, setBirthdate] = useState(new Date());
   const [cafephone, setCafephone] = useState(null);
   const [cafename, setCafename] = useState(null);
+  const [errMsg, setErrMsg] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
   const [region, setRegion] = useState(regions[8]);
   const [password1, setPassword1] = useState(null);
   const [password2, setPassword2] = useState(null);
@@ -27,7 +30,33 @@ export default function CafeForm({ route, navigation }) {
   const [userid, setUserid] = useState(null);
   const [username, setUsername] = useState(null);
 
+  let account = {
+    birthdate: birthdate,
+    cafephone: cafephone,
+    cafename: cafename,
+    region: region,
+    password: password1,
+    userid: userid,
+    username,
+    username,
+    usertype: 'owner',
+  };
+
   function _handleNext(event) {
+    if (!username) {
+      setErrMsg('이름을 입력해주세요.');
+    } else if (!password1) {
+      setErrMsg('비밀번호를 입력해주세요.');
+    } else if (password1 !== password2) {
+      setErrMsg('비밀번호가 일치하지 않습니다.');
+    } else if (!cafename) {
+      setErrMsg('카페명을 입력해주세요.');
+    } else {
+      setModalVisible(true);
+    }
+  }
+
+  function _handleConfirm(event) {
     navigation.navigate('증명서 인증 화면');
   }
 
@@ -134,12 +163,22 @@ export default function CafeForm({ route, navigation }) {
               onChangeText={(text) => setCafephone(text)}
             />
           </View>
+          {errMsg && <Text style={styles.redMsg}>{errMsg}</Text>}
           <StepButton
             text="다음"
             onPress={_handleNext}
             buttonColor={RED_COLOR}
           />
         </View>
+        <CheckInfo
+          data={account}
+          visible={modalVisible}
+          onClose={() => setModalVisible(false)}
+          onConfirm={() => {
+            setModalVisible(false);
+            _handleConfirm();
+          }}
+        />
       </ScrollView>
     </>
   );
