@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import 'react-native-gesture-handler';
 
+import CheckInfo from '../../components/checkinfo';
 import StepButton from '../../components/stepbutton';
 import TopBar from '../../components/topbar';
 import { AuthContext } from '../../utils/context';
@@ -19,11 +20,34 @@ import { dateWithKorean } from '../../utils/format';
 
 export default function SignUpForm({ route, navigation }) {
   const [birthdate, setBirthdate] = useState(new Date());
+  const [errMsg, setErrMsg] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
   const [password1, setPassword1] = useState(null);
   const [password2, setPassword2] = useState(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [userid, setUserid] = useState(null);
   const [username, setUsername] = useState(null);
+
+  let account = {
+    birthdate: birthdate,
+    userid: userid,
+    username: username,
+    usertype: 'customer',
+  };
+
+  function _handleComplete(event) {
+    if (!userid) {
+      setErrMsg('아이디를 입력해주세요.');
+    } else if (!password1) {
+      setErrMsg('비밀번호를 입력해주세요.');
+    } else if (password1 !== password2) {
+      setErrMsg('비밀번호가 일치하지 않습니다.');
+    } else if (!username) {
+      setErrMsg('이름을 입력해주세요.');
+    } else {
+      setModalVisible(true);
+    }
+  }
 
   async function _handleSignUp(event) {
     await AsyncStorage.setItem('userId', userid);
@@ -110,13 +134,21 @@ export default function SignUpForm({ route, navigation }) {
                   />
                 )}
               </View>
+              {errMsg && <Text style={styles.redMsg}>{errMsg}</Text>}
               <StepButton
                 text="완료"
-                onPress={() => {
+                onPress={_handleComplete}
+                buttonColor={RED_COLOR}
+              />
+              <CheckInfo
+                data={account}
+                visible={modalVisible}
+                onClose={() => setModalVisible(false)}
+                onConfirm={() => {
                   signIn({ userid, password1 });
                   _handleSignUp();
+                  setModalVisible(false);
                 }}
-                buttonColor={RED_COLOR}
               />
             </View>
           </ScrollView>
