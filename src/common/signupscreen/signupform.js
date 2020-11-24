@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import 'react-native-gesture-handler';
 
 import StepButton from '../../components/stepbutton';
@@ -14,9 +15,10 @@ import {
   RED_COLOR,
   WHITE_COLOR,
 } from '../../models/colors';
+import { dateWithKorean } from '../../utils/format';
 
 export default function SignUpForm({ route, navigation }) {
-  const [birthdate, setBirthdate] = useState(null);
+  const [birthdate, setBirthdate] = useState(new Date());
   const [password1, setPassword1] = useState(null);
   const [password2, setPassword2] = useState(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -25,6 +27,16 @@ export default function SignUpForm({ route, navigation }) {
 
   async function _handleSignUp(event) {
     await AsyncStorage.setItem('userId', userid);
+  }
+
+  function _showDatePicker(event) {
+    setShowDatePicker(true);
+  }
+
+  function _onBirthdateChange(event, date) {
+    const currentDate = date || birthdate;
+    setShowDatePicker(false);
+    setBirthdate(currentDate);
   }
 
   return (
@@ -85,11 +97,18 @@ export default function SignUpForm({ route, navigation }) {
               </View>
               <Text style={styles.question}>4. 생년월일을 입력하세요.</Text>
               <View style={styles.inputContainer}>
-                <TextInput
-                  style={styles.input}
-                  placeholder="2020년 11월 19일"
-                  onChangeText={(text) => setBirthdate(text)}
-                />
+                <Text style={styles.date} onPress={_showDatePicker}>
+                  {dateWithKorean(birthdate)}
+                </Text>
+                {showDatePicker && (
+                  <DateTimePicker
+                    testID="dateTimePicker"
+                    value={birthdate}
+                    mode="date"
+                    display="default"
+                    onChange={_onBirthdateChange}
+                  />
+                )}
               </View>
               <StepButton
                 text="완료"
@@ -111,6 +130,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     margin: 25,
+  },
+  date: {
+    color: BLACK_COLOR,
+    fontSize: 18,
   },
   img: {
     alignItems: 'center',
