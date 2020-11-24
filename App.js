@@ -23,20 +23,23 @@ const App = () => {
         case 'RESTORE_TOKEN':
           return {
             ...prevState,
-            userId: action.token,
+            userId: action.userId,
+            userType: action.userType,
             isLoading: false,
           };
         case 'SIGN_IN':
           return {
             ...prevState,
             isSignout: false,
-            userId: action.token,
+            userId: action.userId,
+            userType: action.userType,
           };
         case 'SIGN_OUT':
           return {
             ...prevState,
             isSignout: true,
             userId: null,
+            userType: null,
           };
       }
     },
@@ -50,13 +53,15 @@ const App = () => {
   useEffect(() => {
     const bootstrapAsync = async () => {
       let userId;
+      let userType;
 
       try {
         userId = await AsyncStorage.getItem('userId');
+        userType = await AsyncStorage.getItem('userType');
       } catch (e) {
         // Restoring Id failed
       }
-      dispatch({ type: 'RESTORE_TOKEN', token: userId });
+      dispatch({ type: 'RESTORE_TOKEN', userId: userId, userType: userType });
     };
 
     bootstrapAsync();
@@ -65,11 +70,15 @@ const App = () => {
   const authContext = useMemo(
     () => ({
       signIn: async (data) => {
-        dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' });
+        dispatch({
+          type: 'SIGN_IN',
+          userId: data.userId,
+          userType: data.userType,
+        });
       },
       signOut: () => dispatch({ type: 'SIGN_OUT' }),
       signUp: async (data) => {
-        dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' });
+        dispatch({ type: 'SIGN_IN', userId: data.userId, userType: userType });
       },
     }),
     [],
@@ -98,6 +107,26 @@ const App = () => {
                   options={{ headerShown: false }}
                 />
               </>
+            ) : state.userType === 'owner' ? (
+              <>
+                <>
+                  <Stack.Screen
+                    name="메인화면"
+                    component={MainScreen}
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="사장님 화면"
+                    component={OwnerMain}
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="테스트 화면"
+                    component={TestMain}
+                    options={{ headerShown: false }}
+                  />
+                </>
+              </>
             ) : (
               <>
                 <Stack.Screen
@@ -108,11 +137,6 @@ const App = () => {
                 <Stack.Screen
                   name="고객 화면"
                   component={CustomerMain}
-                  options={{ headerShown: false }}
-                />
-                <Stack.Screen
-                  name="사장님 화면"
-                  component={OwnerMain}
                   options={{ headerShown: false }}
                 />
                 <Stack.Screen

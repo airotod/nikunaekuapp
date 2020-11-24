@@ -37,6 +37,7 @@ const CustomerAccount = ({ route, navigation }) => {
 
   async function _handleSignOut() {
     await AsyncStorage.removeItem('userId');
+    await AsyncStorage.removeItem('userType');
   }
 
   return (

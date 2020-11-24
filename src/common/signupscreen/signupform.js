@@ -56,6 +56,7 @@ export default function SignUpForm({ route, navigation }) {
 
   async function _handleSignUp(event) {
     await AsyncStorage.setItem('userId', userid);
+    await AsyncStorage.setItem('userType', 'customer');
     await ref.doc(userid).set({
       birthdate: birthdate,
       password: password1,
@@ -172,7 +173,7 @@ export default function SignUpForm({ route, navigation }) {
                 visible={modalVisible}
                 onClose={() => setModalVisible(false)}
                 onConfirm={() => {
-                  signIn({ userid, password1 });
+                  signIn({ userId: userid, userType: 'customer' });
                   _handleSignUp();
                   setModalVisible(false);
                 }}
