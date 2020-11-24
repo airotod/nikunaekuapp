@@ -15,6 +15,7 @@ import {
   RED_COLOR,
   WHITE_COLOR,
 } from '../../models/colors';
+import { checkPhone } from '../../utils/validate';
 
 export default function PhoneAuth({ route, navigation }) {
   const [authNum, setAuthNum] = useState(null);
@@ -32,6 +33,8 @@ export default function PhoneAuth({ route, navigation }) {
   function _handleSend(event) {
     if (!userPhone) {
       setSendErrMsg('전화번호를 입력해주세요.');
+    } else if (!checkPhone(userPhone)) {
+      setSendErrMsg('전화번호가 올바르지 않습니다.');
     } else if (!clicked) {
       setSendErrMsg(null);
       setClicked(true);
