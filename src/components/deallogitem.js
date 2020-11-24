@@ -11,7 +11,7 @@ import {
   RED_COLOR,
   WHITE_COLOR,
 } from '../models/colors';
-import { numWithCommas } from '../utils/comma';
+import { dateUTCWithDot, numWithCommas } from '../utils/format';
 
 const Item = ({ title, content, color }) => {
   return (
@@ -40,11 +40,7 @@ const DealLogItem = ({
 }) => {
   let purchasedColor = isPurchaseLog ? GREY_80_COLOR : BLUE_COLOR;
   let dateString = date ? date.toDate() : '';
-  let dealDate = dateString
-    ? `${dateString.getUTCFullYear()}.${
-        dateString.getUTCMonth() + 1
-      }.${dateString.getUTCDate()}`
-    : '';
+  let dealDate = dateString ? dateUTCWithDot(dateString) : '';
 
   return (
     <View style={styles.item}>
