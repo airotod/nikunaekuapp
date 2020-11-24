@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import firestore from '@react-native-firebase/firestore';
@@ -12,6 +19,7 @@ import { AuthContext } from '../../utils/context';
 
 import {
   BLACK_COLOR,
+  GREEN_COLOR,
   GREY_30_COLOR,
   GREY_60_COLOR,
   RED_COLOR,
@@ -21,6 +29,8 @@ import { dateWithKorean } from '../../utils/format';
 
 export default function SignUpForm({ route, navigation }) {
   const [birthdate, setBirthdate] = useState(new Date());
+  const [duplicated, setDuplicated] = useState(null);
+  const [duplicatedMsg, setDuplicatedMsg] = useState(null);
   const [errMsg, setErrMsg] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [password1, setPassword1] = useState(null);
@@ -32,6 +42,10 @@ export default function SignUpForm({ route, navigation }) {
 
   const ref = firestore().collection('users');
 
+  let buttonColor = {
+    backgroundColor: duplicated === false ? GREEN_COLOR : RED_COLOR,
+  };
+
   let account = {
     birthdate: birthdate,
     userid: userid,
@@ -40,9 +54,36 @@ export default function SignUpForm({ route, navigation }) {
     usertype: 'customer',
   };
 
+  function _handleUserId(text) {
+    setUserid(text);
+    setDuplicated(null);
+    setDuplicatedMsg(null);
+  }
+
+  async function _handleDuplicated(event) {
+    if (!userid) {
+      setDuplicatedMsg('아이디를 입력해주세요.');
+    } else {
+      ref
+        .doc(userid)
+        .get()
+        .then(async function (doc) {
+          if (doc.exists) {
+            setDuplicated(true);
+            setDuplicatedMsg('이미 존재하는 아이디입니다.');
+          } else {
+            setDuplicated(false);
+            setDuplicatedMsg('사용가능한 아이디입니다.');
+          }
+        });
+    }
+  }
+
   function _handleComplete(event) {
     if (!userid) {
       setErrMsg('아이디를 입력해주세요.');
+    } else if (duplicated !== false) {
+      setErrMsg('아이디 중복 확인을 진행해주세요.');
     } else if (!password1) {
       setErrMsg('비밀번호를 입력해주세요.');
     } else if (password1 !== password2) {
@@ -116,8 +157,17 @@ export default function SignUpForm({ route, navigation }) {
                 <TextInput
                   style={styles.input}
                   placeholder="한글, 영어만 가능"
-                  onChangeText={(text) => setUserid(text)}
+                  onChangeText={(text) => _handleUserId(text)}
                 />
+              </View>
+              <View style={styles.buttonContainer}>
+              {duplicatedMsg && <Text style={styles.redMsg}>{duplicatedMsg}</Text>}
+                <TouchableOpacity
+                  style={[styles.button, buttonColor]}
+                  onPress={_handleDuplicated}
+                  activeOpacity={duplicated ? 1 : 0.2}>
+                  <Text style={styles.buttonText}>중복 확인</Text>
+                </TouchableOpacity>
               </View>
               <Text style={styles.question}>2. 비밀번호를 입력하세요.</Text>
               <View style={styles.inputContainer}>
@@ -187,6 +237,20 @@ export default function SignUpForm({ route, navigation }) {
 }
 
 const styles = StyleSheet.create({
+  button: {
+    alignItems: 'center',
+    height: 28,
+    justifyContent: 'center',
+    width: 70,
+  },
+  buttonContainer: {
+    alignItems: 'flex-end',
+  },
+  buttonText: {
+    color: BLACK_COLOR,
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
   container: {
     flex: 1,
     margin: 25,
