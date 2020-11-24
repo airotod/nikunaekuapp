@@ -1,14 +1,9 @@
 import React, { useState } from 'react';
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { StyleSheet, Text, TextInput, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import 'react-native-gesture-handler';
 
+import StepButton from '../../components/stepbutton';
 import TopBar from '../../components/topbar';
 import { AuthContext } from '../../utils/context';
 
@@ -68,16 +63,14 @@ export default function SignUpForm({ route, navigation }) {
                 secureTextEntry={true}
               />
             </View>
-            <View style={styles.buttonContainer}>
-              <TouchableOpacity
-                style={styles.button}
-                onPress={() => {
-                  signIn({ userid, password1 });
-                  _handleSignUp();
-                }}>
-                <Text style={styles.buttonText}>완료</Text>
-              </TouchableOpacity>
-            </View>
+            <StepButton
+              text="완료"
+              onPress={() => {
+                signIn({ userid, password1 });
+                _handleSignUp();
+              }}
+              buttonColor={RED_COLOR}
+            />
           </View>
         </>
       )}
@@ -86,23 +79,6 @@ export default function SignUpForm({ route, navigation }) {
 }
 
 const styles = StyleSheet.create({
-  button: {
-    alignItems: 'center',
-    backgroundColor: RED_COLOR,
-    height: 45,
-    justifyContent: 'center',
-    width: 90,
-  },
-  buttonContainer: {
-    alignItems: 'flex-end',
-    marginVertical: 15,
-    justifyContent: 'flex-end',
-  },
-  buttonText: {
-    color: BLACK_COLOR,
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
   container: {
     flex: 1,
     margin: 25,

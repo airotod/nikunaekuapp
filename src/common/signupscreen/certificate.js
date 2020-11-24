@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import 'react-native-gesture-handler';
+import StepButton from '../../components/stepbutton';
 
 import TopBar from '../../components/topbar';
 
@@ -21,19 +22,16 @@ export default function Certificate({ route, navigation }) {
       <View style={styles.container}>
         <Text style={styles.mainText}>증명서 인증 화면</Text>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={[
-              styles.button,
-              { borderColor: GREY_40_COLOR, borderWidth: 2 },
-            ]}
-            onPress={() => navigation.pop()}>
-            <Text style={styles.buttonText}>이전</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.button, { backgroundColor: RED_COLOR }]}
-            onPress={_handleComplete}>
-            <Text style={styles.buttonText}>신청</Text>
-          </TouchableOpacity>
+          <StepButton
+            text="이전"
+            onPress={() => navigation.pop()}
+            borderColor={GREY_40_COLOR}
+          />
+          <StepButton
+            text="신청"
+            onPress={_handleComplete}
+            buttonColor={RED_COLOR}
+          />
         </View>
       </View>
     </>
@@ -41,22 +39,11 @@ export default function Certificate({ route, navigation }) {
 }
 
 const styles = StyleSheet.create({
-  button: {
-    alignItems: 'center',
-    height: 45,
-    justifyContent: 'center',
-    width: 90,
-  },
   buttonContainer: {
     alignItems: 'flex-end',
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginVertical: 15,
-  },
-  buttonText: {
-    color: BLACK_COLOR,
-    fontSize: 18,
-    fontWeight: 'bold',
   },
   container: {
     flex: 1,

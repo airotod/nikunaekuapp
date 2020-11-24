@@ -1,7 +1,8 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import 'react-native-gesture-handler';
 
+import StepButton from '../../components/stepbutton';
 import TopBar from '../../components/topbar';
 import { BLACK_COLOR, RED_COLOR } from '../../models/colors';
 
@@ -19,34 +20,13 @@ export default function CafeForm({ route, navigation }) {
       />
       <View style={styles.container}>
         <Text style={styles.mainText}>정보 입력 화면</Text>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={_handleNext}>
-            <Text style={styles.buttonText}>다음</Text>
-          </TouchableOpacity>
-        </View>
+        <StepButton text="다음" onPress={_handleNext} buttonColor={RED_COLOR} />
       </View>
     </>
   );
 }
 
 const styles = StyleSheet.create({
-  button: {
-    alignItems: 'center',
-    backgroundColor: RED_COLOR,
-    height: 45,
-    justifyContent: 'center',
-    width: 90,
-  },
-  buttonContainer: {
-    alignItems: 'flex-end',
-    justifyContent: 'flex-end',
-    marginVertical: 15,
-  },
-  buttonText: {
-    color: BLACK_COLOR,
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
   container: {
     flex: 1,
     margin: 25,

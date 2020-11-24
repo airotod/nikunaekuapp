@@ -1,6 +1,7 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import 'react-native-gesture-handler';
+import StepButton from '../../components/stepbutton';
 
 import { BLACK_COLOR, RED_COLOR } from '../../models/colors';
 
@@ -12,11 +13,7 @@ export default function PhoneAuth({ route, navigation }) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>휴대폰 번호 인증</Text>
-      <View style={styles.nextButtonContainer}>
-        <TouchableOpacity style={styles.nextButton} onPress={_handleNext}>
-          <Text style={styles.nextButtonText}>다음</Text>
-        </TouchableOpacity>
-      </View>
+      <StepButton text="다음" onPress={_handleNext} buttonColor={RED_COLOR} />
     </View>
   );
 }
@@ -24,22 +21,6 @@ export default function PhoneAuth({ route, navigation }) {
 const styles = StyleSheet.create({
   container: {
     padding: 30,
-  },
-  nextButton: {
-    alignItems: 'center',
-    backgroundColor: RED_COLOR,
-    height: 34,
-    justifyContent: 'center',
-    width: 74,
-  },
-  nextButtonContainer: {
-    alignItems: 'flex-end',
-    marginVertical: 15,
-  },
-  nextButtonText: {
-    color: BLACK_COLOR,
-    fontSize: 15,
-    fontWeight: 'bold',
   },
   title: {
     color: BLACK_COLOR,
