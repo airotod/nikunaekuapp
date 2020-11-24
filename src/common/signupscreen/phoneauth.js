@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import 'react-native-gesture-handler';
 
 import StepButton from '../../components/stepbutton';
@@ -41,11 +42,12 @@ export default function PhoneAuth({ route, navigation }) {
     }
   }
 
-  function _handleNext(event) {
+  async function _handleNext(event) {
     if (!authNum) {
       setNextErrMsg('인증번호가 올바르지 않습니다.');
     } else {
       setNextErrMsg(null);
+      await AsyncStorage.setItem('userPhone', userPhone);
       navigation.navigate('서비스 이용 약관 화면');
     }
   }

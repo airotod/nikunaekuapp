@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import firestore from '@react-native-firebase/firestore';
 import 'react-native-gesture-handler';
 
 import CheckInfo from '../../components/checkinfo';
@@ -27,10 +28,14 @@ export default function SignUpForm({ route, navigation }) {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [userid, setUserid] = useState(null);
   const [username, setUsername] = useState(null);
+  const [userphone, setUserphone] = useState(null);
+
+  const ref = firestore().collection('users');
 
   let account = {
     birthdate: birthdate,
     userid: userid,
+    userphone: userphone,
     username: username,
     usertype: 'customer',
   };
@@ -51,6 +56,16 @@ export default function SignUpForm({ route, navigation }) {
 
   async function _handleSignUp(event) {
     await AsyncStorage.setItem('userId', userid);
+    await ref.doc(userid).set({
+      birthdate: birthdate,
+      password: password1,
+      phone: userphone,
+      point: 0,
+      userId: userid,
+      userName: username,
+      userType: 'customer',
+      registeredAt: firestore.FieldValue.serverTimestamp(),
+    });
   }
 
   function _showDatePicker(event) {
@@ -62,6 +77,18 @@ export default function SignUpForm({ route, navigation }) {
     setShowDatePicker(false);
     setBirthdate(currentDate);
   }
+
+  useEffect(() => {
+    const getUserPhone = async () => {
+      try {
+        let userPhone = await AsyncStorage.getItem('userPhone');
+        setUserphone(userPhone);
+      } catch (e) {
+        console.log('error: ', e);
+      }
+    };
+    getUserPhone();
+  }, []);
 
   return (
     <AuthContext.Consumer>
