@@ -6,6 +6,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import MainScreen from './src/main';
 import CustomerMain from './src/customermain';
 import OwnerMain from './src/ownermain';
+import StartScreen from './src/startscreen';
 import TestMain from './src/testmain';
 
 import SignIn from './src/common/signin';
@@ -81,6 +82,11 @@ const App = () => {
           <Stack.Navigator>
             {state.userId === null ? (
               <>
+                <Stack.Screen
+                  name="시작화면"
+                  component={StartScreen}
+                  options={{ title: '시작화면', headerShown: false }}
+                />
                 <Stack.Screen
                   name="로그인"
                   component={SignIn}
