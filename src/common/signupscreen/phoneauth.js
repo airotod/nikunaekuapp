@@ -8,13 +8,20 @@ import {
 } from 'react-native';
 import 'react-native-gesture-handler';
 
-import { BLACK_COLOR, RED_COLOR } from '../../models/colors';
+import StepButton from '../../components/stepbutton';
+import { BLACK_COLOR, RED_COLOR, WHITE_COLOR } from '../../models/colors';
 
 export default function PhoneAuth({ route, navigation }) {
+  const [authNum, setAuthNum] = useState(null);
+  const [clicked, setClicked] = useState(false);
   const [userPhone, setUserPhone] = useState(null);
 
   function _handleSend(event) {
-    console.log('보내기');
+    setClicked(true);
+  }
+
+  function _handleNext(event) {
+    navigation.navigate('서비스 이용 약관 화면');
   }
 
   return (
@@ -42,11 +49,35 @@ export default function PhoneAuth({ route, navigation }) {
           </TouchableOpacity>
         </View>
       </View>
+      {clicked && (
+        <>
+          <View style={styles.authContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder="인증번호 4자리"
+              onChangeText={(text) => setAuthNum(text)}
+            />
+          </View>
+          <StepButton
+            text="다음"
+            onPress={_handleNext}
+            buttonColor={RED_COLOR}
+          />
+        </>
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  authContainer: {
+    backgroundColor: WHITE_COLOR,
+    borderColor: BLACK_COLOR,
+    borderWidth: 1,
+    height: 40,
+    justifyContent: 'center',
+    paddingHorizontal: 8,
+  },
   container: {
     margin: 30,
   },
