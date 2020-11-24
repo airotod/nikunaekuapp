@@ -9,19 +9,42 @@ import {
 import 'react-native-gesture-handler';
 
 import StepButton from '../../components/stepbutton';
-import { BLACK_COLOR, RED_COLOR, WHITE_COLOR } from '../../models/colors';
+import {
+  BLACK_COLOR,
+  GREY_40_COLOR,
+  RED_COLOR,
+  WHITE_COLOR,
+} from '../../models/colors';
 
 export default function PhoneAuth({ route, navigation }) {
   const [authNum, setAuthNum] = useState(null);
   const [clicked, setClicked] = useState(false);
+  const [nextErrMsg, setNextErrMsg] = useState(null);
+  const [sendErrMsg, setSendErrMsg] = useState(null);
   const [userPhone, setUserPhone] = useState(null);
 
+  let sendButtonColor = {
+    backgroundColor: clicked ? GREY_40_COLOR : RED_COLOR,
+  };
+
+  let nextButtonColor = authNum ? RED_COLOR : GREY_40_COLOR;
+
   function _handleSend(event) {
-    setClicked(true);
+    if (!userPhone) {
+      setSendErrMsg('전화번호를 입력해주세요.');
+    } else if (!clicked) {
+      setSendErrMsg(null);
+      setClicked(true);
+    }
   }
 
   function _handleNext(event) {
-    navigation.navigate('서비스 이용 약관 화면');
+    if (!authNum) {
+      setNextErrMsg('인증번호가 올바르지 않습니다.');
+    } else {
+      setNextErrMsg(null);
+      navigation.navigate('서비스 이용 약관 화면');
+    }
   }
 
   return (
@@ -41,14 +64,19 @@ export default function PhoneAuth({ route, navigation }) {
             placeholder="010-0000-0000"
             onChangeText={(text) => setUserPhone(text)}
             autoFocus={true}
+            editable={!clicked}
           />
         </View>
         <View style={styles.phoneContainerRight}>
-          <TouchableOpacity style={styles.sendButton} onPress={_handleSend}>
+          <TouchableOpacity
+            style={[styles.sendButton, sendButtonColor]}
+            onPress={_handleSend}
+            activeOpacity={clicked ? 1 : 0.2}>
             <Text style={styles.sendText}>보내기</Text>
           </TouchableOpacity>
         </View>
       </View>
+      {sendErrMsg && <Text style={styles.errMsg}>{sendErrMsg}</Text>}
       {clicked && (
         <>
           <View style={styles.authContainer}>
@@ -58,10 +86,11 @@ export default function PhoneAuth({ route, navigation }) {
               onChangeText={(text) => setAuthNum(text)}
             />
           </View>
+          {nextErrMsg && <Text style={styles.errMsg}>{nextErrMsg}</Text>}
           <StepButton
             text="다음"
             onPress={_handleNext}
-            buttonColor={RED_COLOR}
+            buttonColor={nextButtonColor}
           />
         </>
       )}
@@ -86,6 +115,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     height: '100%',
     width: '100%',
+  },
+  errMsg: {
+    color: RED_COLOR,
+    fontSize: 14,
+    fontWeight: 'bold',
+    textAlign: 'right',
+    marginTop: 10,
   },
   msg: {
     color: BLACK_COLOR,
@@ -133,7 +169,6 @@ const styles = StyleSheet.create({
   },
   sendButton: {
     alignItems: 'center',
-    backgroundColor: RED_COLOR,
     height: 28,
     justifyContent: 'center',
     width: 60,
