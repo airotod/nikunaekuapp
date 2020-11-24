@@ -62,12 +62,21 @@ const SignUp = ({ route, navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
+    alignItems: 'center',
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
   },
   mainText: {
     color: BLACK_COLOR,
+    fontSize: 24,
+    margin: 10,
+    fontWeight: 'bold',
+  },
+  text: {
+    color: BLACK_COLOR,
+    margin: 15,
+    fontSize: 14,
+    alignItems: 'stretch',
   },
 });
 

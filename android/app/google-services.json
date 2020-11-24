@@ -1,34 +1,42 @@
 {
   "project_info": {
-    "project_number": "1004088799724",
-    "firebase_url": "https://nikunaeku-6c09d.firebaseio.com",
-    "project_id": "nikunaeku-6c09d",
-    "storage_bucket": "nikunaeku-6c09d.appspot.com"
+    "project_number": "1058499770227",
+    "firebase_url": "https://nikunaekuapp.firebaseio.com",
+    "project_id": "nikunaekuapp",
+    "storage_bucket": "nikunaekuapp.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1004088799724:android:dc652ddcb8051bd9a290c9",
+        "mobilesdk_app_id": "1:1058499770227:android:0de909c1969328a8b6b706",
         "android_client_info": {
           "package_name": "com.nikunaekuapp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1004088799724-8us1lkjv9ru7uf3fhgpfou47ac0i9bct.apps.googleusercontent.com",
+          "client_id": "1058499770227-s8ang45sh40qhalm7sbhvptef141rruo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nikunaekuapp",
+            "certificate_hash": "3960a2724ffb9024220a88ad38b64bfdd38c3d8d"
+          }
+        },
+        {
+          "client_id": "1058499770227-bcifu5ie7vtqk6evvhljhvhrnlhr8q99.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBN8TuwjOoiBgy_dkkMjUdrupu23IYRkus"
+          "current_key": "AIzaSyDgQGsWTdj0gPgTQ5cUTcCMXfYd7FTpeF4"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1004088799724-8us1lkjv9ru7uf3fhgpfou47ac0i9bct.apps.googleusercontent.com",
+              "client_id": "1058499770227-bcifu5ie7vtqk6evvhljhvhrnlhr8q99.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
