@@ -14,6 +14,7 @@ import SignUp from './src/common/signup';
 import Complete from './src/common/signupscreen/complete';
 
 import { AuthContext } from './src/utils/context';
+import BrandDetail from './src/customer/brandDetail';
 
 const Stack = createStackNavigator();
 
@@ -87,7 +88,11 @@ const App = () => {
       },
       signOut: () => dispatch({ type: 'SIGN_OUT' }),
       signUp: async (data) => {
-        dispatch({ type: 'SIGN_UP', userId: data.userId, userType: data.userType });
+        dispatch({
+          type: 'SIGN_UP',
+          userId: data.userId,
+          userType: data.userType,
+        });
       },
     }),
     [],
@@ -144,6 +149,11 @@ const App = () => {
                 <Stack.Screen
                   name="고객 화면"
                   component={CustomerMain}
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="상세 정보"
+                  component={BrandDetail}
                   options={{ headerShown: false }}
                 />
               </>
