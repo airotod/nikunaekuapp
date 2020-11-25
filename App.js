@@ -55,6 +55,7 @@ const App = () => {
       isLoading: true,
       isSignout: false,
       userId: null,
+      userType: null,
     },
   );
 
