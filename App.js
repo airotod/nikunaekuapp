@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useReducer, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { GoogleSignin } from '@react-native-community/google-signin';
 
 import MainScreen from './src/main';
 import CustomerMain from './src/customermain';
@@ -80,18 +79,6 @@ const App = () => {
 
     bootstrapAsync();
   }, []);
-
-  useEffect(() => {
-    const socialGoogleConfigure = async () => {
-      await GoogleSignin.configure({
-        webClientId: 1058499770227-bcifu5ie7vtqk6evvhljhvhrnlhr8q99.apps.googleusercontent.com,
-        offlineAccess: true, 
-        hostedDomain: '', 
-        forceConsentPrompt: true, 
-      });
-    };
-    socialGoogleConfigure();
-  },[]);
 
   const authContext = useMemo(
     () => ({
