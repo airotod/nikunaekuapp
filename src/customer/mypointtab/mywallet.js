@@ -22,7 +22,8 @@ const PointItems = ({ point }) => {
 
 const MyWallet = ({ route, navigation }) => {
   const [userId, setUserId] = useState(null);
-  const [totalPoint, setTotalPoint] = useState(0);
+ // const [totalPoint, setTotalPoint] = useState(0);
+  const [pointItems, setPointItems] = useState(null);
   const [isVisible1, setIsVisible1] = useState(false);
   const [isVisible2, setIsVisible2] = useState(false);
   const [isVisible3, setIsVisible3] = useState(false);
@@ -32,7 +33,6 @@ const MyWallet = ({ route, navigation }) => {
   const [friendRef, setFriendRef] = useState(null);
   const [friendPoint, setFriendPoint] = useState(0);
 
-  let ref = firestore().collection('client');
 //  useEffect 값 하나면 가져오는 방법!!!
 useEffect(() => {
   const getUserIdAsync = async () => {
