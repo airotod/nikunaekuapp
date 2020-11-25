@@ -11,7 +11,6 @@ import {
   GREY_40_COLOR,
   YELLO_COLOR_BRIGHT, 
   RED_COLOR,
-  GREY_90_COLOR,
   GREY_80_COLOR
 } from '../../models/colors';
 
@@ -23,7 +22,8 @@ const PointItems = ({ point }) => {
 
 const MyWallet = ({ route, navigation }) => {
   const [userId, setUserId] = useState(null);
-  const [totalPoint, setTotalPoint] = useState(0);
+ // const [totalPoint, setTotalPoint] = useState(0);
+  const [pointItems, setPointItems] = useState(null);
   const [isVisible1, setIsVisible1] = useState(false);
   const [isVisible2, setIsVisible2] = useState(false);
   const [isVisible3, setIsVisible3] = useState(false);
@@ -33,23 +33,26 @@ const MyWallet = ({ route, navigation }) => {
   const [friendRef, setFriendRef] = useState(null);
   const [friendPoint, setFriendPoint] = useState(0);
 
-  let ref = firestore().collection('client');
 //  useEffect 값 하나면 가져오는 방법!!!
 useEffect(() => {
   const getUserIdAsync = async () => {
     try {
       const getUserId = await AsyncStorage.getItem('userId');
-      setUserId(getUserId); //null??????????????????????
-      // setRef(firestore().collection('client').doc(getUserId));
-      ref = ref.doc(getUserId);
-      setRef_copy(ref);
+      setUserId(getUserId); 
+      let ref = firestore().collection('User').doc(getUserId);
       ref.onSnapshot((doc) => {
-        const {totalpoint} = doc.data();
-        setTotalPoint(totalpoint);
+        const {totalpoint, usedPoint, savePoint, chargePoint} = doc.data();
+        let items = {
+          totalpoint: totalpoint,
+          usedPoint: usedPoint,
+          savePoint: savePoint,
+          chargePoint: chargePoint
+        }
+        setpointItems(items);
       })
     } catch (e) {
       // Restoring Id failed
-      console.log('Restoring Id failed');
+      console.log('Restoring Id failed or Get point data failed');
     }
   };
   getUserIdAsync();
