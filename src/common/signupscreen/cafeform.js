@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
-import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import firestore from '@react-native-firebase/firestore';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-community/picker';
 import 'react-native-gesture-handler';
@@ -9,6 +11,7 @@ import StepButton from '../../components/stepbutton';
 import TopBar from '../../components/topbar';
 import {
   BLACK_COLOR,
+  GREEN_COLOR,
   GREY_30_COLOR,
   GREY_50_COLOR,
   RED_COLOR,
@@ -21,6 +24,8 @@ export default function CafeForm({ route, navigation }) {
   const [birthdate, setBirthdate] = useState(new Date());
   const [cafephone, setCafephone] = useState(null);
   const [cafename, setCafename] = useState(null);
+  const [duplicated, setDuplicated] = useState(null);
+  const [duplicatedMsg, setDuplicatedMsg] = useState(null);
   const [errMsg, setErrMsg] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [region, setRegion] = useState(regions[8]);
@@ -28,7 +33,14 @@ export default function CafeForm({ route, navigation }) {
   const [password2, setPassword2] = useState(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [userid, setUserid] = useState(null);
+  const [userphone, setUserphone] = useState(null);
   const [username, setUsername] = useState(null);
+
+  const ref = firestore().collection('users');
+
+  let buttonColor = {
+    backgroundColor: duplicated === false ? GREEN_COLOR : RED_COLOR,
+  };
 
   let account = {
     birthdate: birthdate,
@@ -37,14 +49,41 @@ export default function CafeForm({ route, navigation }) {
     region: region,
     password: password1,
     userid: userid,
-    username,
-    username,
+    userphone: userphone,
+    username: username,
     usertype: 'owner',
   };
+
+  function _handleUserId(text) {
+    setUserid(text);
+    setDuplicated(null);
+    setDuplicatedMsg(null);
+  }
+
+  async function _handleDuplicated(event) {
+    if (!userid) {
+      setDuplicatedMsg('아이디를 입력해주세요.');
+    } else {
+      ref
+        .doc(userid)
+        .get()
+        .then(async function (doc) {
+          if (doc.exists) {
+            setDuplicated(true);
+            setDuplicatedMsg('이미 존재하는 아이디입니다.');
+          } else {
+            setDuplicated(false);
+            setDuplicatedMsg('사용가능한 아이디입니다.');
+          }
+        });
+    }
+  }
 
   function _handleNext(event) {
     if (!username) {
       setErrMsg('이름을 입력해주세요.');
+    } else if (duplicated !== false) {
+      setErrMsg('아이디 중복 확인을 진행해주세요.');
     } else if (!password1) {
       setErrMsg('비밀번호를 입력해주세요.');
     } else if (password1 !== password2) {
@@ -57,7 +96,7 @@ export default function CafeForm({ route, navigation }) {
   }
 
   function _handleConfirm(event) {
-    navigation.navigate('증명서 인증 화면');
+    navigation.navigate('증명서 인증 화면', { account: account });
   }
 
   function _showDatePicker(event) {
@@ -69,6 +108,18 @@ export default function CafeForm({ route, navigation }) {
     setShowDatePicker(false);
     setBirthdate(currentDate);
   }
+
+  useEffect(() => {
+    const getUserPhone = async () => {
+      try {
+        let userPhone = await AsyncStorage.getItem('userPhone');
+        setUserphone(userPhone);
+      } catch (e) {
+        console.log('error: ', e);
+      }
+    };
+    getUserPhone();
+  }, []);
 
   return (
     <>
@@ -96,9 +147,18 @@ export default function CafeForm({ route, navigation }) {
             <TextInput
               style={styles.input}
               placeholder="예) 길동"
-              onChangeText={(text) => setUserid(text)}
+              onChangeText={(text) => _handleUserId(text)}
             />
           </View>
+              <View style={styles.buttonContainer}>
+              {duplicatedMsg && <Text style={styles.redMsg}>{duplicatedMsg}</Text>}
+                <TouchableOpacity
+                  style={[styles.button, buttonColor]}
+                  onPress={_handleDuplicated}
+                  activeOpacity={duplicated ? 1 : 0.2}>
+                  <Text style={styles.buttonText}>중복 확인</Text>
+                </TouchableOpacity>
+              </View>
           <Text style={styles.question}>4. 비밀번호를 입력하세요.</Text>
           <View style={styles.inputContainer}>
             <TextInput
@@ -185,6 +245,20 @@ export default function CafeForm({ route, navigation }) {
 }
 
 const styles = StyleSheet.create({
+  button: {
+    alignItems: 'center',
+    height: 28,
+    justifyContent: 'center',
+    width: 70,
+  },
+  buttonContainer: {
+    alignItems: 'flex-end',
+  },
+  buttonText: {
+    color: BLACK_COLOR,
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
   container: {
     flex: 1,
     margin: 25,
