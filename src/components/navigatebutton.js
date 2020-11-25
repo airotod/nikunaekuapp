@@ -4,7 +4,7 @@ import 'react-native-gesture-handler';
 
 import { GREY_80_COLOR } from '../models/colors';
 
-const NavigateButton = ({ text, navigation, colors }) => {
+const NavigateButton = ({ text, navigation }) => {
   const _handleNavigate = (event) => {
     navigation.navigate(text);
   };
@@ -15,7 +15,7 @@ const NavigateButton = ({ text, navigation, colors }) => {
         <Button
           title={text}
           onPress={_handleNavigate}
-          color={colors || GREY_80_COLOR}
+          color={GREY_80_COLOR}
         />
       </View>
     </>

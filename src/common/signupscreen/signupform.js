@@ -16,6 +16,7 @@ import CheckInfo from '../../components/checkinfo';
 import StepButton from '../../components/stepbutton';
 import TopBar from '../../components/topbar';
 import { AuthContext } from '../../utils/context';
+import ChooseImage from './ImagePicker';
 
 import {
   BLACK_COLOR,
@@ -158,6 +159,11 @@ export default function SignUpForm({ route, navigation }) {
                   사진을{'\n'}등록하세요.{'\n'}(선택)
                 </Text>
               </View>
+              <StepButton
+                text="선택"
+                onPress={ChooseImage}
+                buttonColor={RED_COLOR}
+              />
               <Text style={styles.question}>1. 아이디를 입력하세요.</Text>
               <View style={styles.inputContainer}>
                 <TextInput
