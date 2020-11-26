@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import firestore from '@react-native-firebase/firestore';
 
 import { BLACK_COLOR, GREY_90_COLOR, RED_COLOR } from '../models/colors';
 import { AuthContext } from '../utils/context';
@@ -10,14 +11,33 @@ const SignIn = ({ route, navigation }) => {
   const [userPw, setUserPw] = useState(null);
   const [msg, setMsg] = useState(null);
 
-  async function _handleSignIn(evet) {
+  const ref = firestore().collection('users');
+
+  async function _handleSignIn({ evet, signIn }) {
     if (!userId) {
       setMsg('이메일 또는 전화번호를 입력해주세요.');
     } else if (!userPw) {
       setMsg('비밀번호를 입력해주세요.');
     } else {
-      setMsg(null);
-      await AsyncStorage.setItem('userId', userId);
+      ref
+        .doc(userId)
+        .get()
+        .then(async function (doc) {
+          if (doc.exists) {
+            let userType = doc.data().userType;
+            let getPassword = doc.data().password;
+            if (userPw !== getPassword) {
+              setMsg('비밀번호가 일치하지 않습니다.');
+            } else {
+              setMsg(null);
+              await AsyncStorage.setItem('userId', userId);
+              await AsyncStorage.setItem('userType', userType);
+              signIn({ userId: userId, userType: userType });
+            }
+          } else {
+            setMsg('존재하지 않은 계정입니다.');
+          }
+        });
     }
   }
 
@@ -48,8 +68,7 @@ const SignIn = ({ route, navigation }) => {
             <Button
               title="로그인"
               onPress={() => {
-                signIn({ userId, userPw });
-                _handleSignIn();
+                _handleSignIn({ signIn: signIn });
               }}
               color={GREY_90_COLOR}
             />

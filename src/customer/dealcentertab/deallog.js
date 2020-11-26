@@ -19,7 +19,7 @@ import {
 } from '../../models/colors';
 import { username, userpoint } from '../../models/current';
 import { sortByDate } from '../../utils/sortby';
-import { numWithCommas } from '../../utils/comma';
+import { numWithCommas } from '../../utils/format';
 
 const DealLog = ({ route, navigation }) => {
   const [loading, setLoading] = useState(true);

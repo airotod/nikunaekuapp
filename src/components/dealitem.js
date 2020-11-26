@@ -12,7 +12,11 @@ import {
   RED_COLOR,
   WHITE_COLOR,
 } from '../models/colors';
-import { numWithCommas } from '../utils/comma';
+import {
+  dateUTCWithDot,
+  dateUTCWithKorean,
+  numWithCommas,
+} from '../utils/format';
 
 const ItemInfo = ({ title, content, color }) => {
   return (
@@ -46,16 +50,8 @@ const DealItem = ({
 
   let purchasedColor = purchased ? GREY_60_COLOR : GREEN_COLOR;
   let dateString = date ? date.toDate() : '';
-  let couponmarketDate = dateString
-    ? `${dateString.getUTCFullYear()}년 ${
-        dateString.getUTCMonth() + 1
-      }월 ${dateString.getUTCDate()} 일`
-    : '';
-  let postdealDate = dateString
-    ? `${dateString.getUTCFullYear()}.${
-        dateString.getUTCMonth() + 1
-      }.${dateString.getUTCDate()}`
-    : '';
+  let couponmarketDate = dateString ? dateUTCWithKorean(dateString) : '';
+  let postdealDate = dateString ? dateUTCWithDot(dateString) : '';
   let imgSize =
     page == 'couponmarket'
       ? { height: 70, width: 100 }
