@@ -1,15 +1,13 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import { BLACK_COLOR } from '../models/colors';
-import TopBar from '../components/topbar';
 import PhoneAuth from './signupscreen/phoneauth';
 import SignUpForm from './signupscreen/signupform';
 import Terms from './signupscreen/terms';
 import CafeForm from './signupscreen/cafeform';
 import Certificate from './signupscreen/certificate';
-import Complete from './signupscreen/complete';
 
 const Stack = createStackNavigator();
 
@@ -52,14 +50,6 @@ const SignUp = ({ route, navigation }) => {
               component={Certificate}
               options={{
                 title: '증명서 인증 화면',
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen
-              name="신청 완료 화면"
-              component={Complete}
-              options={{
-                title: '신청 완료 화면',
                 headerShown: false,
               }}
             />

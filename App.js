@@ -11,6 +11,7 @@ import TestMain from './src/testmain';
 
 import SignIn from './src/common/signin';
 import SignUp from './src/common/signup';
+import Complete from './src/common/signupscreen/complete';
 
 import { AuthContext } from './src/utils/context';
 
@@ -41,12 +42,20 @@ const App = () => {
             userId: null,
             userType: null,
           };
+        case 'SIGN_UP':
+          return {
+            ...prevState,
+            isSignout: true,
+            userId: null,
+            userType: action.userType,
+          };
       }
     },
     {
       isLoading: true,
       isSignout: false,
       userId: null,
+      userType: null,
     },
   );
 
@@ -78,7 +87,7 @@ const App = () => {
       },
       signOut: () => dispatch({ type: 'SIGN_OUT' }),
       signUp: async (data) => {
-        dispatch({ type: 'SIGN_IN', userId: data.userId, userType: userType });
+        dispatch({ type: 'SIGN_UP', userId: data.userId, userType: data.userType });
       },
     }),
     [],
@@ -90,23 +99,36 @@ const App = () => {
         <AuthContext.Provider value={authContext}>
           <Stack.Navigator>
             {state.userId === null ? (
-              <>
-                <Stack.Screen
-                  name="시작화면"
-                  component={StartScreen}
-                  options={{ title: '시작화면', headerShown: false }}
-                />
-                <Stack.Screen
-                  name="로그인"
-                  component={SignIn}
-                  options={{ headerShown: false }}
-                />
-                <Stack.Screen
-                  name="회원가입"
-                  component={SignUp}
-                  options={{ headerShown: false }}
-                />
-              </>
+              state.userType === null ? (
+                <>
+                  <Stack.Screen
+                    name="시작화면"
+                    component={StartScreen}
+                    options={{ title: '시작화면', headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="로그인"
+                    component={SignIn}
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="회원가입"
+                    component={SignUp}
+                    options={{ headerShown: false }}
+                  />
+                </>
+              ) : (
+                <>
+                  <Stack.Screen
+                    name="신청 완료 화면"
+                    component={Complete}
+                    options={{
+                      title: '신청 완료 화면',
+                      headerShown: false,
+                    }}
+                  />
+                </>
+              )
             ) : state.userType === 'owner' ? (
               <>
                 <>

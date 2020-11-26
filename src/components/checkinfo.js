@@ -16,11 +16,19 @@ export default function CheckInfo({ data, visible, onClose, onConfirm }) {
     <Modal animated="fade" visible={visible} transparent={true}>
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
-          <Text style={styles.msg}>
-            입력하신 정보를 확인해주세요.{'\n'}
-            [확인] 버튼을 누르면 회원가입이 완료되며{'\n'}
-            메인화면으로 이동합니다.
-          </Text>
+          {data.usertype === 'customer' ? (
+            <Text style={styles.msg}>
+              입력하신 정보를 확인해주세요.{'\n'}
+              [확인] 버튼을 누르면 회원가입이 완료되며{'\n'}
+              메인화면으로 이동합니다.
+            </Text>
+          ) : (
+            <Text style={styles.msg}>
+              입력하신 정보를 확인해주세요.{'\n'}
+              [확인] 버튼을 누르면 증명서 인증 페이지로{'\n'}
+              이동합니다.
+            </Text>
+          )}
           <View style={styles.modalTextContainer}>
             {data.username && (
               <Text style={styles.modalText}>이름: {data.username}</Text>
@@ -34,6 +42,17 @@ export default function CheckInfo({ data, visible, onClose, onConfirm }) {
             {data.birthdate && (
               <Text style={styles.modalText}>
                 생년월일: {dateWithKorean(data.birthdate)}
+              </Text>
+            )}
+            {data.cafename && (
+              <Text style={styles.modalText}>카페명: {data.cafename}</Text>
+            )}
+            {data.region && (
+              <Text style={styles.modalText}>영업지역: {data.region}</Text>
+            )}
+            {data.cafephone && (
+              <Text style={styles.modalText}>
+                카페 전화번호: {data.cafephone}
               </Text>
             )}
           </View>
