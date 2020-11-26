@@ -1,34 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, ScrollView } from 'react-native';
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 
 import TopBar from '../components/topbar';
 import { BLACK_COLOR } from '../models/colors';
 
-import Card from "../components/customerHomeCom/card/Card";
-
-
 const CustomerHome = ({ route, navigation }) => {
-
-  const [cards, setCards] = useState([]);
-  useEffect(() => {
-    const fetchCards = async () => {
-      const result = await fetch(
-        "https://nicu-7262f.firebaseio.com/cards.json"
-      );
-      const cards = await result.json();
-
-      const temp = [];
-
-      for (let key in cards) {
-        temp.push(cards[key]);
-      }
-      setCards(temp);
-    };
-    fetchCards();
-
-    return fetchCards;
-  }, []);
-
   return (
     <>
       <TopBar
@@ -38,11 +14,7 @@ const CustomerHome = ({ route, navigation }) => {
         myaccountShown={true}
       />
       <View style={styles.container}>
-        <ScrollView style={styles.cardContainer}>
-          {cards.map((info) => (
-            <Card key={info.id} data={info} />
-          ))}
-        </ScrollView>      
+        <Text style={styles.mainText}> HOME 화면</Text>
       </View>
     </>
   );
