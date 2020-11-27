@@ -13,40 +13,34 @@ import {
   GREY_80_COLOR
 } from '../../models/colors';
 
-const PointItem = ({ point }) => {
-  return (
-    <Text style={styles.pointText}>{point}원</Text>
-  );
-};
-
-const PointItems = ({ point }) => {
-  return (
-    <Text style={styles.detailValue}>{point}원</Text>
-  );
-};
-
 const MyWallet = ({ route, navigation }) => {
   const [userId, setUserId] = useState(null);
-  const [pointItems, setPointItems] = useState(null);
+  const [totalpoint, setTotalpoint] = useState(0);
+  const [usedpoint, setUsedpoint] = useState(0);
+  const [savepoint, setSavepoint] = useState(0);
+  const [chargepoint, setChargepoint] = useState(0);
+  const [point, setpoint] = useState(0);
+  const [friendid, setFriendid] = useState(null);
+  const [friendtotalpoint, setFriendtotalpoint] = useState(0);
   const [isVisible1, setIsVisible1] = useState(false);
   const [isVisible2, setIsVisible2] = useState(false);
   const [isVisible3, setIsVisible3] = useState(false);
+  
+  let ref = firestore().collection('User');
 
   useEffect(() => {
     const getUserIdAsync = async () => {
       try {
         const getUserId = await AsyncStorage.getItem('userId');
         setUserId(getUserId); 
-        let ref = firestore().collection('User').doc(getUserId);
-        ref.onSnapshot((doc) => {
-          const {totalpoint, usedPoint, savePoint, chargePoint} = doc.data();
-          let items = {
-            totalPoint: totalPoint,
-            usedPoint: usedPoint,
-            savePoint: savePoint,
-            chargePoint: chargePoint
+        ref.doc(getUserId).onSnapshot((doc) => {
+          if (doc.exists) {
+            const {totalPoint, usedPoint, savePoint, chargePoint} = doc.data();
+            setTotalpoint(totalPoint);
+            setUsedpoint(usedPoint);
+            setSavepoint(savePoint);
+            setChargepoint(chargePoint);
           }
-          setPointItems(items);
         })
       } catch (e) {
         // Restoring Id failed
@@ -60,72 +54,95 @@ const MyWallet = ({ route, navigation }) => {
     Alert.alert('포인트 충전', addPoint+'(원) 포인트를 충전하시겠습니까?', [
       {
         text: '취소',
-        onPresse: () => {},
-      },
-      {
+        onPress: () => console.log('포인트 충전을 취소합니다.'),
+      }, {
         text: '충전',
         onPress: async () => {
-          await firestore().collection('User').doc(userId).update({
-            totalPoint: pointItems(totalPoint) + Number(addPoint),
-            chargePoint: pointItems(chargePoint) + Number(addPoint)
+          await ref.doc(userId).update({
+            totalPoint: firestore.FieldValue.increment(Number(addPoint)),
+            chargePoint: firestore.FieldValue.increment(Number(addPoint)),
           });
-          setIsVisible1(false);
-        },
+          await ref.doc(userId).collection('pointLog').add({
+            balance: totalpoint,
+            dateTime: firestore.FieldValue.serverTimestamp(),
+            pointType: '포인트 충전',
+            pointVolume: Number(addPoint),
+          })
+          setIsVisible1(false);},
       },
     ]);
   }
+  
+  function _givePointHandler(friendId, givePoint){
 
-  function _givePointHandler(friendID, givePoint){
-    Alert.alert('포인트 선물', friendID+' 에게 '+givePoint+'(원) 포인트를 선물하시겠습니까?', [
+    Alert.alert('포인트 선물', friendId+' 에게 '+givePoint+'(원) 포인트를 선물하시겠습니까?', [
       {
         text: '취소',
-        onPresse: () => {},
-      },
-      {
+        onPress: () => console.log('포인트 선물을 취소합니다.'),
+      }, {
         text: '선물',
         onPress: async () => {
-          if (friendID == userId) {
+          if (friendId == userId) {
             Alert.alert('자기 자신에게 포인트를 선물할 수 없습니다.');
             return;
           }
-          let ref = await firestore().collection('User').doc(friendID);
-          if (!((await ref.get()).exists) || (ref.userType != "client")) {
-            Alert.alert('해당 아이디는 존재하지 않습니다.')
-            return;
-          }
-          ref.onSnapshot((doc) => {
+          ref.doc(friendId).onSnapshot((doc) => {
+            if (!doc.exists) {
+              Alert.alert("해당 아이디는 존재하지 않습니다.")
+              return;
+            } else if (doc.data().userType != "customer") {
+              Alert.alert("해당 아이디와 포인트를 주고받을 수 없습니다.")
+              return;
+            }
             const {totalPoint} = doc.data();
-            // let friendTotalPoint = totalPoint;
-            firestore().collection('User').doc(userID).update({
-              totalPoint: pointItems(totalPoint) - Number(givePoint),
-              usedPoint: pointItems(usedPoint) + Number(givePoint)
-            });
-            ref.update({
-              totalPoint: firestore().FieldValue.increment(givePoint),
-              savePoint: firestore().FieldValue.increment(givePoint), 
-            })
+            setFriendtotalpoint(totalPoint);
+          });
+          await ref.doc(friendId).update({
+            totalPoint: firestore.FieldValue.increment(Number(givePoint)),
+            savePoint: firestore.FieldValue.increment(Number(givePoint)),
+          })
+          await ref.doc(friendId).collection('pointLog').add({
+            balance: friendtotalpoint,
+            dateTime: firestore.FieldValue.serverTimestamp(),
+            pointType: '포인트 선물 적립',
+            pointVolume: Number(givePoint),
+            trader: userId,
+          })
+          await ref.doc(userId).update({
+            totalPoint: firestore.FieldValue.increment(-Number(givePoint)),
+            usedPoint: firestore.FieldValue.increment(Number(givePoint)),
+          })
+          await ref.doc(userId).collection('pointLog').add({
+            balance: totalpoint,
+            dateTime: firestore.FieldValue.serverTimestamp(),
+            pointType: '포인트 선물',
+            trader: friendid,
+            pointVolume: -Number(givePoint),
           })
           setIsVisible2(false);
-        },
-      },
+        },},
     ]);
   }
-
+  
   function _withdrawePointHandler(withdrawalPoint){
     Alert.alert('포인트 인출', '정말로 포인트를 인출하시겠습니까?', [
       {
         text: '취소',
-        onPresse: () => {},
-      },
-      {
+        onPress: () => console.log('포인트 인출을 취소합니다.'),
+      }, {
         text: '인출',
         onPress: async () => {
-          await firestore().collection('User').doc(userID).update({
-            totalPoint: pointItems(totalPoint)-Number(withdrawalPoint),
+          await ref.doc(userId).update({
+            totalPoint: firestore.FieldValue.decrement(Number(withdrawalPoint)),
           });
+          await ref.doc(userId).collection('pointLog').add({
+            balance: totalpoint,
+            dateTime: firestore.FieldValue.serverTimestamp(),
+            pointType: '포인트 인출',
+            pointVolume: -Number(withdrawalPoint),
+          })
           setIsVisible3(false);
-        },
-      },
+        },},
     ]);
   }
 
@@ -136,24 +153,18 @@ const MyWallet = ({ route, navigation }) => {
           <View style={styles.topcontainer}>
             <View style={styles.pointcontainer}>
               <Text style={styles.topText}>보유 포인트</Text>
-              <PointItem point={pointItems(totalPoint)}/>
+              <Text style={styles.pointText}>{totalpoint} 원</Text>
             </View>
             <View style={styles.buttoncontainer}>  
               <View style={styles.threebuttons}>
                 <Button title={"충전"} color={YELLO_COLOR_BRIGHT}
-                  onPress={() => {
-                    setIsVisible1(true);}
-                  }>
+                  onPress={() => {setIsVisible1(true);}}>
                 </Button>
                 <Button title={"선물"} color={YELLO_COLOR_BRIGHT}
-                  onPress={() => {
-                    setIsVisible2(true);}
-                  }>
+                  onPress={() => {setIsVisible2(true);}}>
                 </Button>
                 <Button title={"인출"} color={YELLO_COLOR_BRIGHT}
-                  onPress={() => {
-                    setIsVisible3(true);}
-                  }>
+                  onPress={() => {setIsVisible3(true);}}>
                 </Button>
               </View> 
             </View>
@@ -163,15 +174,15 @@ const MyWallet = ({ route, navigation }) => {
           <View style={styles.detailcontainer}>
             <View style={styles.detailpoint}>
               <Text style={styles.detailText}>적립</Text>
-              <PointItem point={pointItems[savePoint]}/>
+              <Text style={styles.detailValue}>{savepoint} 원</Text>
             </View>
             <View style={styles.detailpoint}>
               <Text style={styles.detailText}>충전</Text>
-              <PointItem point={pointItems[chargePoint]}/>
+              <Text style={styles.detailValue}>{chargepoint} 원</Text>
             </View>
             <View style={styles.detailpoint}>
               <Text style={styles.detailText}>사용</Text>
-              <PointItem point={pointItems[usedPoint]}/>
+              <Text style={styles.detailValue}>{usedpoint} 원</Text>
             </View>
           </View>
         </View>
@@ -191,16 +202,13 @@ const MyWallet = ({ route, navigation }) => {
               <TextInput
                 style={styles.input}
                 placeholder="충전금액(원)"
-                onChangeText={(text) => {
-                  setPlusPoint(text);
-                  console.log(plusPoint);}}
+                onChangeText={(text) => {setpoint(text);}}
                 autoFocus={true}
-                // value={plusPoint}
                 clearButtonMode="always"
               />
             </View>
             <View style={styles.modalBottomView}>
-              <TouchableOpacity style={styles.button1} onPress={_addPointHandler}>
+              <TouchableOpacity style={styles.button1} onPress={() => {_addPointHandler(point);}}>
                 <Text style={styles.buttonText}>충전</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.button2} onPress={() => {setIsVisible1(false);}}>
@@ -225,24 +233,20 @@ const MyWallet = ({ route, navigation }) => {
               <TextInput
                 style={styles.input}
                 placeholder="선물받을 아이디(id)"
-                onChangeText={(text) => {
-                  setFriendID(text);
-                  console.log(friendID);}}
+                onChangeText={(text) => {setFriendid(text);}}
                 autoFocus={true}
                 clearButtonMode="always"
               />
               <TextInput
                 style={styles.input}
                 placeholder="선물할 금액(원)"
-                onChangeText={(text) => {
-                  setPlusPoint(text);
-                  console.log(plusPoint);}}
+                onChangeText={(text) => {setpoint(text);}}
                 autoFocus={true}
                 clearButtonMode="always"
               />
             </View>
             <View style={styles.modalBottomView2}>
-              <TouchableOpacity style={styles.button1} onPress={_givePointHandler}>
+              <TouchableOpacity style={styles.button1} onPress={() => {_givePointHandler(friendid, point);}}>
                 <Text style={styles.buttonText}>선물</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.button2} onPress={() => {setIsVisible2(false);}}>
@@ -267,16 +271,13 @@ const MyWallet = ({ route, navigation }) => {
               <TextInput
                 style={styles.input}
                 placeholder="인출할 금액(원)"
-                onChangeText={(text) => {
-                  setPlusPoint(text);
-                  console.log(plusPoint);}}
+                onChangeText={(text) => {setpoint(text);}}
                 autoFocus={true}
-                // value={plusPoint}
                 clearButtonMode="always"
               />
             </View>
             <View style={styles.modalBottomView}>
-              <TouchableOpacity style={styles.button1} onPress={_withdrawePointHandler}>
+              <TouchableOpacity style={styles.button1} onPress={() => {_withdrawePointHandler(point);}}>
                 <Text style={styles.buttonText}>인출</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.button2} onPress={() => {setIsVisible3(false);}}>

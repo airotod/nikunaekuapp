@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import { FlatList, StyleSheet, Text, View, Image} from 'react-native';
+import { FlatList, StyleSheet, Text, View, Image, Dimensions} from 'react-native';
 import { Picker } from '@react-native-community/picker';
 import firestore from '@react-native-firebase/firestore';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { 
   BLACK_COLOR,
   WHITE_COLOR, 
@@ -11,25 +11,41 @@ import {
   GREEN_COLOR
 } from '../../models/colors';
 
-const PointLogItem = ({is_usage, date, point, logtitle, detail, balance  }) => {
-  let IconItem = null;
-  let dateItems = date.split(" ");
+const chartWidth = Dimensions.get('window').width;
+const charHeight = Dimensions.get('window').height;
 
-  if (is_usage) {
+const PointLogItem = ({balance, dateTime, pointVolume, pointType, trader, count, brandID }) => {
+  let IconItem = null;
+  let dateItems = dateTime.split(" ");
+  let detailContent = null;
+  let traderContent = null;
+
+  if (pointType=="포인트 사용" || pointType=="포인트 선물" || pointType=="포인트 인출") {
     IconItem = <View style={styles.itemcontainer}>
                   <Image
                   style={styles.imageItem}
                   source={require('./mypoint_images/use_image.png')} />
-                  <Text style={styles.pointText_use}>{point}원</Text>
+                  <Text style={styles.pointText_use}>{pointVolume}원</Text>
                 </View>;
   } else {
     IconItem = <View style={styles.itemcontainer}>
                   <Image
                   style={styles.imageItem}
                   source={require('./mypoint_images/reward_image.png')} />
-                  <Text style={styles.pointText_reward}>+{point}원</Text>
-                </View>;};
+                  <Text style={styles.pointText_reward}>+{pointVolume}원</Text>
+                </View>;
+  }
 
+  if (pointType=="포인트 충전") {
+    detailContent = <Text style={styles.detailText}></Text>;
+  } else if (pointType=="포인트 선물") {
+    detailContent = <Text style={styles.detailText}>{trader}</Text>;
+  } else if (pointType=="포인트 선물 적립") {
+    detailContent = <Text style={styles.detailText}>{trader}</Text>;
+  } else {
+    detailContent = <Text style={styles.detailText}>{brandID} {count}개</Text>;
+    traderContent = <Text style={styles.detailText}>{trader}</Text>;
+  }
   return (
       <View style={styles.listcontainer}>     
         {IconItem}      
@@ -41,10 +57,13 @@ const PointLogItem = ({is_usage, date, point, logtitle, detail, balance  }) => {
         <View style={styles.contextcontainer}>
           <View style={styles.detailcontainer}>
             <Text style={styles.dateText}>{dateItems[3]}년 {dateItems[1]}월 {dateItems[2]}일 {dateItems[0]}요일</Text>
-            <Text style={styles.logtitleText}>{logtitle}</Text>
+            <View style={styles.detailcontainer2}>
+              <Text style={styles.logtitleText}>{pointType}</Text>
+              {traderContent}
+            </View>
           </View>
           <View style={styles.balancecontainer}>
-            <Text style={styles.detailText}>{detail}</Text>
+            {detailContent}
             <Text style={styles.balanceText}>잔액 {balance}원</Text>
           </View>
         </View>
@@ -53,53 +72,73 @@ const PointLogItem = ({is_usage, date, point, logtitle, detail, balance  }) => {
 };
 
 const MyPointLog = ({ route, navigation }) => {
-  const [pointLogList, setPointLogList] = useState([]);
+  const [pointLogList, setPointLogList] = useState(null);
   const [selectedValue, setSelectedValue] = useState("전체");
-  const ref = firestore().collection('client').doc('hwa0327').collection('pointlog').orderBy('date', 'desc');
-  
+
   useEffect(() => {
-    return ref.onSnapshot((querySnapshot) => {
-      let items = [];
-      querySnapshot.forEach((doc) => {
-        const { is_usage, date, point, logtitle, detail, balance } = doc.data();
-        if ((selectedValue) == "전체") {
-          items.push({
-            is_usage: is_usage,
-            date: date.toDate().toString(),
-            point: point,
-            logtitle: logtitle,
-            detail: detail,
-            balance: balance,
-          });
-        }
-        else if ((selectedValue) == "적립"){
-          if(!(is_usage)){
-            items.push({
-              is_usage: is_usage,
-              date: date.toDate().toString(),
-              point: point,
-              logtitle: logtitle,
-              detail: detail,
-              balance: balance,
+    const getUserIdAsync = async () => {
+      try {
+        const getUserId = await AsyncStorage.getItem('userId');
+        let ref = firestore().collection('User').doc(getUserId).collection('pointLog').orderBy('dateTime', 'desc');
+        ref.onSnapshot((querySnapshot) => {
+            let items = [];
+            querySnapshot.forEach((doc) => {
+              const {balance, brandID, count, dateTime, pointType, pointVolume, trader} = doc.data();
+              if ((selectedValue) == "전체") {
+                items.push({
+                  balance: balance,
+                  dateTime: dateTime.toDate().toString(),
+                  pointVolume: pointVolume,
+                  pointType: pointType,
+                  trader: trader,
+                  count: count,
+                  brandID: brandID,
+                });
+              } else if ((selectedValue) == "적립"){
+                if (pointType == "포인트 적립") {
+                  items.push({
+                    balance: balance,
+                    dateTime: dateTime.toDate().toString(),
+                    pointVolume: pointVolume,
+                    pointType: pointType,
+                    trader: trader,
+                    count: count,
+                    brandID: brandID,
+                  });
+                }
+              } else if ((selectedValue) == "사용"){
+                if (pointType=="포인트 사용" || pointType=="포인트 선물" || pointType=="포인트 인출") {
+                  items.push({
+                    balance: balance,
+                    dateTime: dateTime.toDate().toString(),
+                    pointVolume: pointVolume,
+                    pointType: pointType,
+                    trader: trader,
+                    count: count,
+                    brandID: brandID,
+                  });
+                }                
+              } else if ((selectedValue) == "충전"){
+                if (pointType=="포인트 충전") {
+                  items.push({
+                    balance: balance,
+                    dateTime: dateTime.toDate().toString(),
+                    pointVolume: pointVolume,
+                    pointType: pointType,
+                    trader: trader,
+                    count: count,
+                    brandID: brandID,
+                  });
+                }                
+              }
             });
-          }
-        }
-        else if ((selectedValue) == "사용"){
-          if((is_usage)){
-            items.push({
-              is_usage: is_usage,
-              date: date.toDate().toString(),
-              point: point,
-              logtitle: logtitle,
-              detail: detail,
-              balance: balance,
-            });
-          }
-        }
-       });
-      setPointLogList(items);
-      console.log(selectedValue);
-    });
+          setPointLogList(items);
+        });
+      } catch (e) {
+        console.log('Restoring Id failed or Get point log data failed');
+      }
+    };
+    getUserIdAsync();
   }, [selectedValue]);
 
   return (
@@ -116,13 +155,14 @@ const MyPointLog = ({ route, navigation }) => {
             <Picker.Item label='전체' value='전체'/>
             <Picker.Item label='적립' value='적립'/>
             <Picker.Item label='사용' value='사용'/>
+            <Picker.Item label='충전' value='충전'/>
           </Picker>
         </View>
         <View style={styles.maincontainer}>
           <FlatList
             data={pointLogList}
             renderItem={({ item }) => <PointLogItem {...item}
-            keyExtractor={(item) => item.id} />}
+            keyExtractor={(item) => item.dataTime} />}
           />
         </View>
       </View>
@@ -133,7 +173,7 @@ const MyPointLog = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10
+    padding: 10,
   },
   selectcontainer: {
     padding: 5,
@@ -145,13 +185,13 @@ const styles = StyleSheet.create({
     width: 100,
   },
   maincontainer: {
-    flex: 1,
     flexDirection: 'column',
     alignItems: 'center',
+    height: charHeight - 200,
   },
   listcontainer: {
     height: 100,
-    width: 400,
+    width: chartWidth,
     flexDirection: 'row',
     marginBottom: 2,
     backgroundColor: WHITE_COLOR,
@@ -160,9 +200,10 @@ const styles = StyleSheet.create({
   },
   itemcontainer: {
     height: 100,
-    width: 100,
+    width: 70,
     flexDirection: 'column',
     margin: 1,
+    marginHorizontal: 15,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -193,7 +234,7 @@ const styles = StyleSheet.create({
   },
   contextcontainer: {
     height: 100,
-    width: 280,
+    width: chartWidth - 140,
     flexDirection: 'column',
   },
   detailcontainer: {
@@ -209,6 +250,12 @@ const styles = StyleSheet.create({
   logtitleText: {
     fontSize: 16,
   },
+  detailcontainer2: {
+    marginRight: 12,
+    marginVertical: 2,
+    flexDirection: "row",
+    justifyContent: 'space-between',
+  },
   balancecontainer: {
     flex: 1,
     marginRight: 12,
@@ -220,6 +267,7 @@ const styles = StyleSheet.create({
     color: GREY_70_COLOR,
   },
   balanceText: {
+    fontSize: 12,
     color: GREY_70_COLOR,
   }
 });
