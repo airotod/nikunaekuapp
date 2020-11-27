@@ -22,14 +22,13 @@ const PointItems = ({ point }) => {
 
 const MyWallet = ({ route, navigation }) => {
   const [userId, setUserId] = useState(null);
- // const [totalPoint, setTotalPoint] = useState(0);
-  const [pointItems, setPointItems] = useState(null);
+  const [totalPoint, setTotalPoint] = useState(0);
   const [isVisible1, setIsVisible1] = useState(false);
   const [isVisible2, setIsVisible2] = useState(false);
   const [isVisible3, setIsVisible3] = useState(false);
   const [plusPoint, setPlusPoint] = useState(null);
   const [friendID, setFriendID] = useState("(없음)");
-  const [ref_copy, setRef_copy] = useState(null);
+  const [ref, setRef] = useState(null);
   const [friendRef, setFriendRef] = useState(null);
   const [friendPoint, setFriendPoint] = useState(0);
 
@@ -125,7 +124,7 @@ useEffect(() => {
       {
         text: '인출',
         onPress: async () => {
-          await ref_copy.update({
+          await ref.update({
             totalpoint: totalPoint-Number(plusPoint),
           });
           setPlusPoint(0);
