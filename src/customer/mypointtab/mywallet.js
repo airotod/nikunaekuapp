@@ -28,10 +28,11 @@ const MyWallet = ({ route, navigation }) => {
   const [isVisible3, setIsVisible3] = useState(false);
   const [plusPoint, setPlusPoint] = useState(null);
   const [friendID, setFriendID] = useState("(없음)");
-  const [ref, setRef] = useState(null);
+  const [ref_copy, setRef_copy] = useState(null);
   const [friendRef, setFriendRef] = useState(null);
   const [friendPoint, setFriendPoint] = useState(0);
 
+  let ref = firestore().collection('client');
 //  useEffect 값 하나면 가져오는 방법!!!
 useEffect(() => {
   const getUserIdAsync = async () => {
@@ -124,7 +125,7 @@ useEffect(() => {
       {
         text: '인출',
         onPress: async () => {
-          await ref.update({
+          await ref_copy.update({
             totalpoint: totalPoint-Number(plusPoint),
           });
           setPlusPoint(0);
