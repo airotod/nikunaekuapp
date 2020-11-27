@@ -39,8 +39,9 @@ export default function SignUpForm({ route, navigation }) {
   const [userid, setUserid] = useState(null);
   const [username, setUsername] = useState(null);
   const [userphone, setUserphone] = useState(null);
+  const [nickname, setNickname] = useState(null);
 
-  const ref = firestore().collection('users');
+  const ref = firestore().collection('User');
 
   let buttonColor = {
     backgroundColor: duplicated === false ? GREEN_COLOR : RED_COLOR,
@@ -49,9 +50,10 @@ export default function SignUpForm({ route, navigation }) {
   let account = {
     birthdate: birthdate,
     userid: userid,
-    userphone: userphone,
+    userphone : userphone,
     username: username,
-    usertype: 'customer',
+    nickname: nickname,
+    userType: 'customer',
   };
 
   function _handleUserId(text) {
@@ -99,12 +101,16 @@ export default function SignUpForm({ route, navigation }) {
     await AsyncStorage.setItem('userId', userid);
     await AsyncStorage.setItem('userType', 'customer');
     await ref.doc(userid).set({
-      birthdate: birthdate,
+      birthDate: birthdate,
       password: password1,
-      phone: userphone,
-      point: 0,
+      phoneNumber: userphone,
+      totalPoint: 0,
+      usedPoint: 0,
+      savePoint: 0,
+      chargePoint: 0,
       userId: userid,
       userName: username,
+      nickName: nickname,
       userType: 'customer',
       registeredAt: firestore.FieldValue.serverTimestamp(),
     });
@@ -197,7 +203,15 @@ export default function SignUpForm({ route, navigation }) {
                   onChangeText={(text) => setUsername(text)}
                 />
               </View>
-              <Text style={styles.question}>4. 생년월일을 입력하세요.</Text>
+              <Text style={styles.question}>4. 닉네임을 입력하세요.</Text>
+              <View style={styles.inputContainer}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="한글, 영어, 숫자 가능"
+                  onChangeText={(text) => setNickname(text)}
+                />
+              </View>
+              <Text style={styles.question}>5. 생년월일을 입력하세요.</Text>
               <View style={styles.inputContainer}>
                 <Text style={styles.date} onPress={_showDatePicker}>
                   {dateWithKorean(birthdate)}
