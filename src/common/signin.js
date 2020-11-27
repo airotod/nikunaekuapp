@@ -11,7 +11,7 @@ const SignIn = ({ route, navigation }) => {
   const [userPw, setUserPw] = useState(null);
   const [msg, setMsg] = useState(null);
 
-  const ref = firestore().collection('users');
+  const ref = firestore().collection('User');
 
   async function _handleSignIn({ evet, signIn }) {
     if (!userId) {
