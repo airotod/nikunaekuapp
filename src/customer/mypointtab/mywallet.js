@@ -7,59 +7,57 @@ import {
   GREY_10_COLOR,
   BLACK_COLOR,
   WHITE_COLOR,
-  YELLO_COLOR,
   GREY_40_COLOR,
   YELLO_COLOR_BRIGHT, 
   RED_COLOR,
   GREY_80_COLOR
 } from '../../models/colors';
 
-const PointItems = ({ point }) => {
+const PointItem = ({ point }) => {
   return (
     <Text style={styles.pointText}>{point}원</Text>
   );
 };
 
+const PointItems = ({ point }) => {
+  return (
+    <Text style={styles.detailValue}>{point}원</Text>
+  );
+};
+
 const MyWallet = ({ route, navigation }) => {
   const [userId, setUserId] = useState(null);
- // const [totalPoint, setTotalPoint] = useState(0);
   const [pointItems, setPointItems] = useState(null);
   const [isVisible1, setIsVisible1] = useState(false);
   const [isVisible2, setIsVisible2] = useState(false);
   const [isVisible3, setIsVisible3] = useState(false);
-  const [plusPoint, setPlusPoint] = useState(null);
-  const [friendID, setFriendID] = useState("(없음)");
-  const [ref_copy, setRef_copy] = useState(null);
-  const [friendRef, setFriendRef] = useState(null);
-  const [friendPoint, setFriendPoint] = useState(0);
 
-//  useEffect 값 하나면 가져오는 방법!!!
-useEffect(() => {
-  const getUserIdAsync = async () => {
-    try {
-      const getUserId = await AsyncStorage.getItem('userId');
-      setUserId(getUserId); 
-      let ref = firestore().collection('User').doc(getUserId);
-      ref.onSnapshot((doc) => {
-        const {totalpoint, usedPoint, savePoint, chargePoint} = doc.data();
-        let items = {
-          totalpoint: totalpoint,
-          usedPoint: usedPoint,
-          savePoint: savePoint,
-          chargePoint: chargePoint
-        }
-        setpointItems(items);
-      })
-    } catch (e) {
-      // Restoring Id failed
-      console.log('Restoring Id failed or Get point data failed');
-    }
-  };
-  getUserIdAsync();
-}, []);
+  useEffect(() => {
+    const getUserIdAsync = async () => {
+      try {
+        const getUserId = await AsyncStorage.getItem('userId');
+        setUserId(getUserId); 
+        let ref = firestore().collection('User').doc(getUserId);
+        ref.onSnapshot((doc) => {
+          const {totalpoint, usedPoint, savePoint, chargePoint} = doc.data();
+          let items = {
+            totalPoint: totalPoint,
+            usedPoint: usedPoint,
+            savePoint: savePoint,
+            chargePoint: chargePoint
+          }
+          setPointItems(items);
+        })
+      } catch (e) {
+        // Restoring Id failed
+        console.log('Restoring Id failed or Get point data failed');
+      }
+    };
+    getUserIdAsync();
+  }, []);
 
-  function _addPointHandler(){
-    Alert.alert('포인트 충전', plusPoint+'(원) 포인트를 충전하시겠습니까?', [
+  function _addPointHandler(addPoint){
+    Alert.alert('포인트 충전', addPoint+'(원) 포인트를 충전하시겠습니까?', [
       {
         text: '취소',
         onPresse: () => {},
@@ -67,18 +65,18 @@ useEffect(() => {
       {
         text: '충전',
         onPress: async () => {
-          await ref_copy.update({
-            totalpoint: totalPoint+Number(plusPoint),
+          await firestore().collection('User').doc(userId).update({
+            totalPoint: pointItems(totalPoint) + Number(addPoint),
+            chargePoint: pointItems(chargePoint) + Number(addPoint)
           });
-          setPlusPoint(0);
           setIsVisible1(false);
         },
       },
     ]);
   }
 
-  function _givePointHandler(){
-    Alert.alert('포인트 선물', friendID+' 에게 '+plusPoint+'(원) 포인트를 선물하시겠습니까?', [
+  function _givePointHandler(friendID, givePoint){
+    Alert.alert('포인트 선물', friendID+' 에게 '+givePoint+'(원) 포인트를 선물하시겠습니까?', [
       {
         text: '취소',
         onPresse: () => {},
@@ -90,33 +88,30 @@ useEffect(() => {
             Alert.alert('자기 자신에게 포인트를 선물할 수 없습니다.');
             return;
           }
-          let getDoc = await firestore().collection('client').doc(friendID);
-
-          if (!(await getDoc.get()).exists) {
-            console.log('No such friendID!');
+          let ref = await firestore().collection('User').doc(friendID);
+          if (!((await ref.get()).exists) || (ref.userType != "client")) {
             Alert.alert('해당 아이디는 존재하지 않습니다.')
             return;
           }
-          // setFriendRef(getDoc);
-          getDoc.onSnapshot((doc) => {
-            const {totalpoint} = doc.data();
-            setFriendPoint(totalpoint);
+          ref.onSnapshot((doc) => {
+            const {totalPoint} = doc.data();
+            // let friendTotalPoint = totalPoint;
+            firestore().collection('User').doc(userID).update({
+              totalPoint: pointItems(totalPoint) - Number(givePoint),
+              usedPoint: pointItems(usedPoint) + Number(givePoint)
+            });
+            ref.update({
+              totalPoint: firestore().FieldValue.increment(givePoint),
+              savePoint: firestore().FieldValue.increment(givePoint), 
+            })
           })
-
-          await ref_copy.update({  
-            totalpoint: totalPoint-Number(plusPoint),
-          });
-          await getDoc.update({
-            totalpoint: friendPoint+Number(plusPoint),
-          })
-          setPlusPoint(0);
           setIsVisible2(false);
         },
       },
     ]);
   }
 
-  function _withdrawePointHandler(){
+  function _withdrawePointHandler(withdrawalPoint){
     Alert.alert('포인트 인출', '정말로 포인트를 인출하시겠습니까?', [
       {
         text: '취소',
@@ -125,10 +120,9 @@ useEffect(() => {
       {
         text: '인출',
         onPress: async () => {
-          await ref_copy.update({
-            totalpoint: totalPoint-Number(plusPoint),
+          await firestore().collection('User').doc(userID).update({
+            totalPoint: pointItems(totalPoint)-Number(withdrawalPoint),
           });
-          setPlusPoint(0);
           setIsVisible3(false);
         },
       },
@@ -142,7 +136,7 @@ useEffect(() => {
           <View style={styles.topcontainer}>
             <View style={styles.pointcontainer}>
               <Text style={styles.topText}>보유 포인트</Text>
-              <PointItems point={totalPoint}/>
+              <PointItem point={pointItems(totalPoint)}/>
             </View>
             <View style={styles.buttoncontainer}>  
               <View style={styles.threebuttons}>
@@ -169,15 +163,15 @@ useEffect(() => {
           <View style={styles.detailcontainer}>
             <View style={styles.detailpoint}>
               <Text style={styles.detailText}>적립</Text>
-              <Text style={styles.detailValue}>300원</Text>
+              <PointItem point={pointItems[savePoint]}/>
             </View>
             <View style={styles.detailpoint}>
               <Text style={styles.detailText}>충전</Text>
-              <Text style={styles.detailValue}>2000원</Text>
+              <PointItem point={pointItems[chargePoint]}/>
             </View>
             <View style={styles.detailpoint}>
               <Text style={styles.detailText}>사용</Text>
-              <Text style={styles.detailValue}>0원</Text>
+              <PointItem point={pointItems[usedPoint]}/>
             </View>
           </View>
         </View>
