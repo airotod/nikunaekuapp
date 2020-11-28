@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, ImageBackground } from "react-native";
 
 const Front = ({ data, isFront }) => {
-  console.log(data);
+  
   return (
     <ImageBackground
       source={{ uri: data.logo }}

@@ -4,29 +4,15 @@ import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 
-import Front from './Front';
-import Back from './Back';
 
 const Stack = createStackNavigator();
 
-const Card = ({ data, navigation }) => {
-  const [modalVisible, setModalVisible] = useState(false);
-  const [isFront, setIsFront] = useState(true);
-
-  const flipHandler = () => {
-    setIsFront((prev) => !prev);
-  };
-
-  function _handleDetail(event) {
-    setModalVisible(true);
-  }
+const Logs = ({ data, navigation }) => {
 
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={flipHandler} style={styles.subcontainer}>
-        {/* <Text style={styles.text}>
-          {data.count}/{data.totalCount}
-        </Text> */}
+        
         <Front data={data} isFront={isFront} />
         {!isFront && <Back data={data} />}
       </TouchableOpacity>
@@ -34,7 +20,7 @@ const Card = ({ data, navigation }) => {
       {!isFront && (
         <TouchableOpacity
           style={styles.text1}
-          onPress={() => navigation.navigate('상세 정보', { data: data })}>
+          onPress={() => navigation.navigate('상세 정보', { data: data})}>
           <Text>상세 정보</Text>
         </TouchableOpacity>
       )}
@@ -77,4 +63,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Card;
+export default Logs;
