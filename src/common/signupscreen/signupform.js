@@ -16,7 +16,6 @@ import CheckInfo from '../../components/checkinfo';
 import StepButton from '../../components/stepbutton';
 import TopBar from '../../components/topbar';
 import { AuthContext } from '../../utils/context';
-import ChooseImage from './ImagePicker';
 
 import {
   BLACK_COLOR,
@@ -44,6 +43,10 @@ export default function SignUpForm({ route, navigation }) {
 
   const ref = firestore().collection('User');
 
+  async function _handleNext(event) {
+    navigation.navigate('프로필 이미지 등록 화면', { account: account });
+  }
+
   let buttonColor = {
     backgroundColor: duplicated === false ? GREEN_COLOR : RED_COLOR,
   };
@@ -51,9 +54,10 @@ export default function SignUpForm({ route, navigation }) {
   let account = {
     birthdate: birthdate,
     userid: userid,
-    userphone : userphone,
+    userphone: userphone,
     username: username,
     nickname: nickname,
+    password: password1,
     userType: 'customer',
   };
 
@@ -98,25 +102,6 @@ export default function SignUpForm({ route, navigation }) {
     }
   }
 
-  async function _handleSignUp(event) {
-    await AsyncStorage.setItem('userId', userid);
-    await AsyncStorage.setItem('userType', 'customer');
-    await ref.doc(userid).set({
-      birthDate: birthdate,
-      password: password1,
-      phoneNumber: userphone,
-      totalPoint: 0,
-      usedPoint: 0,
-      savePoint: 0,
-      chargePoint: 0,
-      userId: userid,
-      userName: username,
-      nickName: nickname,
-      userType: 'customer',
-      registeredAt: firestore.FieldValue.serverTimestamp(),
-    });
-  }
-
   function _showDatePicker(event) {
     setShowDatePicker(true);
   }
@@ -154,16 +139,6 @@ export default function SignUpForm({ route, navigation }) {
                 반갑습니다.{'\n'}
                 회원가입 하시면 서비스 이용이 바로 가능합니다.
               </Text>
-              <View style={styles.img}>
-                <Text style={styles.imgAlt}>
-                  사진을{'\n'}등록하세요.{'\n'}(선택)
-                </Text>
-              </View>
-              <StepButton
-                text="선택"
-                onPress={ChooseImage}
-                buttonColor={RED_COLOR}
-              />
               <Text style={styles.question}>1. 아이디를 입력하세요.</Text>
               <View style={styles.inputContainer}>
                 <TextInput
@@ -173,7 +148,7 @@ export default function SignUpForm({ route, navigation }) {
                 />
               </View>
               <View style={styles.buttonContainer}>
-              {duplicatedMsg && <Text style={styles.redMsg}>{duplicatedMsg}</Text>}
+                {duplicatedMsg && <Text style={styles.redMsg}>{duplicatedMsg}</Text>}
                 <TouchableOpacity
                   style={[styles.button, buttonColor]}
                   onPress={_handleDuplicated}
@@ -243,9 +218,8 @@ export default function SignUpForm({ route, navigation }) {
                 visible={modalVisible}
                 onClose={() => setModalVisible(false)}
                 onConfirm={() => {
-                  signIn({ userId: userid, userType: 'customer' });
-                  _handleSignUp();
                   setModalVisible(false);
+                  _handleNext();
                 }}
               />
             </View>

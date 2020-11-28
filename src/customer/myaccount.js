@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import firestore from '@react-native-firebase/firestore';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import storage from '@react-native-firebase/storage';
 
 import AccountItem from '../components/accountitem';
 import TopBar from '../components/topbar';
@@ -21,6 +22,7 @@ import { AuthContext } from '../utils/context';
 const CustomerAccount = ({ route, navigation }) => {
   const [userId, setUserId] = useState(null);
   const [phone, setPhone] = useState(null);
+  const [img, setImg] = useState(null); 
 
   const ref = firestore().collection('User');
   // let test = firestore().collection('Brand').get().collection('Stores').
@@ -29,9 +31,12 @@ const CustomerAccount = ({ route, navigation }) => {
       try {
         const getUserId = await AsyncStorage.getItem('userId');
         setUserId(getUserId);
+        
         ref.doc(getUserId).get().then(async function (doc) {
           if (doc.exists) {
             setPhone(doc.data().phoneNumber);
+            setImg(doc.data().profileUrl);
+            console.log('img: ', img);
           }
         });
         console.log("test");
@@ -61,7 +66,8 @@ const CustomerAccount = ({ route, navigation }) => {
           <View style={styles.container}>
             <View style={styles.myinfoContainer}>
               <View style={styles.personIconContainer}>
-                <Icon name="person" size={50} color={GREY_40_COLOR} />
+                { img ? <Image source={{uri: img}} style={{resizeMode: "contain", height: 80, width: 80, borderRadius: 80}}/>
+                : <Icon name="person" size={50} color={GREY_40_COLOR} /> }
               </View>
               <View style={styles.myinfoTextContainer}>
                 <Text style={styles.myinfoText}>{userId} 님</Text>
@@ -182,7 +188,6 @@ const styles = StyleSheet.create({
   },
   personIconContainer: {
     alignItems: 'center',
-    backgroundColor: WHITE_COLOR,
     borderColor: GREY_70_COLOR,
     borderRadius: 50,
     borderWidth: 1,

@@ -9,6 +9,7 @@ import Terms from './signupscreen/terms';
 import CafeForm from './signupscreen/cafeform';
 import Certificate from './signupscreen/certificate';
 import Complete from './signupscreen/complete';
+import ProfileImage from './signupscreen/profileImage';
 
 const Stack = createStackNavigator();
 
@@ -34,6 +35,11 @@ const SignUp = ({ route, navigation }) => {
               name="정보 입력 화면"
               component={SignUpForm}
               options={{ title: '회원가입 화면', headerShown: false }}
+            />
+            <Stack.Screen
+              name="프로필 이미지 등록 화면"
+              component={ProfileImage}
+              options={{ title: '프로필 이미지 등록 화면', headerShown: false }}
             />
           </>
         ) : (

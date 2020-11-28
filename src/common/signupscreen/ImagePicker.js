@@ -1,8 +1,10 @@
 import ImagePicker from 'react-native-image-picker';
 import ImageResizer from 'react-native-image-resizer';
 import storage from '@react-native-firebase/storage';
+import { useState } from 'react';
 
-const ChooseImage = () => {
+export default function chooseImage({userid, option}) {
+  console.log(option, ', ', userid);
   let options = {
     title: 'Select Image',
     storageOptions: {
@@ -23,14 +25,28 @@ const ChooseImage = () => {
       alert(response.customButton);
     } else {
       const source = { uri: response.uri };
-
-      let newWidth = 180;
-      let newHeight = 180;
+      const [newWidth, setNewWidth] = useState(null);
+      const [newHeight, setNewHeight] = useState(null);
+      
       let compressFormat = 'PNG';
       let quality = 100;
-      let rotation = 0;
+      let rotation = 90;
       let outputPath = null;
       let imageUri = response.uri;
+
+      if (option == 'profile') {
+        setNewWidth(180);
+        setNewHeight(180);
+      } else if (option == 'cafeLogo') {
+        setNewWidth(200);
+        setNewHeight(120);
+      } else if (option == 'resiNum') {
+        setNewWidth(200);
+        setNewHeight(120);
+      } else if (option == 'comNum') {
+        setNewWidth(200);
+        setNewHeight(120);
+      }
 
       ImageResizer.createResizedImage(
         imageUri,
@@ -46,7 +62,7 @@ const ChooseImage = () => {
           //resized image uri
           let uri = res.uri;
           //generating image name
-          let imageName = 'profile' + response.fileName;
+          let imageName = option + '_' + userid;
           //setting the image name and image uri in the state
 
           storage()
@@ -55,6 +71,7 @@ const ChooseImage = () => {
             .then((snapshot) => {
               //You can check the image is now uploaded in the storage bucket
               console.log(`${imageName} has been successfully uploaded.`);
+
             })
             .catch((e) => console.log('uploading image error => ', e));
         })
@@ -69,5 +86,3 @@ const ChooseImage = () => {
     }
   });
 }
-
-export default ChooseImage;
