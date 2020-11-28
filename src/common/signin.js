@@ -26,13 +26,15 @@ const SignIn = ({ route, navigation }) => {
           if (doc.exists) {
             let userType = doc.data().userType;
             let getPassword = doc.data().password;
+            let phoneNumber = doc.data().phoneNumber;
             if (userPw !== getPassword) {
               setMsg('비밀번호가 일치하지 않습니다.');
             } else {
               setMsg(null);
               await AsyncStorage.setItem('userId', userId);
               await AsyncStorage.setItem('userType', userType);
-              signIn({ userId: userId, userType: userType });
+              await AsyncStorage.setItem('phoneNumber', phoneNumber);
+              signIn({ userId: userId, userType: userType, phoneNumber: phoneNumber });
             }
           } else {
             setMsg('존재하지 않은 계정입니다.');
