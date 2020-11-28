@@ -2,10 +2,9 @@ import React from "react";
 import { StyleSheet, ImageBackground } from "react-native";
 
 const Front = ({ data, isFront }) => {
-  
   return (
     <ImageBackground
-      source={{ uri: data.logo }}
+      source={{ uri: data.logoImage }}
       resizeMode="contain"
       style={{
         opacity: isFront ? 1 : 0.2,
