@@ -14,7 +14,6 @@ const CustomerHome = ({ route, navigation }) => {
   const [userId, setUserId] = useState(null);
 
   let ref = firestore().collection('User');
-
   //  useEffect 값 하나면 가져오는 방법!!!
 
   useEffect(() => {
@@ -24,7 +23,6 @@ const CustomerHome = ({ route, navigation }) => {
         setUserId(getUserId); //null??????????????????????
         // setRef(firestore().collection('client').doc(getUserId));
         ref = ref.doc(getUserId).collection('coupons');
-
         ref.onSnapshot((querysnapshot) => {
           let items = [];
           querysnapshot.forEach((doc) => {
@@ -32,7 +30,7 @@ const CustomerHome = ({ route, navigation }) => {
             items.push({
               count: count,
               logo: logo,
-              id: doc.id
+              id: doc.id,
             });
           });
 
