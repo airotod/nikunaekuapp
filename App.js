@@ -15,6 +15,7 @@ import Complete from './src/common/signupscreen/complete';
 
 import { AuthContext } from './src/utils/context';
 import BrandDetail from './src/customer/brandDetail';
+
 import FindBrandRegister from './src/customer/findbrandpage/findbrandregister';
 import CustomerHome from './src/customer/home';
 
