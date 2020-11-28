@@ -21,7 +21,6 @@ import {
   RED_COLOR,
   WHITE_COLOR,
 } from '../../models/colors';
-import { username } from '../../models/current';
 import { shopList } from '../../models/shops';
 
 import { sortByDate } from '../../utils/sortby';
@@ -40,13 +39,22 @@ const PostDeal = ({ route, navigation }) => {
   const [priceMsg, setPriceMsg] = useState('');
   const [totalNum, setTotalNum] = useState('');
   const [totalNumMsg, setTotalNumMsg] = useState('');
+  const [userId, setUserId] = useState('');
 
-  const ref = firestore().collection('posts');
+  const dealRef = firestore().collection('DealCenter');
+  const brandRef = firestore().collection('Brand');
+  const userRef = firestore().collection('User');
 
   async function _addPost() {
     if (!brandName || !totalNum || !price) {
       setMsg('입력하지 않은 항목이 존재합니다.');
     } else {
+      let brandLogo = null;
+      brandRef.get().then(function (doc) {
+        if (doc.exists) {
+          brandLogo = doc.data().logo;
+        }
+      });
       Alert.alert('쿠폰 구매', `${brandName} 쿠폰을 판매 등록하시겠습니까?`, [
         {
           text: 'CANCEL',
@@ -55,14 +63,15 @@ const PostDeal = ({ route, navigation }) => {
         {
           text: 'OK',
           onPress: async () => {
-            await ref.add({
-              brandName: brandName,
-              possibleNum: totalNum,
+            await dealRef.add({
+              availableAmount: totalNum,
+              brandID: brandName,
+              brandLogo: brandLogo,
+              clientID: userId,
+              onSale: true,
               price: price,
-              purchased: false,
-              postedAt: firestore.FieldValue.serverTimestamp(),
-              postedBy: username,
-              totalNum: totalNum,
+              registrationAmout: totalNum,
+              registrationAt: firestore.FieldValue.serverTimestamp(),
             });
             setMsg('');
             setBrandName(shopList[0]);
@@ -75,7 +84,18 @@ const PostDeal = ({ route, navigation }) => {
   }
 
   useEffect(() => {
-    return ref.where('postedBy', '==', username).onSnapshot((querySnapshot) => {
+    const getUserIdAsync = async () => {
+      try {
+        const getUserId = await AsyncStorage.getItem('userId');
+        setUserId(getUserId);
+      } catch (e) {
+        // Restoring Id failed
+        console.log('Restoring Id failed');
+      }
+    };
+    getUserIdAsync();
+
+    return userRef.where('postedBy', '==', userId).onSnapshot((querySnapshot) => {
       let items = [];
       querySnapshot.forEach((doc) => {
         const {
@@ -89,7 +109,7 @@ const PostDeal = ({ route, navigation }) => {
         } = doc.data();
         items.push({
           brandName: brandName,
-          currentUser: username,
+          currentUser: userId,
           couponId: doc.id,
           date: postedAt,
           possibleNum: possibleNum,
