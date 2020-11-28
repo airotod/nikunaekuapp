@@ -21,3 +21,7 @@ export const DARK_RED_COLOR = '#F00';
 export const WHITE_COLOR = '#fff';
 
 export const YELLO_COLOR = "#fa9917";
+
+export const ORANGE_COLOR = "#FF5F58";
+
+export const ORANGE_10_COLOR = "#FA9917";
