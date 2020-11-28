@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { StyleSheet, Image } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 // import AsyncStorage from '@react-nativet-async-storage/async-storage';
 
@@ -11,6 +11,7 @@ import {
   RED_COLOR,
   WHITE_COLOR,
 } from '../models/colors';
+
 import MyCouponLog from './brandDetailTab/mycouponlog';
 import Introduction from './brandDetailTab/introduction';
 
@@ -18,31 +19,23 @@ const Tab = createMaterialTopTabNavigator();
 
 const BrandDetail = ({ route, navigation }) => {
   const { data, otherParam } = route.params;
+  // const [userId, setUserId] = useState(null);
 
-  console.log('complete?: ', data);
-  const [userId, setUserId] = useState(null);
-
-  useEffect(() => {
-    const getUserIdAsync = async () => {
-      try {
-        const getUserId = await AsyncStorage.getItem('userId');
-        setUserId(getUserId);
-      } catch (e) {
-        // Restoring Id failed
-        console.log('Restoring Id failed');
-      }
-    };
-    getUserIdAsync();
-  }, []);
+  // useEffect(() => {
+  //   const getUserIdAsync = async () => {
+  //     try {
+  //       const getUserId = await AsyncStorage.getItem('userId');
+  //       setUserId(getUserId);
+  //     } catch (e) {
+  //       // Restoring Id failed
+  //       console.log('Restoring Id failed');
+  //     }
+  //   };
+  //   getUserIdAsync();
+  // }, []);
 
   return (
     <>
-      <TopBar
-        title="상세 정보"
-        navigation={navigation}
-        drawerShown={true}
-        myaccountShown={true}
-      />
 
       <Image
         source={{ uri: data.logo }}
