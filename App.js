@@ -87,7 +87,11 @@ const App = () => {
       },
       signOut: () => dispatch({ type: 'SIGN_OUT' }),
       signUp: async (data) => {
-        dispatch({ type: 'SIGN_UP', userId: data.userId, userType: data.userType });
+        dispatch({
+          type: 'SIGN_UP',
+          userId: data.userId,
+          userType: data.userType,
+        });
       },
     }),
     [],
@@ -131,39 +135,17 @@ const App = () => {
               )
             ) : state.userType === 'owner' ? (
               <>
-                <>
-                  <Stack.Screen
-                    name="메인화면"
-                    component={MainScreen}
-                    options={{ headerShown: false }}
-                  />
-                  <Stack.Screen
-                    name="사장님 화면"
-                    component={OwnerMain}
-                    options={{ headerShown: false }}
-                  />
-                  <Stack.Screen
-                    name="테스트 화면"
-                    component={TestMain}
-                    options={{ headerShown: false }}
-                  />
-                </>
+                <Stack.Screen
+                  name="사장님 화면"
+                  component={OwnerMain}
+                  options={{ headerShown: false }}
+                />
               </>
             ) : (
               <>
                 <Stack.Screen
-                  name="메인화면"
-                  component={MainScreen}
-                  options={{ headerShown: false }}
-                />
-                <Stack.Screen
                   name="고객 화면"
                   component={CustomerMain}
-                  options={{ headerShown: false }}
-                />
-                <Stack.Screen
-                  name="테스트 화면"
-                  component={TestMain}
                   options={{ headerShown: false }}
                 />
               </>
