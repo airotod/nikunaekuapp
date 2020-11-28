@@ -23,7 +23,7 @@ const CustomerAccount = ({ route, navigation }) => {
   const [phone, setPhone] = useState(null);
 
   const ref = firestore().collection('User');
-
+  // let test = firestore().collection('Brand').get().collection('Stores').
   useEffect(() => {
     const getUserIdAsync = async () => {
       try {

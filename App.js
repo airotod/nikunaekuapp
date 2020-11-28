@@ -15,6 +15,8 @@ import Complete from './src/common/signupscreen/complete';
 
 import { AuthContext } from './src/utils/context';
 import BrandDetail from './src/customer/brandDetail';
+import FindBrandRegister from './src/customer/findbrandpage/findbrandregister';
+import CustomerHome from './src/customer/home';
 
 const Stack = createStackNavigator();
 
@@ -154,6 +156,11 @@ const App = () => {
                 <Stack.Screen
                   name="상세 정보"
                   component={BrandDetail}
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="멤버십 가입"
+                  component={FindBrandRegister}
                   options={{ headerShown: false }}
                 />
               </>

@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList, StyleSheet, Text, View, Image } from 'react-native';
+import { FlatList, StyleSheet, Text, View, Image, SafeAreaView} from 'react-native';
 import firestore from '@react-native-firebase/firestore';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import TopBar from '../components/topbar';
-import { BLACK_COLOR } from '../models/colors';
+import { BLACK_COLOR, WHITE_COLOR, YELLO_COLOR_BRIGHT } from '../models/colors';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-
+import { get } from 'react-native/Libraries/Utilities/PixelRatio';
 
 const Card = ({brandName, logo}) => {
   return(
-    <View style={styles.cardcontainer}> 
-      <TouchableOpacity>
+    <View style={{width: '30%', marginHorizontal : 5, marginVertical: 10}}> 
+      <TouchableOpacity
+        style={styles.cardcontainer}
+        onPress={() => navigation.navigate("멤버십 가입", {data : {brandName, logo}})}> 
         <Image style={styles.imagecontainer}
         source={{uri: logo}}/>
         <Text style={styles.textcontainer}> {brandName}</Text>
@@ -19,23 +21,42 @@ const Card = ({brandName, logo}) => {
   )
 }
 
+
 const FindBrand = ({ route, navigation }) => {
   const [brandList, setBrandList] = useState([]);
-  const ref = firestore().collection('Brand');
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
-    return ref.onSnapshot((querySnapshot) => {
-      let items = [];
-      querySnapshot.forEach((doc) => {
-        const { brandName, logo } = doc.data();
-        items.push({
-          brandName: brandName,
-          logo: logo
+    const getUserIdAsync = async () => {
+      try {
+        const getUserId = await AsyncStorage.getItem('userId');
+        setUserId(getUserId);
+        const ref = firestore().collection('Brand');
+        
+        ref.onSnapshot((querySnapshot) => {
+          let items = [];
+          querySnapshot.forEach((doc) => {
+            const {brandName, logo} = doc.data();
+            firestore().collection('User').doc(getUserId).collection('coupons').doc(brandName)
+            .get().then(document => {
+              if (!document.exists){
+                items.push({
+                  brandName: brandName,
+                  logo: logo
+                });
+              }
+            });
+          });  
+          setBrandList(items);
         });
-      });
-      setBrandList(items);
-    });
+      } catch (e) {
+        // Restoring Id failed
+        console.log('Restoring Id failed');
+      }
+    };
+    getUserIdAsync();
   }, []);
+
 
   return (
     <>
@@ -46,12 +67,15 @@ const FindBrand = ({ route, navigation }) => {
         myaccountShown={true}
       />
       <View style={styles.container}>
-        <Text style={styles.mainText}>브랜드 찾기 화면</Text>
-        <FlatList
-          data={brandList}
-          renderItem={({ item }) => <Card {...item} />}
-          keyExtractor={(item) => item.brandName}
-        />
+        <SafeAreaView style={styles.listcontainer}>
+          <FlatList
+            data={brandList}
+            renderItem={({ item }) => <Card {...item} />}
+            keyExtractor={(item) => item.brandName}
+            style={{ width: '100%' }}
+            numColumns={3}
+          />
+        </SafeAreaView>
       </View>
     </>
   );
@@ -60,27 +84,33 @@ const FindBrand = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: '100%',
-    height: '100%',
+    width:'100%',
     justifyContent: 'center',
     alignItems: 'center',
   },
   mainText: {
     color: BLACK_COLOR,
   },
-  cardcontainer: {
+  listcontainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: '100%',
+  },
+  cardcontainer: {
+    aspectRatio: 5/4,
+    width: '100%',
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: WHITE_COLOR,
+    flexDirection: 'column',
   },
   textcontainer: {
-    // flex: 1,
+    flex: 1,
+    color: BLACK_COLOR,
   },
   imagecontainer: {
-    // flex: 1,
+    flex: 4,
     width: '100%',
-    height: '100%',
-    resizeMode: 'stretch',
+    resizeMode: 'contain',
   }
 });
 
