@@ -36,7 +36,7 @@ export default function CafeForm({ route, navigation }) {
   const [userphone, setUserphone] = useState(null);
   const [username, setUsername] = useState(null);
 
-  const ref = firestore().collection('users');
+  const ref = firestore().collection('User');
 
   let buttonColor = {
     backgroundColor: duplicated === false ? GREEN_COLOR : RED_COLOR,
