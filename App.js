@@ -3,11 +3,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import MainScreen from './src/main';
 import CustomerMain from './src/customermain';
 import OwnerMain from './src/ownermain';
 import StartScreen from './src/startscreen';
-import TestMain from './src/testmain';
 
 import SignIn from './src/common/signin';
 import SignUp from './src/common/signup';

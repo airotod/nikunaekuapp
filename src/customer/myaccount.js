@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import firestore from '@react-native-firebase/firestore';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import AccountItem from '../components/accountitem';
@@ -17,16 +18,23 @@ import {
 } from '../models/colors';
 import { AuthContext } from '../utils/context';
 
-const PHONE = '+82 10-1234-1234';
-
 const CustomerAccount = ({ route, navigation }) => {
   const [userId, setUserId] = useState(null);
+  const [phone, setPhone] = useState(null);
+
+  const ref = firestore().collection('User');
 
   useEffect(() => {
     const getUserIdAsync = async () => {
       try {
         const getUserId = await AsyncStorage.getItem('userId');
         setUserId(getUserId);
+        ref.doc(getUserId).get().then(async function (doc) {
+          if (doc.exists) {
+            setPhone(doc.data().phoneNumber);
+          }
+        });
+        console.log("test");
       } catch (e) {
         // Restoring Id failed
         console.log('Restoring Id failed');
@@ -56,8 +64,8 @@ const CustomerAccount = ({ route, navigation }) => {
                 <Icon name="person" size={50} color={GREY_40_COLOR} />
               </View>
               <View style={styles.myinfoTextContainer}>
-                <Text style={styles.myinfoText}>{userId}</Text>
-                <Text style={styles.myinfoText}>{PHONE}</Text>
+                <Text style={styles.myinfoText}>{userId} 님</Text>
+                <Text style={styles.myinfoText}>{phone}</Text>
               </View>
             </View>
             <View style={styles.eventBanner}>

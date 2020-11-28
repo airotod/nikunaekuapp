@@ -39,6 +39,9 @@ export default function CheckInfo({ data, visible, onClose, onConfirm }) {
             {data.userphone && (
               <Text style={styles.modalText}>전화번호: {data.userphone}</Text>
             )}
+            {data.userphone && (
+              <Text style={styles.modalText}>닉네임: {data.nickname}</Text>
+            )}
             {data.birthdate && (
               <Text style={styles.modalText}>
                 생년월일: {dateWithKorean(data.birthdate)}
