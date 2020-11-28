@@ -1,13 +1,16 @@
 import React from 'react';
-import { Text, View, Dimensions, StyleSheet, SafeAreaView  } from 'react-native';
-import { BLACK_COLOR, ORANGE_10_COLOR, GREY_60_COLOR, ORANGE_COLOR } from '../../models/colors';
+import { Text, View, Dimensions, StyleSheet, SafeAreaView } from 'react-native';
+import {
+  BLACK_COLOR,
+  ORANGE_10_COLOR,
+  GREY_60_COLOR,
+  ORANGE_COLOR,
+} from '../../models/colors';
 
-import { LineChart, Path, XAxis, Grid} from 'react-native-svg-charts';
-import { Circle } from 'react-native-svg';
+import { LineChart, Path, XAxis, Grid } from 'react-native-svg-charts';
 
 import { DATA } from './Data';
-import Tooltip from './Tooltip';
-import * as scale from 'd3-scale'
+import * as scale from 'd3-scale';
 
 const { height } = Dimensions.get('window');
 
@@ -20,14 +23,11 @@ export function CouponUseage(num, explain) {
       </View>
     </>
   );
-};
+}
 
 class Area extends React.PureComponent {
   state = {
     data: [],
-    tooltipX: null,
-    tooltipY: null,
-    tooltipIndex: null,
   };
 
   componentDidMount() {
@@ -46,95 +46,64 @@ class Area extends React.PureComponent {
     });
   };
 
-
   render() {
-    const { data, tooltipX, tooltipY, tooltipIndex } = this.state;
+    const { data } = this.state;
     const contentInset = { left: 10, right: 10, top: 10, bottom: 7 };
     const Shadow = ({ line }) => (
       <Path
-          key={'shadow'}
-          y={1}
-          d={line}
-          fill={'none'}
-          strokeWidth={2}
-          stroke={ORANGE_10_COLOR}
+        key={'shadow'}
+        y={1}
+        d={line}
+        fill={'none'}
+        strokeWidth={2}
+        stroke={ORANGE_10_COLOR}
       />
-    )
-
-    const ChartPoints = ({ x, y }) =>
-      data.map((item, index) => (
-        <Circle
-          key={index}
-          cx={x(item.id)}
-          cy={y(item.score)}
-          r={2.3}
-          stroke={ORANGE_10_COLOR}
-          fill={ORANGE_10_COLOR}
-          onPress={() =>
-            this.setState({
-              tooltipX: item.id,
-              tooltipY: item.score,
-              tooltipIndex: index,
-            })
-          }
-        />
-      ));
-
+    );
 
     return (
       <SafeAreaView style={styles.graph}>
         <View style={styles.container2}>
           {data.length !== 0 ? (
             <>
-            <LineChart
-              style={{ height: '100%' }}
-              data={data}
-              yAccessor={({ item }) => item.score}
-              xAccessor={({ item }) => item.id}
-              contentInset={contentInset}
-              svg={{ stroke: ORANGE_10_COLOR } }
-              yMin={0}
-            >
-              <Grid svg={{ stroke: 'rgba(151, 151, 151, 0.09)' }} belowChart={false} /> 
-              <Shadow/>
-              <ChartPoints color="#003F5A" />
-              {tooltipX !== null? ( // 이 조건문이 있어야 처음에 tooltip이 뜨는 것을 방지할 수 있음
-                <Tooltip
-                  tooltipX={tooltipX}
-                  tooltipY={tooltipY}
-                  color="#003F5A"
-                  index={tooltipIndex}
-                  dataLength={data.length}
+              <LineChart
+                style={{ height: '100%' }}
+                data={data}
+                yAccessor={({ item }) => item.score}
+                xAccessor={({ item }) => item.id}
+                contentInset={contentInset}
+                svg={{ stroke: ORANGE_10_COLOR }}
+                yMin={0}>
+                <Grid
+                  svg={{ stroke: 'rgba(151, 151, 151, 0.09)' }}
+                  belowChart={false}
                 />
-                ) : null
-              } 
-            </LineChart>
-            <XAxis
-              style={{marginHorizontal : 10}}
-              data={ data }
-              scale={scale.scaleBand}
-              formatLabel = { ( value, index ) => {
-                if( index%3==0 ) return value; //returns the data for the odd indexes
-                else return ""; //returns an empty string for the even indexes
-                } }
-              labelStyle={ { color: 'black' } }
-            />
-          </>
+                <Shadow />
+              </LineChart>
+
+              <XAxis
+                style={{ marginHorizontal: 10 }}
+                data={data}
+                scale={scale.scaleBand}
+                formatLabel={(value, index) => {
+                  if (index % 3 == 0) return value;
+                  //returns the data for the odd indexes
+                  else return ''; //returns an empty string for the even indexes
+                }}
+                labelStyle={{ color: 'black' }}
+              />
+            </>
           ) : (
             <View
               style={{
                 height: '50%',
                 justifyContent: 'center',
                 alignItems: 'center',
-              }}
-            >
+              }}>
               <Text
                 style={{
                   fontSize: 18,
                   color: '#ccc',
-                }}
-              >
-              </Text>
+                }}></Text>
             </View>
           )}
           <Text style={styles.heading}>시간대별 사용량</Text>
@@ -142,7 +111,7 @@ class Area extends React.PureComponent {
       </SafeAreaView>
     );
   }
-};
+}
 
 const CouponLogRecord = ({ route, navigation }) => {
   return (
@@ -153,13 +122,13 @@ const CouponLogRecord = ({ route, navigation }) => {
           <Text style={styles.todayCountText}>12</Text>
         </View>
         <View style={styles.usageFlex}>
-          {CouponUseage(10, "전날 사용량")}
-          {CouponUseage(12.5, "주 평균 사용량")}
-          {CouponUseage(19, "월 사용량")}
+          {CouponUseage(10, '전날 사용량')}
+          {CouponUseage(12.5, '주 평균 사용량')}
+          {CouponUseage(19, '월 사용량')}
         </View>
       </View>
-      <Area/>
-      <View style={{flex: 0.5}}/>
+      <Area />
+      <View style={{ flex: 0.5 }} />
     </>
   );
 };
@@ -169,10 +138,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor : 'white'
+    backgroundColor: 'white',
   },
   container2: {
-    height: height/2,
+    height: height / 2,
     flex: 1,
   },
   heading: {
@@ -183,40 +152,40 @@ const styles = StyleSheet.create({
     color: BLACK_COLOR,
   },
   todayCoupon: {
-    flex : 0.6,
+    flex: 0.6,
     alignItems: 'center',
   },
   usageFlex: {
-    flex : 0.6,
-    flexDirection : 'row'
+    flex: 0.6,
+    flexDirection: 'row',
   },
-  useage : {
+  useage: {
     justifyContent: 'center',
     alignItems: 'center',
-    marginHorizontal : 25
+    marginHorizontal: 25,
   },
   todayText: {
-    fontSize : 12,
-    fontWeight : "bold",
-    marginTop : 32,
-    marginBottom : 8,
-    color : GREY_60_COLOR
+    fontSize: 12,
+    fontWeight: 'bold',
+    marginTop: 32,
+    marginBottom: 8,
+    color: GREY_60_COLOR,
   },
   todayCountText: {
-    fontSize : 50,
-    color : ORANGE_COLOR
+    fontSize: 50,
+    color: ORANGE_COLOR,
   },
-  CountText : {
-    fontSize : 24,
-    marginBottom : 12
+  CountText: {
+    fontSize: 24,
+    marginBottom: 12,
   },
-  explainText : {
-    fontSize : 13,
-    color : GREY_60_COLOR
+  explainText: {
+    fontSize: 13,
+    color: GREY_60_COLOR,
   },
-  graph : {
-    flex : 0.8
-  }
+  graph: {
+    flex: 0.8,
+  },
 });
 
 export default CouponLogRecord;
