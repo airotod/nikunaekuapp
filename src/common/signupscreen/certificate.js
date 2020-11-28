@@ -20,7 +20,7 @@ export default function Certificate({ route, navigation }) {
   const { account, otherParam } = route.params;
   const [modalVisible, setModalVisible] = useState(false);
 
-  const ref = firestore().collection('users');
+  const ref = firestore().collection('User');
 
   function _handleComplete(event) {
     setModalVisible(true);

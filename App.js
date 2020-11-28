@@ -25,6 +25,8 @@ const App = () => {
             ...prevState,
             userId: action.userId,
             userType: action.userType,
+            phoneNumber: action.phoneNumber,
+            brandName: action.brandName || null,
             isLoading: false,
           };
         case 'SIGN_IN':
@@ -33,6 +35,8 @@ const App = () => {
             isSignout: false,
             userId: action.userId,
             userType: action.userType,
+            phoneNumber: action.phoneNumber,
+            brandName: action.brandName || null,
           };
         case 'SIGN_OUT':
           return {
@@ -40,6 +44,8 @@ const App = () => {
             isSignout: true,
             userId: null,
             userType: null,
+            phoneNumber: null,
+            brandName: null,
           };
         case 'SIGN_UP':
           return {
@@ -47,6 +53,8 @@ const App = () => {
             isSignout: true,
             userId: null,
             userType: action.userType,
+            phoneNumber: null,
+            brandName: null,
           };
       }
     },
@@ -55,6 +63,8 @@ const App = () => {
       isSignout: false,
       userId: null,
       userType: null,
+      phoneNumber: null,
+      brandName: null,
     },
   );
 
@@ -62,14 +72,24 @@ const App = () => {
     const bootstrapAsync = async () => {
       let userId;
       let userType;
+      let phoneNumber;
+      let brandName;
 
       try {
         userId = await AsyncStorage.getItem('userId');
         userType = await AsyncStorage.getItem('userType');
+        phoneNumber = await AsyncStorage.getItem('phoneNumber');
+        brandName = await AsyncStorage.getItem('brandName');
       } catch (e) {
         // Restoring Id failed
       }
-      dispatch({ type: 'RESTORE_TOKEN', userId: userId, userType: userType });
+      dispatch({
+        type: 'RESTORE_TOKEN',
+        userId: userId,
+        userType: userType,
+        phoneNumber: phoneNumber,
+        brandName: brandName || null,
+      });
     };
 
     bootstrapAsync();
@@ -82,6 +102,8 @@ const App = () => {
           type: 'SIGN_IN',
           userId: data.userId,
           userType: data.userType,
+          phoneNumber: data.phoneNumber,
+          brandName: data.brandName,
         });
       },
       signOut: () => dispatch({ type: 'SIGN_OUT' }),
@@ -90,6 +112,11 @@ const App = () => {
           type: 'SIGN_UP',
           userId: data.userId,
           userType: data.userType,
+<<<<<<< HEAD
+=======
+          phoneNumber: data.phoneNumber,
+          brandName: data.brandName,
+>>>>>>> auth
         });
       },
     }),
@@ -138,6 +165,13 @@ const App = () => {
                   name="사장님 화면"
                   component={OwnerMain}
                   options={{ headerShown: false }}
+<<<<<<< HEAD
+=======
+                  initialParams={{
+                    userId: state.userId,
+                    phone: state.phoneNumber,
+                  }}
+>>>>>>> auth
                 />
               </>
             ) : (
@@ -146,12 +180,20 @@ const App = () => {
                   name="고객 화면"
                   component={CustomerMain}
                   options={{ headerShown: false }}
+<<<<<<< HEAD
                   initialParams={{ userId: state.userId}}
                 />
                 <Stack.Screen
                   name="상세 정보"
                   component={BrandDetail}
                   options={{ headerShown: false }}
+=======
+                  initialParams={{
+                    userId: state.userId,
+                    phone: state.phoneNumber,
+                    brandName: state.brandName,
+                  }}
+>>>>>>> auth
                 />
               </>
             )}
