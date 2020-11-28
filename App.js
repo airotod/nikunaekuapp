@@ -112,11 +112,8 @@ const App = () => {
           type: 'SIGN_UP',
           userId: data.userId,
           userType: data.userType,
-<<<<<<< HEAD
-=======
           phoneNumber: data.phoneNumber,
           brandName: data.brandName,
->>>>>>> auth
         });
       },
     }),
@@ -165,13 +162,10 @@ const App = () => {
                   name="사장님 화면"
                   component={OwnerMain}
                   options={{ headerShown: false }}
-<<<<<<< HEAD
-=======
                   initialParams={{
                     userId: state.userId,
                     phone: state.phoneNumber,
                   }}
->>>>>>> auth
                 />
               </>
             ) : (
@@ -180,20 +174,11 @@ const App = () => {
                   name="고객 화면"
                   component={CustomerMain}
                   options={{ headerShown: false }}
-<<<<<<< HEAD
-                  initialParams={{ userId: state.userId}}
-                />
-                <Stack.Screen
-                  name="상세 정보"
-                  component={BrandDetail}
-                  options={{ headerShown: false }}
-=======
                   initialParams={{
                     userId: state.userId,
                     phone: state.phoneNumber,
                     brandName: state.brandName,
                   }}
->>>>>>> auth
                 />
               </>
             )}

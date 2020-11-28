@@ -24,10 +24,6 @@ import {
 import { sortByDate, sortByBrandName, sortByPrice } from '../../utils/sortby';
 
 const CouponMarket = ({ route, navigation }) => {
-<<<<<<< HEAD
-  const { userId, otherParam } = route.params;
-=======
->>>>>>> auth
   const [displayedItemList, setDisplayedItemList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [onlyOnSales, setOnlyOnSales] = useState(true);
