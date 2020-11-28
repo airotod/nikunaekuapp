@@ -7,7 +7,7 @@ export function dateUTCWithDot(date) {
 export function dateUTCWithKorean(date) {
   return `${date.getUTCFullYear()}년 ${
     date.getUTCMonth() + 1
-  }월 ${date.getUTCDate()} 일`;
+  }월 ${date.getUTCDate()}일`;
 }
 
 export function dateWithKorean(date) {
