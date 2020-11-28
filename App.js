@@ -82,7 +82,13 @@ const App = () => {
       } catch (e) {
         // Restoring Id failed
       }
-      dispatch({ type: 'RESTORE_TOKEN', userId: userId, userType: userType, brandName: brandName || null});
+      dispatch({
+        type: 'RESTORE_TOKEN',
+        userId: userId,
+        userType: userType,
+        phoneNumber: phoneNumber,
+        brandName: brandName || null,
+      });
     };
 
     bootstrapAsync();
@@ -95,7 +101,7 @@ const App = () => {
           type: 'SIGN_IN',
           userId: data.userId,
           userType: data.userType,
-          phoneNumber: data.phoneNmber,
+          phoneNumber: data.phoneNumber,
           brandName: data.brandName,
         });
       },
@@ -105,7 +111,7 @@ const App = () => {
           type: 'SIGN_UP',
           userId: data.userId,
           userType: data.userType,
-          phoneNumber: data.phoneNmber,
+          phoneNumber: data.phoneNumber,
           brandName: data.brandName,
         });
       },
@@ -155,6 +161,10 @@ const App = () => {
                   name="사장님 화면"
                   component={OwnerMain}
                   options={{ headerShown: false }}
+                  initialParams={{
+                    userId: state.userId,
+                    phone: state.phoneNumber,
+                  }}
                 />
               </>
             ) : (
@@ -163,6 +173,11 @@ const App = () => {
                   name="고객 화면"
                   component={CustomerMain}
                   options={{ headerShown: false }}
+                  initialParams={{
+                    userId: state.userId,
+                    phone: state.phoneNumber,
+                    brandName: state.brandName,
+                  }}
                 />
               </>
             )}

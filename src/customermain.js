@@ -15,6 +15,8 @@ import { GREY_80_COLOR, GREY_90_COLOR, WHITE_COLOR } from './models/colors';
 const Drawer = createDrawerNavigator();
 
 const CustomerMain = ({ route, navigation }) => {
+  const { userId, phone, otherParam } = route.params;
+
   return (
     <Drawer.Navigator
       initialRouteName="홈"
@@ -29,13 +31,41 @@ const CustomerMain = ({ route, navigation }) => {
           fontSize: 18,
         },
       }}>
-      <Drawer.Screen name="홈" component={CustomerHome} />
-      <Drawer.Screen name="내 정보" component={MyAccount} />
-      <Drawer.Screen name="My 쿠폰" component={MyCoupon} />
-      <Drawer.Screen name="My 포인트" component={MyPoint} />
-      <Drawer.Screen name="쿠폰 등록" component={EnrollCoupon} />
-      <Drawer.Screen name="브랜드 찾기" component={FindBrand} />
-      <Drawer.Screen name="거래 센터" component={DealCenter} />
+      <Drawer.Screen
+        name="홈"
+        component={CustomerHome}
+        initialParams={{ userId: userId, phone: phone }}
+      />
+      <Drawer.Screen
+        name="내 정보"
+        component={MyAccount}
+        initialParams={{ userId: userId, phone: phone }}
+      />
+      <Drawer.Screen
+        name="My 쿠폰"
+        component={MyCoupon}
+        initialParams={{ userId: userId, phone: phone }}
+      />
+      <Drawer.Screen
+        name="My 포인트"
+        component={MyPoint}
+        initialParams={{ userId: userId, phone: phone }}
+      />
+      <Drawer.Screen
+        name="쿠폰 등록"
+        component={EnrollCoupon}
+        initialParams={{ userId: userId, phone: phone }}
+      />
+      <Drawer.Screen
+        name="브랜드 찾기"
+        component={FindBrand}
+        initialParams={{ userId: userId, phone: phone }}
+      />
+      <Drawer.Screen
+        name="거래 센터"
+        component={DealCenter}
+        initialParams={{ userId: userId, phone: phone }}
+      />
     </Drawer.Navigator>
   );
 };

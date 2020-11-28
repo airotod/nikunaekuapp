@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import firestore from '@react-native-firebase/firestore';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import AccountItem from '../components/accountitem';
@@ -18,25 +17,7 @@ import {
 import { AuthContext } from '../utils/context';
 
 const MyAccount = ({ route, navigation }) => {
-  const [userId, setUserId] = useState(null);
-  const [phone, setPhone] = useState(null);
-
-  const ref = firestore().collection('User');
-
-  useEffect(() => {
-    const getUserIdAsync = async () => {
-      try {
-        const getUserId = await AsyncStorage.getItem('userId');
-        const getPhone = await AsyncStorage.getItem('phoneNumber');
-        setUserId(getUserId);
-        setPhone(getPhone);
-      } catch (e) {
-        // Restoring Id failed
-        console.log('Restoring Id failed');
-      }
-    };
-    getUserIdAsync();
-  }, []);
+  const { userId, phone, otherParam } = route.params;
 
   async function _handleSignOut() {
     await AsyncStorage.removeItem('userId');
