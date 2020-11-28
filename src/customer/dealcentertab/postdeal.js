@@ -31,6 +31,7 @@ const Question = ({ text }) => {
 };
 
 const PostDeal = ({ route, navigation }) => {
+  const { userId, otherParam } = route.params;
   const [brandName, setBrandName] = useState(shopList[0]);
   const [itemList, setItemList] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -39,7 +40,6 @@ const PostDeal = ({ route, navigation }) => {
   const [priceMsg, setPriceMsg] = useState('');
   const [totalNum, setTotalNum] = useState('');
   const [totalNumMsg, setTotalNumMsg] = useState('');
-  const [userId, setUserId] = useState('');
 
   const dealRef = firestore().collection('DealCenter');
   const brandRef = firestore().collection('Brand');
@@ -68,7 +68,7 @@ const PostDeal = ({ route, navigation }) => {
               brandID: brandName,
               brandLogo: brandLogo,
               clientID: userId,
-              onSale: true,
+              onSale: false,
               price: price,
               registrationAmout: totalNum,
               registrationAt: firestore.FieldValue.serverTimestamp(),
@@ -84,47 +84,39 @@ const PostDeal = ({ route, navigation }) => {
   }
 
   useEffect(() => {
-    const getUserIdAsync = async () => {
-      try {
-        const getUserId = await AsyncStorage.getItem('userId');
-        setUserId(getUserId);
-      } catch (e) {
-        // Restoring Id failed
-        console.log('Restoring Id failed');
-      }
-    };
-    getUserIdAsync();
-
-    return userRef.where('postedBy', '==', userId).onSnapshot((querySnapshot) => {
-      let items = [];
-      querySnapshot.forEach((doc) => {
-        const {
-          brandName,
-          possibleNum,
-          price,
-          purchased,
-          postedAt,
-          postedBy,
-          totalNum,
-        } = doc.data();
-        items.push({
-          brandName: brandName,
-          currentUser: userId,
-          couponId: doc.id,
-          date: postedAt,
-          possibleNum: possibleNum,
-          postedBy: postedBy,
-          price: price,
-          purchased: purchased,
-          totalNum: totalNum,
+    return dealRef
+      .where('clientID', '==', userId)
+      .onSnapshot((querySnapshot) => {
+        let items = [];
+        querySnapshot.forEach((doc) => {
+          const {
+            availableAmount,
+            brandID,
+            brandLogo,
+            clientID,
+            onSale,
+            price,
+            registrationAmount,
+            registrationAt,
+          } = doc.data();
+          items.push({
+            brandName: brandID,
+            currentUser: userId,
+            couponId: doc.id,
+            date: registrationAt,
+            possibleNum: availableAmount,
+            postedBy: clientID,
+            price: price,
+            purchased: onSale,
+            totalNum: registrationAmount,
+          });
         });
-      });
-      setItemList(sortByDate(items));
+        setItemList(sortByDate(items));
 
-      if (loading) {
-        setLoading(false);
-      }
-    });
+        if (loading) {
+          setLoading(false);
+        }
+      });
   }, []);
 
   return (

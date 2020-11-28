@@ -33,7 +33,8 @@ const DealLogItem = ({
   brandName,
   date,
   postedBy,
-  price,
+  // price,
+  totalPrice,
   purchaseNum,
   purchasedBy,
   isPurchaseLog,
@@ -70,13 +71,13 @@ const DealLogItem = ({
             content={isPurchaseLog ? postedBy : purchasedBy}
           />
           <Item title="쿠폰 개수" content={`${numWithCommas(purchaseNum)}개`} />
-          <Item
+          {/* <Item
             title="제시가(1쿠폰 가격)"
             content={`${numWithCommas(price)}원`}
-          />
+          /> */}
           <Item
             title="총 금액"
-            content={`${numWithCommas(price * purchaseNum)}원`}
+            content={`${numWithCommas(totalPrice)}원`}
             color={RED_COLOR}
           />
         </View>

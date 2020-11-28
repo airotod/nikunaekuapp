@@ -48,6 +48,10 @@ const DealItem = ({
   const numList = [...Array(possibleNum).keys()].map((item) => item + 1);
   const [purchaseNum, setPurchaseNum] = useState(numList[0]);
 
+  const brandRef = firestore().collection('Brand');
+  const dealRef = firestore().collection('DealCenter');
+  const userRef = firestore().collection('User');
+
   let purchasedColor = purchased ? GREY_60_COLOR : GREEN_COLOR;
   let dateString = date ? date.toDate() : '';
   let couponmarketDate = dateString ? dateUTCWithKorean(dateString) : '';
@@ -63,21 +67,40 @@ const DealItem = ({
   let mainRight = page == 'couponmarket' ? { flex: 2 } : { flex: 3 };
 
   async function _purchaseItem() {
-    await firestore()
-      .collection('posts')
-      .doc(couponId)
-      .update({
-        possibleNum: possibleNum - purchaseNum,
-        purchased: possibleNum - purchaseNum == 0,
-      });
-    await firestore().collection('markethistory').add({
-      brandName: brandName,
-      date: firestore.FieldValue.serverTimestamp(),
-      postedBy: postedBy,
-      price: price,
-      purchasedBy: currentUser,
-      purchaseNum: purchaseNum,
+    let brandLogo = null;
+    brandRef.doc(brandName).get().then(function (doc) {
+      if (doc.exists) {
+        brandLogo = doc.data().logo;
+      }
     });
+    await dealRef.doc(couponId).update({
+      availableAmount: possibleNum - purchaseNum,
+      onSale: possibleNum - purchaseNum == 0,
+    });
+    await userRef
+      .doc(currentUser)
+      .collection('dealLog')
+      .add({
+        brandLogo: brandLogo,
+        brandName: brandName,
+        couponNum: purchaseNum,
+        dateTime: firestore.FieldValue.serverTimestamp(),
+        dealType: '구매',
+        totalPrice: price * purchaseNum,
+        trader: postedBy,
+      });
+    await userRef
+      .doc(postedBy)
+      .collection('dealLog')
+      .add({
+        brandLogo: brandLogo,
+        brandName: brandName,
+        couponNum: purchaseNum,
+        dateTime: firestore.FieldValue.serverTimestamp(),
+        dealType: '판매',
+        totalPrice: price * purchaseNum,
+        trader: currentUser,
+      });
   }
 
   return (
@@ -114,18 +137,18 @@ const DealItem = ({
               <ItemInfo title="쿠폰 판매 등록 날짜" content={postdealDate} />
               <ItemInfo
                 title="총 쿠폰 개수"
-                content={`${numWithCommas(totalNum)}개`}
+                content={`${numWithCommas(totalNum || 0)}개`}
               />
             </>
           ) : (
             <ItemInfo
               title="구매 가능 수량 (1인당)"
-              content={`${numWithCommas(possibleNum)}개`}
+              content={`${numWithCommas(possibleNum || 0)}개`}
             />
           )}
           <ItemInfo
             title="제시가 (1쿠폰 가격)"
-            content={`${numWithCommas(price)}원`}
+            content={`${numWithCommas(price || 0)}원`}
           />
         </View>
       </View>

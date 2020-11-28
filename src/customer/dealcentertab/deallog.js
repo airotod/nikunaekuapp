@@ -22,66 +22,45 @@ import { sortByDate } from '../../utils/sortby';
 import { numWithCommas } from '../../utils/format';
 
 const DealLog = ({ route, navigation }) => {
+  const { userId, otherParam } = route.params;
   const [loading, setLoading] = useState(true);
   const [wholeItemList, setWholeItemList] = useState([]);
 
-  const ref = firestore().collection('markethistory');
+  const userRef = firestore().collection('User');
 
   useEffect(() => {
-    let soldItems = [];
-    let purchasedItems = [];
-
-    ref.where('postedBy', '==', username).onSnapshot((querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-        const {
-          brandName,
-          date,
-          postedBy,
-          price,
-          purchaseNum,
-          purchasedBy,
-        } = doc.data();
-        soldItems.push({
-          couponId: doc.id,
-          brandName: brandName,
-          date: date,
-          postedBy: postedBy,
-          price: price,
-          purchaseNum: purchaseNum,
-          purchasedBy: purchasedBy,
-          isPurchaseLog: false,
+    return userRef
+      .doc('hwa0327')
+      .collection('dealLog')
+      .onSnapshot((querySnapshot) => {
+        let items = [];
+        querySnapshot.forEach((doc) => {
+          const {
+            brandLogo,
+            brandName,
+            couponNum,
+            dateTime,
+            dealType,
+            totalPrice,
+            trader,
+          } = doc.data();
+          items.push({
+            couponId: doc.id,
+            brandName: brandName,
+            date: dateTime,
+            postedBy: (dealType === '구매' && trader) || 'hwa0327',
+            totalPrice: totalPrice,
+            purchaseNum: couponNum,
+            purchasedBy: (dealType === '구매' && 'hwa0327') || trader,
+            isPurchaseLog: dealType === '구매',
+          });
         });
+        setWholeItemList(sortByDate(items));
+
+        if (loading) {
+          setLoading(false);
+        }
       });
-    });
-
-    ref.where('purchasedBy', '==', username).onSnapshot((querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-        const {
-          brandName,
-          date,
-          postedBy,
-          price,
-          purchaseNum,
-          purchasedBy,
-        } = doc.data();
-        purchasedItems.push({
-          couponId: doc.id,
-          brandName: brandName,
-          date: date,
-          postedBy: postedBy,
-          price: price,
-          purchaseNum: purchaseNum,
-          purchasedBy: purchasedBy,
-          isPurchaseLog: true,
-        });
-      });
-
-      setWholeItemList(sortByDate([...soldItems, ...purchasedItems]));
-
-      if (loading) {
-        setLoading(false);
-      }
-    });
   }, []);
 
   return (

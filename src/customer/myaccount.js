@@ -34,7 +34,6 @@ const CustomerAccount = ({ route, navigation }) => {
             setPhone(doc.data().phoneNumber);
           }
         });
-        console.log("test");
       } catch (e) {
         // Restoring Id failed
         console.log('Restoring Id failed');

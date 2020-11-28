@@ -16,6 +16,8 @@ import PostDeal from './dealcentertab/postdeal';
 const Tab = createMaterialTopTabNavigator();
 
 const DealCenter = ({ route, navigation }) => {
+  const { userId, otherParam } = route.params;
+
   return (
     <>
       <TopBar
@@ -43,16 +45,19 @@ const DealCenter = ({ route, navigation }) => {
           name="쿠폰 장터"
           component={CouponMarket}
           options={{ tabBarLabel: '쿠폰 장터' }}
+          initialParams={{ userId: userId }}
         />
         <Tab.Screen
           name="쿠폰 판매"
           component={PostDeal}
           options={{ tabBarLabel: '쿠폰 판매' }}
+          initialParams={{ userId: userId }}
         />
         <Tab.Screen
           name="거래 내역"
           component={DealLog}
           options={{ tabBarLabel: '거래 내역' }}
+          initialParams={{ userId: userId }}
         />
       </Tab.Navigator>
     </>

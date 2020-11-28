@@ -146,6 +146,7 @@ const App = () => {
                   name="고객 화면"
                   component={CustomerMain}
                   options={{ headerShown: false }}
+                  initialParams={{ userId: state.userId}}
                 />
                 <Stack.Screen
                   name="상세 정보"
