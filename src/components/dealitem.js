@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  Alert,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import firestore, { firebase } from '@react-native-firebase/firestore';
 import { Picker } from '@react-native-community/picker';
 
@@ -36,6 +43,7 @@ const ItemInfo = ({ title, content, color }) => {
 const DealItem = ({
   couponId,
   currentUser,
+  brandLogo,
   brandName,
   date,
   page,
@@ -48,7 +56,6 @@ const DealItem = ({
   const numList = [...Array(possibleNum).keys()].map((item) => item + 1);
   const [purchaseNum, setPurchaseNum] = useState(numList[0]);
 
-  const brandRef = firestore().collection('Brand');
   const dealRef = firestore().collection('DealCenter');
   const userRef = firestore().collection('User');
 
@@ -58,24 +65,10 @@ const DealItem = ({
   let postdealDate = dateString ? dateUTCWithDot(dateString) : '';
   let imgSize =
     page == 'couponmarket'
-      ? { height: 70, width: 100 }
-      : { height: 85, width: 125 };
-  let mainLeft =
-    page == 'couponmarket'
-      ? { flex: 1, justifyContent: 'flex-end' }
-      : { flex: 2, justifyContent: 'flex-end' };
-  let mainRight = page == 'couponmarket' ? { flex: 2 } : { flex: 3 };
+      ? { height: 72, width: 120 }
+      : { height: 75, width: 125 };
 
   async function _purchaseItem() {
-    let brandLogo = null;
-    brandRef
-      .doc(brandName)
-      .get()
-      .then(function (doc) {
-        if (doc.exists) {
-          brandLogo = doc.data().logo;
-        }
-      });
     await dealRef.doc(couponId).update({
       availableAmount: possibleNum - purchaseNum,
       onSale: possibleNum - purchaseNum == 0,
@@ -120,12 +113,13 @@ const DealItem = ({
         <></>
       )}
       <View style={styles.main}>
-        <View style={mainLeft}>
-          <View style={[styles.brandImg, imgSize]}>
-            <Text style={styles.brandImgAlt}>브랜드 이미지</Text>
-          </View>
+        <View style={styles.mainLeft}>
+          <Image
+            style={[styles.brandImg, imgSize]}
+            source={{ uri: brandLogo }}
+          />
         </View>
-        <View style={mainRight}>
+        <View style={styles.mainRight}>
           <View style={styles.iteminfo}>
             <Text style={styles.brandName}>{brandName}</Text>
             <View
@@ -169,7 +163,7 @@ const DealItem = ({
               style={styles.picker}
               onValueChange={(value, index) => setPurchaseNum(value)}>
               {numList.map((item) => (
-                <Picker.Item label={item.toString()} value={item} />
+                <Picker.Item label={item.toString()} value={item} key={item} />
               ))}
             </Picker>
           </View>
@@ -204,13 +198,10 @@ const DealItem = ({
 const styles = StyleSheet.create({
   brandImg: {
     alignItems: 'center',
-    backgroundColor: GREY_20_COLOR,
+    borderColor: GREY_20_COLOR,
     borderRadius: 10,
+    borderWidth: 1,
     justifyContent: 'center',
-  },
-  brandImgAlt: {
-    color: GREY_60_COLOR,
-    fontSize: 10,
   },
   brandName: {
     color: BLACK_COLOR,
@@ -260,6 +251,13 @@ const styles = StyleSheet.create({
   },
   main: {
     flexDirection: 'row',
+  },
+  mainLeft: {
+    flex: 1,
+    justifyContent: 'flex-end',
+  },
+  mainRight: {
+    flex: 1.5,
   },
   picker: {
     color: BLACK_COLOR,

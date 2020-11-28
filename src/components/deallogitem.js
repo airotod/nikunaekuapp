@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 
 import {
   BLACK_COLOR,
@@ -30,6 +30,7 @@ const Item = ({ title, content, color }) => {
 
 const DealLogItem = ({
   couponId,
+  brandLogo,
   brandName,
   date,
   postedBy,
@@ -60,9 +61,7 @@ const DealLogItem = ({
               {isPurchaseLog ? '구매내역' : '판매내역'}
             </Text>
           </View>
-          <View style={styles.brandImg}>
-            <Text style={styles.brandImgAlt}>브랜드 이미지</Text>
-          </View>
+          <Image style={styles.brandImg} source={{ uri: brandLogo }} />
         </View>
         <View style={styles.mainRight}>
           <Item title="브랜드명" content={brandName} />
@@ -89,15 +88,12 @@ const DealLogItem = ({
 const styles = StyleSheet.create({
   brandImg: {
     alignItems: 'center',
-    backgroundColor: GREY_20_COLOR,
     borderRadius: 10,
-    height: 70,
+    borderColor: GREY_20_COLOR,
+    borderWidth: 1,
+    height: 75,
     justifyContent: 'center',
-    width: 100,
-  },
-  brandImgAlt: {
-    color: GREY_60_COLOR,
-    fontSize: 10,
+    width: 125,
   },
   date: {
     color: BLACK_COLOR,
@@ -141,7 +137,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   mainRight: {
-    flex: 2,
+    flex: 1.2,
   },
   status: {
     color: WHITE_COLOR,
@@ -154,7 +150,7 @@ const styles = StyleSheet.create({
     height: 24,
     alignItems: 'center',
     justifyContent: 'center',
-    marginVertical: 5,
+    margin: 5,
   },
 });
 

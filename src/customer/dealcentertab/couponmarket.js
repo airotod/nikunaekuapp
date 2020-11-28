@@ -52,6 +52,7 @@ const CouponMarket = ({ route, navigation }) => {
           registrationAt,
         } = doc.data();
         items.push({
+          brandLogo: brandLogo,
           brandName: brandID,
           currentUser: userId,
           couponId: doc.id,

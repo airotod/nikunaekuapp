@@ -22,7 +22,6 @@ import {
   RED_COLOR,
   WHITE_COLOR,
 } from '../../models/colors';
-import { shopList } from '../../models/shops';
 
 import { sortByDate } from '../../utils/sortby';
 import { checkNumber } from '../../utils/validate';
@@ -126,6 +125,7 @@ const PostDeal = ({ route, navigation }) => {
             registrationAt,
           } = doc.data();
           items.push({
+            brandLogo: brandLogo,
             brandName: brandID,
             currentUser: userId,
             couponId: doc.id,

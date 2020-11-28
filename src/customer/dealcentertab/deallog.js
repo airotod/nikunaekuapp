@@ -49,6 +49,7 @@ const DealLog = ({ route, navigation }) => {
         } = doc.data();
         items.push({
           couponId: doc.id,
+          brandLogo: brandLogo,
           brandName: brandName,
           date: dateTime,
           postedBy: (dealType === '구매' && trader) || userId,
