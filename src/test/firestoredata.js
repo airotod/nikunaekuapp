@@ -1,9 +1,63 @@
-export const data = [
+import firestore from '@react-native-firebase/firestore';
+
+export const data = 
+// {
+//         clientID: 'hwa0327',
+//         birth: '19980327',
+//         name: '이화영',
+//         nickname: '퐈',
+//         password: 'abcde12345!',
+//         phonenumber: '01012345678',
+//         totalpoint: 1200,
+// };
+[
   {
+    // pointlog: [
+    //   {
+    //     date: firestore.Timestamp.fromDate(new Date('2020-09-28')),
+    //     is_usage: false,
+    //     logtitle: '포인트 충전',
+    //     detail: '우리은행',
+    //     point: 1000,
+    //     balance: 2300,
+    //   },
+    //   {
+    //     date: firestore.Timestamp.fromDate(new Date("2020-10-25")),
+    //     is_usage: true,
+    //     logtitle: '결제 시 사용',
+    //     detail: '스타벅스 2개',
+    //     point: -1000,
+    //     balance: 1300,
+    //   },
+    //   {
+    //     date: firestore.Timestamp.fromDate(new Date("2020-10-22")),
+    //     is_usage: false,
+    //     logtitle: '판매 적립',
+    //     detail: '더커피 2개',
+    //     point: 400,
+    //     balance: 1700,
+    //   },
+    //   {
+    //     date: firestore.Timestamp.fromDate(new Date("2020-11-01")),
+    //     is_usage: false,
+    //     logtitle: '판매 적립',
+    //     detail: '안다르 1개',
+    //     point: 100,
+    //     balance:  1800
+    //   },
+    //   {
+    //     date: firestore.Timestamp.fromDate(new Date("2020-10-19")),
+    //     is_usage: true,
+    //     logtitle: '결제 시 사용',
+    //     detail: '스타벅스 6개',
+    //     point: -600,
+    //     balance: 1200,
+    //   },
+    // ],
     brands: [
       { brandName: '일리터커피' },
       { brandName: '파리바게트' },
-      { brandName: '안다 르커피' },
+      { brandName: '안다르커피' },
       { brandName: '더착한커피' },
       { brandName: '스타벅스' },
       { brandName: '미스터힐링' },
@@ -12,14 +66,15 @@ export const data = [
       { brandName: '카페게이트' },
       { brandName: '삼진어묵' },
     ],
-    client: [
+    client : [
       {
+        clientID: 'hwa0327',
         birth: '19980327',
         name: '이화영',
-        nickname: 'hwa',
-        password: 'a1b2c34567',
+        nickname: '퐈',
+        password: 'abcde12345!',
         phonenumber: '01012345678',
-        point: 1200,
+        totalpoint: 1200,
       },
     ],
     owner: [
