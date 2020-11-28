@@ -1,25 +1,39 @@
-import React from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { FlatList, StyleSheet, Text, View, Image } from 'react-native';
+import firestore from '@react-native-firebase/firestore';
 
 import TopBar from '../components/topbar';
 import { BLACK_COLOR } from '../models/colors';
 
 
-const Card = () => {
+const Card = (brandName, logo) => {
   return(
     <View>
-      <Text> card</Text>
+      <Text> {brandName}</Text>
       <Image 
-      source={{uri: 'https://firebasestorage.googleapis.com/v0/b/nikunaekuapp.appspot.com/o/andar.png?alt=media&token=0d4c779d-7570-49a3-98e3-1682c493ce0e'}}
+      source={{uri: {logo}}}
       style={{height: 100, resizeMode: 'center'}} />
     </View>
   )
 }
 
 const FindBrand = ({ route, navigation }) => {
-//  './brandImages/andar.png ./brandImages/baleudagimseonsaeng.png ./brandImages/cafegate.png \
-//   ./brandImages/illlitercoffee.png ./brandImages/mrhealing.png ./brandImages/samjin.png \
-//   ./brandImages/starbucks.png ./brandImages/streetchurros.png ./brandImages/thekindcoffee.png';  
+  const [brandList, setBrandList] = useState([]);
+  const ref = firestore().collection('Brand');
+
+  useEffect(() => {
+    return ref.onSnapshot((querySnapshot) => {
+      let items = [];
+      querySnapshot.forEach((doc) => {
+        const { brandName, logo } = doc.data();
+        items.push({
+          brandName: brandName,
+          logo: logo
+        });
+      });
+      setBrandList(items);
+    });
+  }, []);
 
   return (
     <>
@@ -31,7 +45,11 @@ const FindBrand = ({ route, navigation }) => {
       />
       <View style={styles.container}>
         <Text style={styles.mainText}>브랜드 찾기 화면</Text>
-        <Card></Card>
+        <FlatList
+          data={brandList}
+          renderItem={({ item }) => <Card {...item} />}
+          keyExtractor={(item) => item.brandName}
+        />
       </View>
     </>
   );
