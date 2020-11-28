@@ -1,53 +1,72 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList, StyleSheet, Text, View, Image, SafeAreaView} from 'react-native';
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  SafeAreaView,
+} from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import TopBar from '../components/topbar';
-import { BLACK_COLOR, WHITE_COLOR, YELLO_COLOR_BRIGHT } from '../models/colors';
+import { BLACK_COLOR, WHITE_COLOR } from '../models/colors';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { get } from 'react-native/Libraries/Utilities/PixelRatio';
-
-const Card = ({brandName, logo}) => {
-  return(
-    <View style={{width: '30%', marginHorizontal : 5, marginVertical: 10}}> 
-      <TouchableOpacity
-        style={styles.cardcontainer}
-        onPress={() => navigation.navigate("멤버십 가입", {data : {brandName, logo}})}> 
-        <Image style={styles.imagecontainer}
-        source={{uri: logo}}/>
-        <Text style={styles.textcontainer}> {brandName}</Text>
-      </TouchableOpacity>
-    </View>
-  )
-}
 
 
 const FindBrand = ({ route, navigation }) => {
   const [brandList, setBrandList] = useState([]);
   const [userId, setUserId] = useState(null);
 
+  const Card = ({ brandName, logo }) => {
+    return (
+      <View style={{ width: '30%', marginHorizontal: 5, marginVertical: 10 }}>
+        <TouchableOpacity
+          style={styles.cardcontainer}
+          onPress={() =>
+            navigation.navigate('멤버십 가입', { data: { brandName, logo } })
+          }>
+          <Image style={styles.imagecontainer} source={{ uri: logo }} />
+          <Text style={styles.textcontainer}> {brandName}</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+  
   useEffect(() => {
     const getUserIdAsync = async () => {
       try {
         const getUserId = await AsyncStorage.getItem('userId');
         setUserId(getUserId);
         const ref = firestore().collection('Brand');
-        
+
+        let userCoupons = [];
+        firestore()
+          .collection('User')
+          .doc(getUserId)
+          .collection('coupons')
+          .get()
+          .then(function (querySnapshot) {
+            let coupons = [];
+            querySnapshot.forEach(function (doc) {
+              coupons.push(doc.id);
+            });
+            userCoupons = coupons;
+          });
+
         ref.onSnapshot((querySnapshot) => {
           let items = [];
           querySnapshot.forEach((doc) => {
-            const {brandName, logo} = doc.data();
-            firestore().collection('User').doc(getUserId).collection('coupons').doc(brandName)
-            .get().then(document => {
-              if (!document.exists){
-                items.push({
-                  brandName: brandName,
-                  logo: logo
-                });
-              }
-            });
-          });  
+            const { brandName, logo } = doc.data();
+            if (!userCoupons.includes(brandName)) {
+              items.push({
+                brandName: brandName,
+                logo: logo,
+              });
+            }
+          });
           setBrandList(items);
+          console.log(brandList);
         });
       } catch (e) {
         // Restoring Id failed
@@ -56,7 +75,6 @@ const FindBrand = ({ route, navigation }) => {
     };
     getUserIdAsync();
   }, []);
-
 
   return (
     <>
@@ -84,7 +102,7 @@ const FindBrand = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width:'100%',
+    width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -96,10 +114,10 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   cardcontainer: {
-    aspectRatio: 5/4,
+    aspectRatio: 5 / 4,
     width: '100%',
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: WHITE_COLOR,
     flexDirection: 'column',
   },
@@ -111,7 +129,7 @@ const styles = StyleSheet.create({
     flex: 4,
     width: '100%',
     resizeMode: 'contain',
-  }
+  },
 });
 
 export default FindBrand;
