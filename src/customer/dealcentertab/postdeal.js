@@ -80,9 +80,9 @@ const PostDeal = ({ route, navigation }) => {
               brandID: brandName,
               brandLogo: brandLogo,
               clientID: userId,
-              onSale: false,
+              onSale: true,
               price: price,
-              registrationAmout: totalNum,
+              registrationAmount: totalNum,
               registrationAt: firestore.FieldValue.serverTimestamp(),
             });
             setMsg('');
@@ -133,7 +133,7 @@ const PostDeal = ({ route, navigation }) => {
             possibleNum: availableAmount,
             postedBy: clientID,
             price: price,
-            purchased: onSale,
+            purchased: !onSale,
             totalNum: registrationAmount,
           });
         });

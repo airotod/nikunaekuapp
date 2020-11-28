@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import firestore from '@react-native-firebase/firestore';
+import firestore, { firebase } from '@react-native-firebase/firestore';
 import { Picker } from '@react-native-community/picker';
 
 import {
@@ -68,14 +68,21 @@ const DealItem = ({
 
   async function _purchaseItem() {
     let brandLogo = null;
-    brandRef.doc(brandName).get().then(function (doc) {
-      if (doc.exists) {
-        brandLogo = doc.data().logo;
-      }
-    });
+    brandRef
+      .doc(brandName)
+      .get()
+      .then(function (doc) {
+        if (doc.exists) {
+          brandLogo = doc.data().logo;
+        }
+      });
     await dealRef.doc(couponId).update({
       availableAmount: possibleNum - purchaseNum,
       onSale: possibleNum - purchaseNum == 0,
+    });
+    await userRef.doc(currentUser).update({
+      usedPoint: firebase.firestore.FieldValue.increment(price * purchaseNum),
+      totalPoint: firebase.firestore.FieldValue.increment(-price * purchaseNum),
     });
     await userRef
       .doc(currentUser)
@@ -107,7 +114,6 @@ const DealItem = ({
     <View style={styles.item}>
       {page == 'couponmarket' ? (
         <View style={styles.header}>
-          <Text style={styles.headerText}>{couponId}</Text>
           <Text style={styles.headerText}>{couponmarketDate}</Text>
         </View>
       ) : (
