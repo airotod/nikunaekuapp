@@ -117,7 +117,7 @@ const PostDeal = ({ route, navigation }) => {
             style={styles.picker}
             onValueChange={(value, index) => setBrandName(value)}>
             {shopList.map((item) => (
-              <Picker.Item label={item} value={item} />
+              <Picker.Item label={item} value={item} key={item} />
             ))}
           </Picker>
         </View>
