@@ -19,9 +19,9 @@ const Card = ({ data, navigation }) => {
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={flipHandler} style={styles.subcontainer}>
-        <Text style={styles.text}>
+        {/* <Text style={styles.text}>
           {data.count}/{data.totalCount}
-        </Text>
+        </Text> */}
         <Front data={data} isFront={isFront} />
         {!isFront && <Back data={data} />}
       </TouchableOpacity>
@@ -29,7 +29,7 @@ const Card = ({ data, navigation }) => {
       {!isFront && (
         <TouchableOpacity
           style={styles.text1}
-          onPress={() => navigation.navigate('상세 정보')}>
+          onPress={() => navigation.navigate('상세 정보', { data: data})}>
           <Text>상세 정보</Text>
         </TouchableOpacity>
       )}
