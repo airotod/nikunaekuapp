@@ -31,7 +31,7 @@ const Question = ({ text }) => {
 };
 
 const PostDeal = ({ route, navigation }) => {
-  const { userId, otherParam } = route.params;
+  const { userId, phone, otherParam } = route.params;
   const [brandName, setBrandName] = useState(shopList[0]);
   const [itemList, setItemList] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -43,7 +43,6 @@ const PostDeal = ({ route, navigation }) => {
 
   const dealRef = firestore().collection('DealCenter');
   const brandRef = firestore().collection('Brand');
-  const userRef = firestore().collection('User');
 
   async function _addPost() {
     if (!brandName || !totalNum || !price) {

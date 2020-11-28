@@ -24,6 +24,7 @@ import {
 import { sortByDate, sortByBrandName, sortByPrice } from '../../utils/sortby';
 
 const CouponMarket = ({ route, navigation }) => {
+  const { userId, phone, otherParam } = route.params;
   const [displayedItemList, setDisplayedItemList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [onlyOnSales, setOnlyOnSales] = useState(true);
@@ -58,7 +59,7 @@ const CouponMarket = ({ route, navigation }) => {
           possibleNum: availableAmount,
           postedBy: clientID,
           price: price,
-          purchased: onSale,
+          purchased: !onSale,
           totalNum: registrationAmount,
         });
       });
