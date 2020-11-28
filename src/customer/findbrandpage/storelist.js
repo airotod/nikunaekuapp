@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { FlatList, StyleSheet, Text, View, ScrollView } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
@@ -44,7 +44,7 @@ const StoreItem = ({ storeName, address, contactNumber }) => {
 
     return (
         <>
-          <View style={styles.container}>
+          <View style={styles.scrollcontainer}>
             <FlatList
             data={storeList}
             renderItem={({ item }) => <StoreItem {...item} />}
@@ -74,7 +74,7 @@ const StoreItem = ({ storeName, address, contactNumber }) => {
         color: BLACK_COLOR,
         fontWeight: 'bold',
     },
-    container: {
+    scrollcontainer: {
         flex: 1,
         backgroundColor: GREY_10_COLOR,
         justifyContent: 'center',

@@ -11,7 +11,7 @@ import {
   WHITE_COLOR,
 } from '../../models/colors';
 import StoreList from './storelist';
-import Introduction from '../brandDetailTab/introduction';
+import Introduction from './introduction';
 
 const Tab = createMaterialTopTabNavigator();
 

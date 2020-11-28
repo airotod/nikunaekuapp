@@ -162,7 +162,6 @@ const MyPointLog = ({ route, navigation }) => {
           </Picker>
         </View>
         <View style={styles.maincontainer}>
-          
           <FlatList
             data={pointLogList}
             renderItem={({ item }) => <PointLogItem  {...item}/>}
