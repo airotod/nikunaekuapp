@@ -10,13 +10,14 @@ import {
   GREY_70_COLOR,
   GREEN_COLOR
 } from '../../models/colors';
+import { dateUTCWithKorean } from '../../utils/format'
 
 const chartWidth = Dimensions.get('window').width;
 const charHeight = Dimensions.get('window').height;
 
 const PointLogItem = ({balance, dateTime, pointVolume, pointType, trader, count, brandID }) => {
   let IconItem = null;
-  let dateItems = dateTime.split(" ");
+  let dateItems = dateUTCWithKorean(dateTime.toDate());
   let detailContent = null;
   let traderContent = null;
 
@@ -56,7 +57,7 @@ const PointLogItem = ({balance, dateTime, pointVolume, pointType, trader, count,
         </View>
         <View style={styles.contextcontainer}>
           <View style={styles.detailcontainer}>
-            <Text style={styles.dateText}>{dateItems[3]}년 {dateItems[1]}월 {dateItems[2]}일 {dateItems[0]}요일</Text>
+            <Text style={styles.dateText}>{dateItems}</Text>
             <View style={styles.detailcontainer2}>
               <Text style={styles.logtitleText}>{pointType}</Text>
               {traderContent}
@@ -87,7 +88,7 @@ const MyPointLog = ({ route, navigation }) => {
               if ((selectedValue) == "전체") {
                 items.push({
                   balance: balance,
-                  dateTime: dateTime.toDate().toString(),
+                  dateTime: dateTime,
                   pointVolume: pointVolume,
                   pointType: pointType,
                   trader: trader,
@@ -98,7 +99,7 @@ const MyPointLog = ({ route, navigation }) => {
                 if (pointType == "포인트 적립") {
                   items.push({
                     balance: balance,
-                    dateTime: dateTime.toDate().toString(),
+                    dateTime: dateTime,
                     pointVolume: pointVolume,
                     pointType: pointType,
                     trader: trader,
@@ -110,7 +111,7 @@ const MyPointLog = ({ route, navigation }) => {
                 if (pointType=="포인트 사용" || pointType=="포인트 선물" || pointType=="포인트 인출") {
                   items.push({
                     balance: balance,
-                    dateTime: dateTime.toDate().toString(),
+                    dateTime: dateTime,
                     pointVolume: pointVolume,
                     pointType: pointType,
                     trader: trader,
@@ -122,7 +123,7 @@ const MyPointLog = ({ route, navigation }) => {
                 if (pointType=="포인트 충전") {
                   items.push({
                     balance: balance,
-                    dateTime: dateTime.toDate().toString(),
+                    dateTime: dateTime,
                     pointVolume: pointVolume,
                     pointType: pointType,
                     trader: trader,
