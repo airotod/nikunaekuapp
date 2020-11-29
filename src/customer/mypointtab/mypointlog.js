@@ -84,7 +84,7 @@ const MyPointLog = ({ route, navigation }) => {
         ref.onSnapshot((querySnapshot) => {
             let items = [];
             querySnapshot.forEach((doc) => {
-              const {balance, brandID, count, dateTime, pointType, pointVolume, trader} = doc.data();
+              const {dateTime, balance, brandID, count, pointType, pointVolume, trader} = doc.data();
               if ((selectedValue) == "전체") {
                 items.push({
                   balance: balance,
@@ -142,6 +142,8 @@ const MyPointLog = ({ route, navigation }) => {
     getUserIdAsync();
   }, [selectedValue]);
 
+  renderItem = ({ item, index }) => { };
+
   return (
     <>
       <View style={styles.container}>
@@ -162,8 +164,8 @@ const MyPointLog = ({ route, navigation }) => {
         <View style={styles.maincontainer}>
           <FlatList
             data={pointLogList}
-            renderItem={({ item }) => <PointLogItem {...item}
-            keyExtractor={(item) => item.dataTime} />}
+            renderItem={({ item }) => <PointLogItem  {...item}/>}
+            keyExtractor={(item, index) => index.toString()}
           />
         </View>
       </View>

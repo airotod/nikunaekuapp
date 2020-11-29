@@ -162,7 +162,7 @@ const App = () => {
                 <Stack.Screen
                   name="멤버십 가입"
                   component={FindBrandRegister}
-                  options={{ headerShown: false }}
+                  // options={{ headerShown: false }}
                 />
               </>
             )}

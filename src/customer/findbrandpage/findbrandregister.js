@@ -9,10 +9,9 @@ import {
   GREY_60_COLOR,
   RED_COLOR,
   WHITE_COLOR,
-  YELLO_COLOR_BRIGHT
 } from '../../models/colors';
 import StoreList from './storelist';
-import Introduction from '../brandDetailTab/introduction';
+import Introduction from './introduction';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -35,13 +34,6 @@ const FindBrandRegister = ({ route, navigation }) => {
 
   return (
     <>
-      <TopBar
-        title="상세 정보"
-        navigation={navigation}
-        drawerShown={true}
-        myaccountShown={true}
-      />
-
       <Image
         source={{ uri: data.logo }}
         resizeMode="contain"
