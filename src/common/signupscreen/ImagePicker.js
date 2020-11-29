@@ -1,10 +1,31 @@
 import ImagePicker from 'react-native-image-picker';
 import ImageResizer from 'react-native-image-resizer';
 import storage from '@react-native-firebase/storage';
-import { useState } from 'react';
 
-export default function chooseImage({userid, option}) {
-  console.log(option, ', ', userid);
+
+export function chooseImage({ userid, option }) {
+  let newWidth;
+  let newHeight;
+
+  switch (option) {
+    case 'profile':
+      newWidth = 180;
+      newHeight = 180;
+      break;
+    case 'cafeLogo':
+      newWidth = 200;
+      newHeight = 120;
+      break;
+    case 'resiNum':
+      newWidth = 200;
+      newHeight = 120;
+      break;
+    case 'comNum':
+      newWidth = 200;
+      newHeight = 120;
+      break;
+  }
+
   let options = {
     title: 'Select Image',
     storageOptions: {
@@ -14,7 +35,6 @@ export default function chooseImage({userid, option}) {
   };
 
   ImagePicker.showImagePicker(options, (response) => {
-    //console.log('Response = ', response);
 
     if (response.didCancel) {
       console.log('User cancelled image picker');
@@ -24,29 +44,11 @@ export default function chooseImage({userid, option}) {
       console.log('User tapped custom button: ', response.customButton);
       alert(response.customButton);
     } else {
-      const source = { uri: response.uri };
-      const [newWidth, setNewWidth] = useState(null);
-      const [newHeight, setNewHeight] = useState(null);
-      
       let compressFormat = 'PNG';
       let quality = 100;
       let rotation = 90;
       let outputPath = null;
       let imageUri = response.uri;
-
-      if (option == 'profile') {
-        setNewWidth(180);
-        setNewHeight(180);
-      } else if (option == 'cafeLogo') {
-        setNewWidth(200);
-        setNewHeight(120);
-      } else if (option == 'resiNum') {
-        setNewWidth(200);
-        setNewHeight(120);
-      } else if (option == 'comNum') {
-        setNewWidth(200);
-        setNewHeight(120);
-      }
 
       ImageResizer.createResizedImage(
         imageUri,

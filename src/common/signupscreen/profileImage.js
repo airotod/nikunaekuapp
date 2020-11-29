@@ -18,7 +18,7 @@ import CheckInfo from '../../components/checkinfo';
 import StepButton from '../../components/stepbutton';
 import TopBar from '../../components/topbar';
 import { AuthContext } from '../../utils/context';
-import chooseImage from './ImagePicker';
+import { chooseImage } from './ImagePicker';
 
 import {
   BLACK_COLOR,

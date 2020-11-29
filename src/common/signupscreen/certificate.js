@@ -17,7 +17,7 @@ import {
   WHITE_COLOR,
 } from '../../models/colors';
 import { AuthContext } from '../../utils/context';
-import chooseImage from './ImagePicker';
+import { chooseImage } from './ImagePicker';
 
 export default function Certificate({ route, navigation }) {
   const { account, otherParam } = route.params;
