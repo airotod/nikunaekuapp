@@ -17,7 +17,7 @@ const charHeight = Dimensions.get('window').height;
 
 const PointLogItem = ({balance, dateTime, pointVolume, pointType, trader, count, brandID }) => {
   let IconItem = null;
-  let dateItems = dateUTCWithKorean(dateTime.toDate());
+  let dateItems = dateTime && dateUTCWithKorean(dateTime.toDate());
   let detailContent = null;
   let traderContent = null;
 
@@ -37,7 +37,7 @@ const PointLogItem = ({balance, dateTime, pointVolume, pointType, trader, count,
                 </View>;
   }
 
-  if (pointType=="포인트 충전") {
+  if (pointType=="포인트 충전" || pointType=="포인트 인출") {
     detailContent = <Text style={styles.detailText}></Text>;
   } else if (pointType=="포인트 선물") {
     detailContent = <Text style={styles.detailText}>{trader}</Text>;
