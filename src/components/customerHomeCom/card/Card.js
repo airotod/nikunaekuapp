@@ -1,20 +1,22 @@
-import React, { useState } from 'react';
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useState } from "react";
+import { StyleSheet, Text, TouchableOpacity } from "react-native";
 
-import { createStackNavigator } from '@react-navigation/stack';
-import { NavigationContainer } from '@react-navigation/native';
-
-import Front from './Front';
-import Back from './Back';
+import Front from "./Front";
+import Back from "./Back";
 
 const Stack = createStackNavigator();
 
 const Card = ({ data, navigation }) => {
+  const [modalVisible, setModalVisible] = useState(false);
   const [isFront, setIsFront] = useState(true);
 
   const flipHandler = () => {
     setIsFront((prev) => !prev);
   };
+
+  function _handleDetail(event) {
+    setModalVisible(true);
+  }
 
   return (
     <View style={styles.container}>
@@ -29,7 +31,7 @@ const Card = ({ data, navigation }) => {
       {!isFront && (
         <TouchableOpacity
           style={styles.text1}
-          onPress={() => navigation.navigate('상세 정보', { data: data})}>
+          onPress={() => navigation.navigate('상세 정보', { data: data })}>
           <Text>상세 정보</Text>
         </TouchableOpacity>
       )}
@@ -40,35 +42,22 @@ const Card = ({ data, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     aspectRatio: 5 / 3,
-    width: '60%',
-    marginHorizontal: '20%',
+    width: "60%",
+    marginHorizontal: "20%",
     margin: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     borderRadius: 10,
-    overflow: 'hidden',
-    borderColor: 'black',
+    overflow: "hidden",
+    borderColor: "black",
     borderWidth: 1,
   },
-  subcontainer: {
-    aspectRatio: 5 / 3,
-    alignItems: 'center',
-    justifyContent: 'center',
-    overflow: 'hidden',
-  },
   text: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     right: 0,
     padding: 4,
-    backgroundColor: '#f8f8ff',
-  },
-  text1: {
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    padding: 4,
-    backgroundColor: '#f8f8ff',
+    backgroundColor: "#f8f8ff",
   },
 });
 

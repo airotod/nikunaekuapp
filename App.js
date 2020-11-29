@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useReducer } from 'react';
+import React, { useEffect, useMemo, useReducer, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -13,6 +13,9 @@ import Complete from './src/common/signupscreen/complete';
 
 import { AuthContext } from './src/utils/context';
 import BrandDetail from './src/customer/brandDetail';
+
+import FindBrandRegister from './src/customer/findbrandpage/findbrandregister';
+import CustomerHome from './src/customer/home';
 
 const Stack = createStackNavigator();
 
@@ -179,6 +182,16 @@ const App = () => {
                     phone: state.phoneNumber,
                     brandName: state.brandName,
                   }}
+                />
+                <Stack.Screen
+                  name="상세 정보"
+                  component={BrandDetail}
+                  // options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="멤버십 가입"
+                  component={FindBrandRegister}
+                  // options={{ headerShown: false }}
                 />
               </>
             )}

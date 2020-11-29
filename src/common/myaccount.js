@@ -1,7 +1,13 @@
+<<<<<<< HEAD:src/common/myaccount.js
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+=======
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Text, View, Image } from 'react-native';
+>>>>>>> dev:src/owner/myaccount.js
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import firestore from '@react-native-firebase/firestore';
 
 import AccountItem from '../components/accountitem';
 import TopBar from '../components/topbar';
@@ -16,8 +22,37 @@ import {
 } from '../models/colors';
 import { AuthContext } from '../utils/context';
 
+<<<<<<< HEAD:src/common/myaccount.js
 const MyAccount = ({ route, navigation }) => {
   const { userId, phone, otherParam } = route.params;
+=======
+const PHONE = '+82 10-1234-1234';
+
+const OwnerAccount = ({ route, navigation }) => {
+  const [userId, setUserId] = useState(null);
+  const [logo, setLogo] = useState(null); 
+  
+  const ref = firestore().collection('User');
+
+  useEffect(() => {
+    const getUserIdAsync = async () => {
+      try {
+        const getUserId = await AsyncStorage.getItem('userId');
+        setUserId(getUserId);
+        ref.doc(getUserId).get().then(async function (doc) {
+          if (doc.exists) {
+            setLogo(doc.data().cafeLogo);
+            console.log('logo: ', logo);
+          }
+        })
+      } catch (e) {
+        // Restoring Id failed
+        console.log('Restoring Id failed');
+      }
+    };
+    getUserIdAsync();
+  }, []);
+>>>>>>> dev:src/owner/myaccount.js
 
   async function _handleSignOut() {
     await AsyncStorage.removeItem('userId');
@@ -38,7 +73,8 @@ const MyAccount = ({ route, navigation }) => {
           <View style={styles.container}>
             <View style={styles.myinfoContainer}>
               <View style={styles.personIconContainer}>
-                <Icon name="person" size={50} color={GREY_40_COLOR} />
+                {logo ? <Image source={{uri: logo}} style={{resizeMode: "stretch", height: 80, width: 80, borderRadius: 80}}/>
+                : <Icon name="person" size={50} color={GREY_40_COLOR} /> }
               </View>
               <View style={styles.myinfoTextContainer}>
                 <Text style={styles.myinfoText}>{userId} 님</Text>

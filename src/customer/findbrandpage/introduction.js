@@ -9,13 +9,14 @@ const Introduction = ({ route, navigation }) => {
   const { data, otherParam } = route.params;
   const [description, setDescription] = useState(null);
 
-  let brand = data.id;
+  let brand = data.brandName;
 
   const ref = firestore().collection('Brand').doc(brand);
 
   useEffect(() => {
     ref.get().then(function (doc) {
-      setDescription(doc.data().description);
+      const {description} = doc.data();
+      setDescription(description);
     });
   }, []);
 
