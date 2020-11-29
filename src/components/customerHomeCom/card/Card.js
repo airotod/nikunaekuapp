@@ -17,16 +17,12 @@ const Card = ({ data, navigation }) => {
     setIsFront((prev) => !prev);
   };
 
-  function _handleDetail(event) {
-    setModalVisible(true);
-  }
-
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={flipHandler} style={styles.subcontainer}>
-        {/* <Text style={styles.text}>
-          {data.count}/{data.totalCount}
-        </Text> */}
+        <Text style={styles.text}>
+          {data.count}
+        </Text>
         <Front data={data} isFront={isFront} />
         {!isFront && <Back data={data} />}
       </TouchableOpacity>
@@ -65,15 +61,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     right: 0,
-    padding: 4,
-    backgroundColor: '#f8f8ff',
+    padding: 9,
+    fontSize: 18
   },
   text1: {
     position: 'absolute',
     bottom: 0,
     right: 0,
-    padding: 4,
-    backgroundColor: '#f8f8ff',
+    padding: 10,
   },
 });
 

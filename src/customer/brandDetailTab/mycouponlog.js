@@ -79,7 +79,7 @@ const CouponLogItem = ({ count, couponType, dateTime, storeID, trader }) => {
           <Text style={styles.dateText}>{dateItems}</Text>
           <View style={styles.detailcontainer2}>
             <Text style={styles.logtitleText}>{couponType} - </Text>
-            {traderContent} 
+            {traderContent}
             <View style={styles.balancecontainer}>{detailContent}</View>
           </View>
         </View>
@@ -185,13 +185,10 @@ const MyCouponLog = ({ route, navigation }) => {
             <Picker.Item label="판매" value="판매" />
           </Picker>
         </View>
-        <ScrollView style={styles.maincontainer}>
-          <FlatList
-            data={pointLogList}
-            renderItem={({ item }) => <CouponLogItem {...item} />}
-            keyExtractor={(item) => item.id}
-          />
-        </ScrollView>
+        <FlatList
+          data={pointLogList}
+          renderItem={({ item }) => <CouponLogItem {...item} />}
+          keyExtractor={(item, index) => index.toString()}        />
       </View>
     </>
   );
@@ -217,7 +214,7 @@ const styles = StyleSheet.create({
     height: charHeight - 200,
   },
   listcontainer: {
-    height: 100,
+    height: 80,
     width: chartWidth,
     flexDirection: 'row',
     marginBottom: 2,
@@ -235,8 +232,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   imageItem: {
-    height: 40,
-    width: 40,
+    height: 30,
+    width: 30,
     margin: 2,
   },
   couponText_use: {
