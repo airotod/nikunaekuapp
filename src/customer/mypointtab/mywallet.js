@@ -63,7 +63,7 @@ const MyWallet = ({ route, navigation }) => {
             chargePoint: firestore.FieldValue.increment(Number(addPoint)),
           });
           await ref.doc(userId).collection('pointLog').add({
-            balance: totalpoint,
+            balance: totalpoint + Number(addPoint),
             dateTime: firestore.FieldValue.serverTimestamp(),
             pointType: '포인트 충전',
             pointVolume: Number(addPoint),
@@ -102,7 +102,7 @@ const MyWallet = ({ route, navigation }) => {
             savePoint: firestore.FieldValue.increment(Number(givePoint)),
           })
           await ref.doc(friendId).collection('pointLog').add({
-            balance: friendtotalpoint,
+            balance: friendtotalpoint + Number(givePoint),
             dateTime: firestore.FieldValue.serverTimestamp(),
             pointType: '포인트 선물 적립',
             pointVolume: Number(givePoint),
@@ -113,7 +113,7 @@ const MyWallet = ({ route, navigation }) => {
             usedPoint: firestore.FieldValue.increment(Number(givePoint)),
           })
           await ref.doc(userId).collection('pointLog').add({
-            balance: totalpoint,
+            balance: totalpoint - Number(givePoint),
             dateTime: firestore.FieldValue.serverTimestamp(),
             pointType: '포인트 선물',
             trader: friendid,
@@ -133,10 +133,10 @@ const MyWallet = ({ route, navigation }) => {
         text: '인출',
         onPress: async () => {
           await ref.doc(userId).update({
-            totalPoint: firestore.FieldValue.decrement(Number(withdrawalPoint)),
+            totalPoint: firestore.FieldValue.increment(-Number(withdrawalPoint)),
           });
           await ref.doc(userId).collection('pointLog').add({
-            balance: totalpoint,
+            balance: totalpoint - Number(withdrawalPoint),
             dateTime: firestore.FieldValue.serverTimestamp(),
             pointType: '포인트 인출',
             pointVolume: -Number(withdrawalPoint),
