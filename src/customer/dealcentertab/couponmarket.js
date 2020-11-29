@@ -24,7 +24,7 @@ import {
 import { username } from '../../models/current';
 import { sortByDate, sortByBrandName, sortByPrice } from '../../utils/sortby';
 
-const CouponMarket = () => {
+const CouponMarket = ({ route, navigation }) => {
   const [displayedItemList, setDisplayedItemList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [onlyOnSales, setOnlyOnSales] = useState(true);

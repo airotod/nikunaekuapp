@@ -192,6 +192,9 @@ export default function SignUpForm({ route, navigation }) {
                   onChangeText={(text) => setNickname(text)}
                 />
               </View>
+          <Text style={styles.redMsg}>
+            닉네임을 입력하지 않을 경우, 아이디와 동일하게 저장됩니다.
+          </Text>
               <Text style={styles.question}>5. 생년월일을 입력하세요.</Text>
               <View style={styles.inputContainer}>
                 <Text style={styles.date} onPress={_showDatePicker}>

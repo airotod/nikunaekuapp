@@ -24,10 +24,13 @@ export default function Certificate({ route, navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
 
   const ref = firestore().collection('User');
+<<<<<<< HEAD
+=======
 
   let buttonColor = {
     backgroundColor: GREEN_COLOR
   };
+>>>>>>> dev
 
   function _handleComplete(event) {
     setModalVisible(true);

@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import firestore from '@react-native-firebase/firestore';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -28,15 +35,16 @@ export default function CafeForm({ route, navigation }) {
   const [duplicatedMsg, setDuplicatedMsg] = useState(null);
   const [errMsg, setErrMsg] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
-  const [region, setRegion] = useState(regions[8]);
+  const [nickname, setNickname] = useState(null);
   const [password1, setPassword1] = useState(null);
   const [password2, setPassword2] = useState(null);
+  const [region, setRegion] = useState(regions[8]);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [userid, setUserid] = useState(null);
   const [userphone, setUserphone] = useState(null);
   const [username, setUsername] = useState(null);
 
-  const ref = firestore().collection('users');
+  const ref = firestore().collection('User');
 
   async function _handleNext(event) {
     navigation.navigate('증명서 인증 화면', { account: account });
@@ -51,6 +59,7 @@ export default function CafeForm({ route, navigation }) {
     cafephone: cafephone,
     cafename: cafename,
     region: region,
+    nickname: nickname || userid,
     password: password1,
     userid: userid,
     userphone: userphone,
@@ -146,6 +155,20 @@ export default function CafeForm({ route, navigation }) {
               onChangeText={(text) => _handleUserId(text)}
             />
           </View>
+<<<<<<< HEAD
+          <View style={styles.buttonContainer}>
+            {duplicatedMsg && (
+              <Text style={styles.redMsg}>{duplicatedMsg}</Text>
+            )}
+            <TouchableOpacity
+              style={[styles.button, buttonColor]}
+              onPress={_handleDuplicated}
+              activeOpacity={duplicated ? 1 : 0.2}>
+              <Text style={styles.buttonText}>중복 확인</Text>
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.question}>4. 비밀번호를 입력하세요.</Text>
+=======
               <View style={styles.buttonContainer}>
               {duplicatedMsg && <Text style={styles.redMsg}>{duplicatedMsg}</Text>}
                 <TouchableOpacity
@@ -156,6 +179,7 @@ export default function CafeForm({ route, navigation }) {
                 </TouchableOpacity>
               </View>
           <Text style={styles.question}>3. 비밀번호를 입력하세요.</Text>
+>>>>>>> dev
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.input}
@@ -175,7 +199,22 @@ export default function CafeForm({ route, navigation }) {
           <Text style={styles.redMsg}>
             영어, 숫자, 특수문자 최소 2개 포함, 총 10글자 이상
           </Text>
+<<<<<<< HEAD
+          <Text style={styles.question}>5. 닉네임을 입력하세요.</Text>
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder="한글, 영어, 숫자 가능"
+              onChangeText={(text) => setNickname(text)}
+            />
+          </View>
+          <Text style={styles.redMsg}>
+            닉네임을 입력하지 않을 경우, 아이디와 동일하게 저장됩니다.
+          </Text>
+          <Text style={styles.question}>6. 생년월일을 입력하세요.</Text>
+=======
           <Text style={styles.question}>4. 생년월일을 입력하세요.</Text>
+>>>>>>> dev
           <View style={styles.inputContainer}>
             <Text style={styles.date} onPress={_showDatePicker}>
               {dateWithKorean(birthdate)}
@@ -190,7 +229,11 @@ export default function CafeForm({ route, navigation }) {
               />
             )}
           </View>
+<<<<<<< HEAD
+          <Text style={styles.question}>7. 등록할 카페명을 입력하세요.</Text>
+=======
           <Text style={styles.question}>5. 등록할 카페명을 입력하세요.</Text>
+>>>>>>> dev
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.input}
@@ -198,19 +241,27 @@ export default function CafeForm({ route, navigation }) {
               onChangeText={(text) => setCafename(text)}
             />
           </View>
+<<<<<<< HEAD
+          <Text style={styles.question}>8. 영업 지역을 선택하세요.</Text>
+=======
           <Text style={styles.question}>6. 영업 지역을 선택하세요.</Text>
+>>>>>>> dev
           <View style={styles.pickerContainer}>
             <Picker
               selectedValue={region}
               style={styles.picker}
               onValueChange={(value, index) => setRegion(value)}>
               {regions.map((item) => (
-                <Picker.Item label={item} value={item} />
+                <Picker.Item label={item} value={item} key={item} />
               ))}
             </Picker>
           </View>
           <Text style={styles.question}>
+<<<<<<< HEAD
+            9. 카페 전화번호를 입력하세요. (선택)
+=======
             7. 카페 전화번호를 입력하세요. (선택)
+>>>>>>> dev
           </Text>
           <View style={styles.inputContainer}>
             <TextInput

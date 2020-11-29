@@ -1,5 +1,10 @@
+<<<<<<< HEAD:src/common/myaccount.js
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+=======
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
+>>>>>>> dev:src/owner/myaccount.js
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import firestore from '@react-native-firebase/firestore';
@@ -7,14 +12,20 @@ import firestore from '@react-native-firebase/firestore';
 import AccountItem from '../components/accountitem';
 import TopBar from '../components/topbar';
 import {
+  BLUE_COLOR,
   GREY_40_COLOR,
   GREY_70_COLOR,
   GREY_80_COLOR,
   GREY_90_COLOR,
+  RED_COLOR,
   WHITE_COLOR,
 } from '../models/colors';
 import { AuthContext } from '../utils/context';
 
+<<<<<<< HEAD:src/common/myaccount.js
+const MyAccount = ({ route, navigation }) => {
+  const { userId, phone, otherParam } = route.params;
+=======
 const PHONE = '+82 10-1234-1234';
 
 const OwnerAccount = ({ route, navigation }) => {
@@ -41,10 +52,12 @@ const OwnerAccount = ({ route, navigation }) => {
     };
     getUserIdAsync();
   }, []);
+>>>>>>> dev:src/owner/myaccount.js
 
   async function _handleSignOut() {
     await AsyncStorage.removeItem('userId');
     await AsyncStorage.removeItem('userType');
+    await AsyncStorage.removeItem('phoneNumber');
   }
 
   return (
@@ -64,8 +77,8 @@ const OwnerAccount = ({ route, navigation }) => {
                 : <Icon name="person" size={50} color={GREY_40_COLOR} /> }
               </View>
               <View style={styles.myinfoTextContainer}>
-                <Text style={styles.myinfoText}>{userId}</Text>
-                <Text style={styles.myinfoText}>{PHONE}</Text>
+                <Text style={styles.myinfoText}>{userId} 님</Text>
+                <Text style={styles.myinfoText}>{phone}</Text>
               </View>
             </View>
             <View style={styles.navigationItemContainer}>
@@ -79,10 +92,6 @@ const OwnerAccount = ({ route, navigation }) => {
               <AccountItem
                 text="비밀번호 변경"
                 onPress={() => console.log('비밀번호 변경')}
-              />
-              <AccountItem
-                text="내 카페 관리"
-                onPress={() => console.log('내 카페 관리')}
               />
               <AccountItem
                 text="결제수단 관리"
@@ -102,9 +111,40 @@ const OwnerAccount = ({ route, navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  benefitsText: {
+    color: BLUE_COLOR,
+    fontSize: 13,
+  },
+  benefitsTextContainer: {
+    marginHorizontal: 10,
+  },
   container: {
     flex: 1,
     alignItems: 'center',
+  },
+  crownIconContainer: {
+    alignItems: 'center',
+    height: 70,
+    justifyContent: 'center',
+    margin: 15,
+    width: 70,
+  },
+  eventBanner: {
+    alignItems: 'center',
+    backgroundColor: WHITE_COLOR,
+    flexDirection: 'row',
+    height: 90,
+    marginVertical: 8,
+    paddingHorizontal: 12,
+  },
+  eventText: {
+    color: GREY_80_COLOR,
+    fontSize: 14,
+  },
+  eventTextHighlight: {
+    color: RED_COLOR,
+    fontSize: 15,
+    fontWeight: 'bold',
   },
   flexContainer: {
     backgroundColor: WHITE_COLOR,
@@ -130,7 +170,7 @@ const styles = StyleSheet.create({
   },
   navigationItemContainer: {
     backgroundColor: WHITE_COLOR,
-    marginVertical: 8,
+    marginBottom: 8,
     width: '100%',
   },
   personIconContainer: {
@@ -146,4 +186,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default OwnerAccount;
+export default MyAccount;
