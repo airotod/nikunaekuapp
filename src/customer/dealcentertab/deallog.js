@@ -29,7 +29,7 @@ const DealLog = ({ route, navigation }) => {
   const userRef = firestore().collection('User').doc(userId);
 
   useEffect(() => {
-    userRef.get().then(function (doc) {
+    userRef.onSnapshot(function (doc) {
       if (doc.exists) {
         setUserPoint(doc.data().totalPoint);
       }

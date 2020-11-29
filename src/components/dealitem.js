@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Alert,
   Image,
@@ -55,6 +55,8 @@ const DealItem = ({
 }) => {
   const numList = [...Array(possibleNum).keys()].map((item) => item + 1);
   const [purchaseNum, setPurchaseNum] = useState(numList[0]);
+  const [msg, setMsg] = useState(null);
+  const [point, setPoint] = useState(null);
 
   const dealRef = firestore().collection('DealCenter');
   const userRef = firestore().collection('User');
@@ -71,7 +73,7 @@ const DealItem = ({
   async function _purchaseItem() {
     await dealRef.doc(couponId).update({
       availableAmount: possibleNum - purchaseNum,
-      onSale: possibleNum - purchaseNum == 0,
+      onSale: possibleNum - purchaseNum !== 0,
     });
     await userRef.doc(currentUser).update({
       usedPoint: firebase.firestore.FieldValue.increment(price * purchaseNum),
@@ -102,6 +104,14 @@ const DealItem = ({
         trader: currentUser,
       });
   }
+
+  useEffect(() => {
+    userRef.doc(currentUser).onSnapshot(function (doc) {
+      if (doc.exists) {
+        setPoint(doc.data().totalPoint);
+      }
+    });
+  }, []);
 
   return (
     <View style={styles.item}>
@@ -161,7 +171,14 @@ const DealItem = ({
             <Picker
               selectedValue={purchaseNum}
               style={styles.picker}
-              onValueChange={(value, index) => setPurchaseNum(value)}>
+              onValueChange={(value, index) => {
+                if (point < value * price) {
+                  setMsg('포인트가 부족합니다.');
+                } else {
+                  setMsg('');
+                }
+                setPurchaseNum(value);
+              }}>
               {numList.map((item) => (
                 <Picker.Item label={item.toString()} value={item} key={item} />
               ))}
@@ -171,15 +188,21 @@ const DealItem = ({
             onPress={() => {
               Alert.alert(
                 '쿠폰 구매',
-                `${brandName} 쿠폰을 ${purchaseNum}개 구매하시겠습니까?`,
+                msg
+                  ? msg
+                  : `${brandName} 쿠폰을 ${purchaseNum}개 구매하시겠습니까?`,
                 [
                   {
                     text: 'CANCEL',
-                    onPress: () => console.log('쿠폰 구매를 취소합니다.'),
+                    onPress: () => {},
                   },
                   {
                     text: 'OK',
-                    onPress: () => _purchaseItem(),
+                    onPress: () => {
+                      if (point >= purchaseNum * price) {
+                        _purchaseItem();
+                      }
+                    },
                   },
                 ],
               );
