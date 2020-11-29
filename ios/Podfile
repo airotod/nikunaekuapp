@@ -11,6 +11,7 @@ target 'nikunaekuapp' do
 
 
   pod 'RNSVG', :path => '../node_modules/react-native-svg'
+  pod 'react-native-image-picker', :path => '../node_modules/react-native-image-picker'
 
   target 'nikunaekuappTests' do
     inherit! :complete

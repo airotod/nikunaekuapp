@@ -38,6 +38,10 @@ export default function CafeForm({ route, navigation }) {
 
   const ref = firestore().collection('users');
 
+  async function _handleNext(event) {
+    navigation.navigate('증명서 인증 화면', { account: account });
+  }
+
   let buttonColor = {
     backgroundColor: duplicated === false ? GREEN_COLOR : RED_COLOR,
   };
@@ -79,7 +83,7 @@ export default function CafeForm({ route, navigation }) {
     }
   }
 
-  function _handleNext(event) {
+  function _handleComplete(event) {
     if (!username) {
       setErrMsg('이름을 입력해주세요.');
     } else if (duplicated !== false) {
@@ -93,10 +97,6 @@ export default function CafeForm({ route, navigation }) {
     } else {
       setModalVisible(true);
     }
-  }
-
-  function _handleConfirm(event) {
-    navigation.navigate('증명서 인증 화면', { account: account });
   }
 
   function _showDatePicker(event) {
@@ -130,11 +130,7 @@ export default function CafeForm({ route, navigation }) {
       />
       <ScrollView>
         <View style={styles.container}>
-          <Text style={styles.question}>1. 카페 사진을 등록해주세요.</Text>
-          <View style={styles.img}>
-            <Text style={styles.imgAlt}>CAFE{'\n'}IMAGE</Text>
-          </View>
-          <Text style={styles.question}>2. 본인 이름을 입력하세요.</Text>
+          <Text style={styles.question}>1. 본인 이름을 입력하세요.</Text>
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.input}
@@ -142,7 +138,7 @@ export default function CafeForm({ route, navigation }) {
               onChangeText={(text) => setUsername(text)}
             />
           </View>
-          <Text style={styles.question}>3. 아이디를 입력하세요.</Text>
+          <Text style={styles.question}>2. 아이디를 입력하세요.</Text>
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.input}
@@ -159,7 +155,7 @@ export default function CafeForm({ route, navigation }) {
                   <Text style={styles.buttonText}>중복 확인</Text>
                 </TouchableOpacity>
               </View>
-          <Text style={styles.question}>4. 비밀번호를 입력하세요.</Text>
+          <Text style={styles.question}>3. 비밀번호를 입력하세요.</Text>
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.input}
@@ -179,7 +175,7 @@ export default function CafeForm({ route, navigation }) {
           <Text style={styles.redMsg}>
             영어, 숫자, 특수문자 최소 2개 포함, 총 10글자 이상
           </Text>
-          <Text style={styles.question}>5. 생년월일을 입력하세요.</Text>
+          <Text style={styles.question}>4. 생년월일을 입력하세요.</Text>
           <View style={styles.inputContainer}>
             <Text style={styles.date} onPress={_showDatePicker}>
               {dateWithKorean(birthdate)}
@@ -194,7 +190,7 @@ export default function CafeForm({ route, navigation }) {
               />
             )}
           </View>
-          <Text style={styles.question}>6. 등록할 카페명을 입력하세요.</Text>
+          <Text style={styles.question}>5. 등록할 카페명을 입력하세요.</Text>
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.input}
@@ -202,7 +198,7 @@ export default function CafeForm({ route, navigation }) {
               onChangeText={(text) => setCafename(text)}
             />
           </View>
-          <Text style={styles.question}>7. 영업 지역을 선택하세요.</Text>
+          <Text style={styles.question}>6. 영업 지역을 선택하세요.</Text>
           <View style={styles.pickerContainer}>
             <Picker
               selectedValue={region}
@@ -214,7 +210,7 @@ export default function CafeForm({ route, navigation }) {
             </Picker>
           </View>
           <Text style={styles.question}>
-            8. 카페 전화번호를 입력하세요. (선택)
+            7. 카페 전화번호를 입력하세요. (선택)
           </Text>
           <View style={styles.inputContainer}>
             <TextInput
@@ -226,7 +222,7 @@ export default function CafeForm({ route, navigation }) {
           {errMsg && <Text style={styles.redMsg}>{errMsg}</Text>}
           <StepButton
             text="다음"
-            onPress={_handleNext}
+            onPress={_handleComplete}
             buttonColor={RED_COLOR}
           />
         </View>
@@ -236,7 +232,7 @@ export default function CafeForm({ route, navigation }) {
           onClose={() => setModalVisible(false)}
           onConfirm={() => {
             setModalVisible(false);
-            _handleConfirm();
+            _handleNext();
           }}
         />
       </ScrollView>
