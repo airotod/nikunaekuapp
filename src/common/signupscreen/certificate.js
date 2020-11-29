@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
-import { Modal, StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
+import {
+  Modal,
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import firestore from '@react-native-firebase/firestore';
 import 'react-native-gesture-handler';
@@ -24,42 +31,47 @@ export default function Certificate({ route, navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
 
   const ref = firestore().collection('User');
-<<<<<<< HEAD
-=======
-
-  let buttonColor = {
-    backgroundColor: GREEN_COLOR
-  };
->>>>>>> dev
 
   function _handleComplete(event) {
     setModalVisible(true);
   }
 
   async function _handleSignUp(event) {
-    storage().ref('/cafeLogo_' + account.userid).getDownloadURL().then(async function (logoUrl) {
-      storage().ref('/resiNum_' + account.userid).getDownloadURL().then(async function (resiUrl) {
-        storage().ref('/comNum_' + account.userid).getDownloadURL().then(async function (comUrl) {
-          await AsyncStorage.setItem('userType', 'owner');
-          await ref.doc(account.userid).set({
-            birthdate: account.birthdate,
-            cafeName: account.cafename,
-            cafePhone: account.cafephone,
-            password: account.password,
-            phone: account.userphone,
-            region: account.region,
-            userId: account.userid,
-            userName: account.username,
-            userType: 'owner',
-            cafeLogo: logoUrl,
-            resiNum: resiUrl,
-            comNum: comUrl,
-            registeredAt: firestore.FieldValue.serverTimestamp(),
-          });
-          setModalVisible(false);
-        }).catch((e) => console.log('download comNum url error: ', e));
-      }).catch((e) => console.log('download resiNum url error: ', e));
-    }).catch((e) => console.log('download cafeLogo url error: ', e));
+    storage()
+      .ref('/cafeLogo_' + account.userid)
+      .getDownloadURL()
+      .then(async function (logoUrl) {
+        storage()
+          .ref('/resiNum_' + account.userid)
+          .getDownloadURL()
+          .then(async function (resiUrl) {
+            storage()
+              .ref('/comNum_' + account.userid)
+              .getDownloadURL()
+              .then(async function (comUrl) {
+                await AsyncStorage.setItem('userType', 'owner');
+                await ref.doc(account.userid).set({
+                  birthdate: account.birthdate,
+                  cafeName: account.cafename,
+                  cafePhone: account.cafephone,
+                  password: account.password,
+                  phone: account.userphone,
+                  region: account.region,
+                  userId: account.userid,
+                  userName: account.username,
+                  userType: 'owner',
+                  cafeLogo: logoUrl,
+                  resiNum: resiUrl,
+                  comNum: comUrl,
+                  registeredAt: firestore.FieldValue.serverTimestamp(),
+                });
+                setModalVisible(false);
+              })
+              .catch((e) => console.log('download comNum url error: ', e));
+          })
+          .catch((e) => console.log('download resiNum url error: ', e));
+      })
+      .catch((e) => console.log('download cafeLogo url error: ', e));
   }
 
   return (
@@ -74,7 +86,9 @@ export default function Certificate({ route, navigation }) {
           <ScrollView>
             <View style={styles.container}>
               <View style={styles.mainContents}>
-                <Text style={styles.question}>1. 카페 사진을 등록해주세요.</Text>
+                <Text style={styles.question}>
+                  1. 카페 사진을 등록해주세요.
+                </Text>
                 <View style={styles.img}>
                   <Text style={styles.imgAlt}>CAFE{'\n'}IMAGE</Text>
                 </View>
@@ -82,12 +96,17 @@ export default function Certificate({ route, navigation }) {
                   <StepButton
                     text="선택"
                     onPress={() => {
-                      chooseImage({userid: account.userid, option: 'cafeLogo'})
+                      chooseImage({
+                        userid: account.userid,
+                        option: 'cafeLogo',
+                      });
                     }}
                     buttonColor={RED_COLOR}
                   />
                 </View>
-                <Text style={styles.question}>2. 주민등록증을 등록해주세요.</Text>
+                <Text style={styles.question}>
+                  2. 주민등록증을 등록해주세요.
+                </Text>
                 <View style={styles.img}>
                   <Text style={styles.imgAlt}>주민등록증</Text>
                 </View>
@@ -95,7 +114,10 @@ export default function Certificate({ route, navigation }) {
                   <StepButton
                     text="선택"
                     onPress={() => {
-                      chooseImage({userid: account.userid, option: 'resiNum'})
+                      chooseImage({
+                        userid: account.userid,
+                        option: 'resiNum',
+                      });
                     }}
                     buttonColor={RED_COLOR}
                   />
@@ -110,7 +132,7 @@ export default function Certificate({ route, navigation }) {
                   <StepButton
                     text="선택"
                     onPress={() => {
-                      chooseImage({userid: account.userid, option: 'comNum'})
+                      chooseImage({ userid: account.userid, option: 'comNum' });
                     }}
                     buttonColor={RED_COLOR}
                   />

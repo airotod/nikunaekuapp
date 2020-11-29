@@ -155,20 +155,6 @@ export default function CafeForm({ route, navigation }) {
               onChangeText={(text) => _handleUserId(text)}
             />
           </View>
-<<<<<<< HEAD
-          <View style={styles.buttonContainer}>
-            {duplicatedMsg && (
-              <Text style={styles.redMsg}>{duplicatedMsg}</Text>
-            )}
-            <TouchableOpacity
-              style={[styles.button, buttonColor]}
-              onPress={_handleDuplicated}
-              activeOpacity={duplicated ? 1 : 0.2}>
-              <Text style={styles.buttonText}>중복 확인</Text>
-            </TouchableOpacity>
-          </View>
-          <Text style={styles.question}>4. 비밀번호를 입력하세요.</Text>
-=======
               <View style={styles.buttonContainer}>
               {duplicatedMsg && <Text style={styles.redMsg}>{duplicatedMsg}</Text>}
                 <TouchableOpacity
@@ -179,7 +165,6 @@ export default function CafeForm({ route, navigation }) {
                 </TouchableOpacity>
               </View>
           <Text style={styles.question}>3. 비밀번호를 입력하세요.</Text>
->>>>>>> dev
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.input}
@@ -199,8 +184,7 @@ export default function CafeForm({ route, navigation }) {
           <Text style={styles.redMsg}>
             영어, 숫자, 특수문자 최소 2개 포함, 총 10글자 이상
           </Text>
-<<<<<<< HEAD
-          <Text style={styles.question}>5. 닉네임을 입력하세요.</Text>
+          <Text style={styles.question}>4. 닉네임을 입력하세요.</Text>
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.input}
@@ -211,10 +195,7 @@ export default function CafeForm({ route, navigation }) {
           <Text style={styles.redMsg}>
             닉네임을 입력하지 않을 경우, 아이디와 동일하게 저장됩니다.
           </Text>
-          <Text style={styles.question}>6. 생년월일을 입력하세요.</Text>
-=======
-          <Text style={styles.question}>4. 생년월일을 입력하세요.</Text>
->>>>>>> dev
+          <Text style={styles.question}>5. 생년월일을 입력하세요.</Text>
           <View style={styles.inputContainer}>
             <Text style={styles.date} onPress={_showDatePicker}>
               {dateWithKorean(birthdate)}
@@ -229,11 +210,7 @@ export default function CafeForm({ route, navigation }) {
               />
             )}
           </View>
-<<<<<<< HEAD
-          <Text style={styles.question}>7. 등록할 카페명을 입력하세요.</Text>
-=======
-          <Text style={styles.question}>5. 등록할 카페명을 입력하세요.</Text>
->>>>>>> dev
+          <Text style={styles.question}>6. 등록할 카페명을 입력하세요.</Text>
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.input}
@@ -241,11 +218,7 @@ export default function CafeForm({ route, navigation }) {
               onChangeText={(text) => setCafename(text)}
             />
           </View>
-<<<<<<< HEAD
-          <Text style={styles.question}>8. 영업 지역을 선택하세요.</Text>
-=======
-          <Text style={styles.question}>6. 영업 지역을 선택하세요.</Text>
->>>>>>> dev
+          <Text style={styles.question}>7. 영업 지역을 선택하세요.</Text>
           <View style={styles.pickerContainer}>
             <Picker
               selectedValue={region}
@@ -257,11 +230,7 @@ export default function CafeForm({ route, navigation }) {
             </Picker>
           </View>
           <Text style={styles.question}>
-<<<<<<< HEAD
-            9. 카페 전화번호를 입력하세요. (선택)
-=======
-            7. 카페 전화번호를 입력하세요. (선택)
->>>>>>> dev
+            8. 카페 전화번호를 입력하세요. (선택)
           </Text>
           <View style={styles.inputContainer}>
             <TextInput

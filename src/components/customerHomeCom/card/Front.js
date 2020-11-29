@@ -1,10 +1,10 @@
-import React from "react";
-import { StyleSheet, ImageBackground } from "react-native";
+import React from 'react';
+import { StyleSheet, ImageBackground } from 'react-native';
 
 const Front = ({ data, isFront }) => {
   return (
     <ImageBackground
-      source={{ uri: data.logoImage }}
+      source={{ uri: data.logo }}
       resizeMode="contain"
       style={{
         opacity: isFront ? 1 : 0.2,
@@ -16,8 +16,8 @@ const Front = ({ data, isFront }) => {
 
 const styles = StyleSheet.create({
   img: {
-    height: "100%",
-    width: "100%",
+    height: '100%',
+    width: '100%',
   },
 });
 

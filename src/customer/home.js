@@ -1,32 +1,32 @@
-import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View, ScrollView } from 'react-native';
 
 import TopBar from '../components/topbar';
 import { BLACK_COLOR } from '../models/colors';
 
-import Card from "../components/customerHomeCom/card/Card";
+import Card from '../components/customerHomeCom/card/Card';
+import firestore from '@react-native-firebase/firestore';
 
 
 const CustomerHome = ({ route, navigation }) => {
+  const { userId, phone, otherParam } = route.params;
+  const [couponlist, setCouponlist] = useState([]);
 
-  const [cards, setCards] = useState([]);
+  const ref = firestore().collection('User').doc(userId).collection('coupons');
+
   useEffect(() => {
-    const fetchCards = async () => {
-      const result = await fetch(
-        "https://nicu-7262f.firebaseio.com/cards.json"
-      );
-      const cards = await result.json();
-
-      const temp = [];
-
-      for (let key in cards) {
-        temp.push(cards[key]);
-      }
-      setCards(temp);
-    };
-    fetchCards();
-
-    return fetchCards;
+    ref.onSnapshot((querysnapshot) => {
+      let items = [];
+      querysnapshot.forEach((doc) => {
+        const { logo, count } = doc.data();
+        items.push({
+          count: count,
+          logo: logo,
+          id: doc.id,
+        });
+      });
+      setCouponlist(items);
+    });
   }, []);
 
   return (
@@ -39,10 +39,10 @@ const CustomerHome = ({ route, navigation }) => {
       />
       <View style={styles.container}>
         <ScrollView style={styles.cardContainer}>
-          {cards.map((info) => (
-            <Card key={info.id} data={info} />
+          {couponlist.map((info) => (
+            <Card key={info.id} data={info} navigation={navigation} />
           ))}
-        </ScrollView>      
+        </ScrollView>
       </View>
     </>
   );

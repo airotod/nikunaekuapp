@@ -40,6 +40,7 @@ const Question = ({ text, subtext }) => {
 const PostDeal = ({ route, navigation }) => {
   const { userId, phone, otherParam } = route.params;
   const [brandName, setBrandName] = useState('');
+  const [brandLogo, setBrandLogo] = useState('');
   const [couponList, setCouponList] = useState([]);
   const [itemList, setItemList] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -51,7 +52,6 @@ const PostDeal = ({ route, navigation }) => {
   const [totalNumMsg, setTotalNumMsg] = useState('');
 
   const dealRef = firestore().collection('DealCenter');
-  const brandRef = firestore().collection('Brand');
   const userRef = firestore().collection('User').doc(userId);
 
   async function _addPost() {
@@ -60,12 +60,6 @@ const PostDeal = ({ route, navigation }) => {
     } else if (totalNum > maxNum) {
       setMsg('판매할 쿠폰 개수는 보유 수량을 초과할 수 없습니다.');
     } else {
-      let brandLogo = null;
-      brandRef.get().then(function (doc) {
-        if (doc.exists) {
-          brandLogo = doc.data().logo;
-        }
-      });
       Alert.alert('쿠폰 구매', `${brandName} 쿠폰을 판매 등록하시겠습니까?`, [
         {
           text: 'CANCEL',
@@ -86,6 +80,7 @@ const PostDeal = ({ route, navigation }) => {
             });
             setMsg('');
             setBrandName(couponList[0].brandID || '');
+            setBrandLogo(couponList[0].logo || '');
             setMaxNum(couponList[0].count || '');
             setTotalNum('');
             setPrice('');
@@ -102,10 +97,15 @@ const PostDeal = ({ route, navigation }) => {
       .then(function (querySnapshot) {
         let coupons = [];
         querySnapshot.forEach(function (doc) {
-          coupons.push({ brandID: doc.id, count: doc.data().count });
+          coupons.push({
+            brandID: doc.id,
+            count: doc.data().count,
+            logo: doc.data().logo,
+          });
         });
         setCouponList(coupons);
         setBrandName(coupons[0].brandID);
+        setBrandLogo(coupons[0].logo);
         setMaxNum(coupons[0].count);
       });
 
@@ -155,6 +155,9 @@ const PostDeal = ({ route, navigation }) => {
             style={styles.picker}
             onValueChange={(value, index) => {
               setBrandName(value);
+              setBrandLogo(
+                couponList.find((item) => item.brandID === value).logo,
+              );
               setMaxNum(
                 couponList.find((item) => item.brandID === value).count,
               );
