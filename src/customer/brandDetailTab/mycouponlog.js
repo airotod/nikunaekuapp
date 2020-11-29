@@ -188,8 +188,7 @@ const MyCouponLog = ({ route, navigation }) => {
         <FlatList
           data={pointLogList}
           renderItem={({ item }) => <CouponLogItem {...item} />}
-          keyExtractor={(item) => item.id}
-        />
+          keyExtractor={(item, index) => index.toString()}        />
       </View>
     </>
   );
