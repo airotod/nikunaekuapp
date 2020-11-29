@@ -1,6 +1,13 @@
-import React, { useState } from 'react';
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import firestore from '@react-native-firebase/firestore';
+import React, { useEffect, useState } from 'react';
+import {
+  Alert,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import firestore, { firebase } from '@react-native-firebase/firestore';
 import { Picker } from '@react-native-community/picker';
 
 import {
@@ -36,6 +43,7 @@ const ItemInfo = ({ title, content, color }) => {
 const DealItem = ({
   couponId,
   currentUser,
+  brandLogo,
   brandName,
   date,
   page,
@@ -47,6 +55,11 @@ const DealItem = ({
 }) => {
   const numList = [...Array(possibleNum).keys()].map((item) => item + 1);
   const [purchaseNum, setPurchaseNum] = useState(numList[0]);
+  const [msg, setMsg] = useState(null);
+  const [point, setPoint] = useState(null);
+
+  const dealRef = firestore().collection('DealCenter');
+  const userRef = firestore().collection('User');
 
   let purchasedColor = purchased ? GREY_60_COLOR : GREEN_COLOR;
   let dateString = date ? date.toDate() : '';
@@ -54,49 +67,69 @@ const DealItem = ({
   let postdealDate = dateString ? dateUTCWithDot(dateString) : '';
   let imgSize =
     page == 'couponmarket'
-      ? { height: 70, width: 100 }
-      : { height: 85, width: 125 };
-  let mainLeft =
-    page == 'couponmarket'
-      ? { flex: 1, justifyContent: 'flex-end' }
-      : { flex: 2, justifyContent: 'flex-end' };
-  let mainRight = page == 'couponmarket' ? { flex: 2 } : { flex: 3 };
+      ? { height: 72, width: 120 }
+      : { height: 75, width: 125 };
 
   async function _purchaseItem() {
-    await firestore()
-      .collection('posts')
-      .doc(couponId)
-      .update({
-        possibleNum: possibleNum - purchaseNum,
-        purchased: possibleNum - purchaseNum == 0,
-      });
-    await firestore().collection('markethistory').add({
-      brandName: brandName,
-      date: firestore.FieldValue.serverTimestamp(),
-      postedBy: postedBy,
-      price: price,
-      purchasedBy: currentUser,
-      purchaseNum: purchaseNum,
+    await dealRef.doc(couponId).update({
+      availableAmount: possibleNum - purchaseNum,
+      onSale: possibleNum - purchaseNum !== 0,
     });
+    await userRef.doc(currentUser).update({
+      usedPoint: firebase.firestore.FieldValue.increment(price * purchaseNum),
+      totalPoint: firebase.firestore.FieldValue.increment(-price * purchaseNum),
+    });
+    await userRef
+      .doc(currentUser)
+      .collection('dealLog')
+      .add({
+        brandLogo: brandLogo,
+        brandName: brandName,
+        couponNum: purchaseNum,
+        dateTime: firestore.FieldValue.serverTimestamp(),
+        dealType: '구매',
+        totalPrice: price * purchaseNum,
+        trader: postedBy,
+      });
+    await userRef
+      .doc(postedBy)
+      .collection('dealLog')
+      .add({
+        brandLogo: brandLogo,
+        brandName: brandName,
+        couponNum: purchaseNum,
+        dateTime: firestore.FieldValue.serverTimestamp(),
+        dealType: '판매',
+        totalPrice: price * purchaseNum,
+        trader: currentUser,
+      });
   }
+
+  useEffect(() => {
+    userRef.doc(currentUser).onSnapshot(function (doc) {
+      if (doc.exists) {
+        setPoint(doc.data().totalPoint);
+      }
+    });
+  }, []);
 
   return (
     <View style={styles.item}>
       {page == 'couponmarket' ? (
         <View style={styles.header}>
-          <Text style={styles.headerText}>{couponId}</Text>
           <Text style={styles.headerText}>{couponmarketDate}</Text>
         </View>
       ) : (
         <></>
       )}
       <View style={styles.main}>
-        <View style={mainLeft}>
-          <View style={[styles.brandImg, imgSize]}>
-            <Text style={styles.brandImgAlt}>브랜드 이미지</Text>
-          </View>
+        <View style={styles.mainLeft}>
+          <Image
+            style={[styles.brandImg, imgSize]}
+            source={{ uri: brandLogo }}
+          />
         </View>
-        <View style={mainRight}>
+        <View style={styles.mainRight}>
           <View style={styles.iteminfo}>
             <Text style={styles.brandName}>{brandName}</Text>
             <View
@@ -114,18 +147,18 @@ const DealItem = ({
               <ItemInfo title="쿠폰 판매 등록 날짜" content={postdealDate} />
               <ItemInfo
                 title="총 쿠폰 개수"
-                content={`${numWithCommas(totalNum)}개`}
+                content={`${numWithCommas(totalNum || 0)}개`}
               />
             </>
           ) : (
             <ItemInfo
               title="구매 가능 수량 (1인당)"
-              content={`${numWithCommas(possibleNum)}개`}
+              content={`${numWithCommas(possibleNum || 0)}개`}
             />
           )}
           <ItemInfo
             title="제시가 (1쿠폰 가격)"
-            content={`${numWithCommas(price)}원`}
+            content={`${numWithCommas(price || 0)}원`}
           />
         </View>
       </View>
@@ -138,9 +171,16 @@ const DealItem = ({
             <Picker
               selectedValue={purchaseNum}
               style={styles.picker}
-              onValueChange={(value, index) => setPurchaseNum(value)}>
+              onValueChange={(value, index) => {
+                if (point < value * price) {
+                  setMsg('포인트가 부족합니다.');
+                } else {
+                  setMsg('');
+                }
+                setPurchaseNum(value);
+              }}>
               {numList.map((item) => (
-                <Picker.Item label={item.toString()} value={item} />
+                <Picker.Item label={item.toString()} value={item} key={item} />
               ))}
             </Picker>
           </View>
@@ -148,15 +188,21 @@ const DealItem = ({
             onPress={() => {
               Alert.alert(
                 '쿠폰 구매',
-                `${brandName} 쿠폰을 ${purchaseNum}개 구매하시겠습니까?`,
+                msg
+                  ? msg
+                  : `${brandName} 쿠폰을 ${purchaseNum}개 구매하시겠습니까?`,
                 [
                   {
                     text: 'CANCEL',
-                    onPress: () => console.log('쿠폰 구매를 취소합니다.'),
+                    onPress: () => {},
                   },
                   {
                     text: 'OK',
-                    onPress: () => _purchaseItem(),
+                    onPress: () => {
+                      if (point >= purchaseNum * price) {
+                        _purchaseItem();
+                      }
+                    },
                   },
                 ],
               );
@@ -175,13 +221,10 @@ const DealItem = ({
 const styles = StyleSheet.create({
   brandImg: {
     alignItems: 'center',
-    backgroundColor: GREY_20_COLOR,
+    borderColor: GREY_20_COLOR,
     borderRadius: 10,
+    borderWidth: 1,
     justifyContent: 'center',
-  },
-  brandImgAlt: {
-    color: GREY_60_COLOR,
-    fontSize: 10,
   },
   brandName: {
     color: BLACK_COLOR,
@@ -231,6 +274,13 @@ const styles = StyleSheet.create({
   },
   main: {
     flexDirection: 'row',
+  },
+  mainLeft: {
+    flex: 1,
+    justifyContent: 'flex-end',
+  },
+  mainRight: {
+    flex: 1.5,
   },
   picker: {
     color: BLACK_COLOR,

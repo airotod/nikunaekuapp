@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 
 import {
   BLACK_COLOR,
@@ -30,10 +30,12 @@ const Item = ({ title, content, color }) => {
 
 const DealLogItem = ({
   couponId,
+  brandLogo,
   brandName,
   date,
   postedBy,
-  price,
+  // price,
+  totalPrice,
   purchaseNum,
   purchasedBy,
   isPurchaseLog,
@@ -59,9 +61,7 @@ const DealLogItem = ({
               {isPurchaseLog ? '구매내역' : '판매내역'}
             </Text>
           </View>
-          <View style={styles.brandImg}>
-            <Text style={styles.brandImgAlt}>브랜드 이미지</Text>
-          </View>
+          <Image style={styles.brandImg} source={{ uri: brandLogo }} />
         </View>
         <View style={styles.mainRight}>
           <Item title="브랜드명" content={brandName} />
@@ -70,13 +70,13 @@ const DealLogItem = ({
             content={isPurchaseLog ? postedBy : purchasedBy}
           />
           <Item title="쿠폰 개수" content={`${numWithCommas(purchaseNum)}개`} />
-          <Item
+          {/* <Item
             title="제시가(1쿠폰 가격)"
             content={`${numWithCommas(price)}원`}
-          />
+          /> */}
           <Item
             title="총 금액"
-            content={`${numWithCommas(price * purchaseNum)}원`}
+            content={`${numWithCommas(totalPrice)}원`}
             color={RED_COLOR}
           />
         </View>
@@ -88,15 +88,12 @@ const DealLogItem = ({
 const styles = StyleSheet.create({
   brandImg: {
     alignItems: 'center',
-    backgroundColor: GREY_20_COLOR,
     borderRadius: 10,
-    height: 70,
+    borderColor: GREY_20_COLOR,
+    borderWidth: 1,
+    height: 75,
     justifyContent: 'center',
-    width: 100,
-  },
-  brandImgAlt: {
-    color: GREY_60_COLOR,
-    fontSize: 10,
+    width: 125,
   },
   date: {
     color: BLACK_COLOR,
@@ -140,7 +137,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   mainRight: {
-    flex: 2,
+    flex: 1.2,
   },
   status: {
     color: WHITE_COLOR,
@@ -153,7 +150,7 @@ const styles = StyleSheet.create({
     height: 24,
     alignItems: 'center',
     justifyContent: 'center',
-    marginVertical: 5,
+    margin: 5,
   },
 });
 

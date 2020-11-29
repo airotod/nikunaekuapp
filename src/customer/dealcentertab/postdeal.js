@@ -16,37 +16,56 @@ import DealItem from '../../components/dealitem';
 
 import {
   BLACK_COLOR,
+  BLUE_COLOR,
   GREY_10_COLOR,
   GREY_20_COLOR,
   RED_COLOR,
   WHITE_COLOR,
 } from '../../models/colors';
-import { username } from '../../models/current';
-import { shopList } from '../../models/shops';
 
 import { sortByDate } from '../../utils/sortby';
 import { checkNumber } from '../../utils/validate';
 
-const Question = ({ text }) => {
-  return <Text style={styles.question}>{text}</Text>;
+const Question = ({ text, subtext }) => {
+  return (
+    <View style={styles.question}>
+      <Text style={styles.questionText}>{text}</Text>
+      {subtext && (
+        <Text style={styles.questionSubtext}>보유 수량 : {subtext}개</Text>
+      )}
+    </View>
+  );
 };
 
 const PostDeal = ({ route, navigation }) => {
-  const [brandName, setBrandName] = useState(shopList[0]);
+  const { userId, phone, otherParam } = route.params;
+  const [brandName, setBrandName] = useState('');
+  const [couponList, setCouponList] = useState([]);
   const [itemList, setItemList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [msg, setMsg] = useState('');
   const [price, setPrice] = useState('');
   const [priceMsg, setPriceMsg] = useState('');
+  const [maxNum, setMaxNum] = useState(null);
   const [totalNum, setTotalNum] = useState('');
   const [totalNumMsg, setTotalNumMsg] = useState('');
 
-  const ref = firestore().collection('posts');
+  const dealRef = firestore().collection('DealCenter');
+  const brandRef = firestore().collection('Brand');
+  const userRef = firestore().collection('User').doc(userId);
 
   async function _addPost() {
     if (!brandName || !totalNum || !price) {
       setMsg('입력하지 않은 항목이 존재합니다.');
+    } else if (totalNum > maxNum) {
+      setMsg('판매할 쿠폰 개수는 보유 수량을 초과할 수 없습니다.');
     } else {
+      let brandLogo = null;
+      brandRef.get().then(function (doc) {
+        if (doc.exists) {
+          brandLogo = doc.data().logo;
+        }
+      });
       Alert.alert('쿠폰 구매', `${brandName} 쿠폰을 판매 등록하시겠습니까?`, [
         {
           text: 'CANCEL',
@@ -55,17 +74,19 @@ const PostDeal = ({ route, navigation }) => {
         {
           text: 'OK',
           onPress: async () => {
-            await ref.add({
-              brandName: brandName,
-              possibleNum: totalNum,
+            await dealRef.add({
+              availableAmount: totalNum,
+              brandID: brandName,
+              brandLogo: brandLogo,
+              clientID: userId,
+              onSale: true,
               price: price,
-              purchased: false,
-              postedAt: firestore.FieldValue.serverTimestamp(),
-              postedBy: username,
-              totalNum: totalNum,
+              registrationAmount: totalNum,
+              registrationAt: firestore.FieldValue.serverTimestamp(),
             });
             setMsg('');
-            setBrandName(shopList[0]);
+            setBrandName(couponList[0].brandID || '');
+            setMaxNum(couponList[0].count || '');
             setTotalNum('');
             setPrice('');
           },
@@ -75,36 +96,53 @@ const PostDeal = ({ route, navigation }) => {
   }
 
   useEffect(() => {
-    return ref.where('postedBy', '==', username).onSnapshot((querySnapshot) => {
-      let items = [];
-      querySnapshot.forEach((doc) => {
-        const {
-          brandName,
-          possibleNum,
-          price,
-          purchased,
-          postedAt,
-          postedBy,
-          totalNum,
-        } = doc.data();
-        items.push({
-          brandName: brandName,
-          currentUser: username,
-          couponId: doc.id,
-          date: postedAt,
-          possibleNum: possibleNum,
-          postedBy: postedBy,
-          price: price,
-          purchased: purchased,
-          totalNum: totalNum,
+    userRef
+      .collection('coupons')
+      .get()
+      .then(function (querySnapshot) {
+        let coupons = [];
+        querySnapshot.forEach(function (doc) {
+          coupons.push({ brandID: doc.id, count: doc.data().count });
         });
+        setCouponList(coupons);
+        setBrandName(coupons[0].brandID);
+        setMaxNum(coupons[0].count);
       });
-      setItemList(sortByDate(items));
 
-      if (loading) {
-        setLoading(false);
-      }
-    });
+    return dealRef
+      .where('clientID', '==', userId)
+      .onSnapshot((querySnapshot) => {
+        let items = [];
+        querySnapshot.forEach((doc) => {
+          const {
+            availableAmount,
+            brandID,
+            brandLogo,
+            clientID,
+            onSale,
+            price,
+            registrationAmount,
+            registrationAt,
+          } = doc.data();
+          items.push({
+            brandLogo: brandLogo,
+            brandName: brandID,
+            currentUser: userId,
+            couponId: doc.id,
+            date: registrationAt,
+            possibleNum: availableAmount,
+            postedBy: clientID,
+            price: price,
+            purchased: !onSale,
+            totalNum: registrationAmount,
+          });
+        });
+        setItemList(sortByDate(items));
+
+        if (loading) {
+          setLoading(false);
+        }
+      });
   }, []);
 
   return (
@@ -115,13 +153,25 @@ const PostDeal = ({ route, navigation }) => {
           <Picker
             selectedValue={brandName}
             style={styles.picker}
-            onValueChange={(value, index) => setBrandName(value)}>
-            {shopList.map((item) => (
-              <Picker.Item label={item} value={item} />
+            onValueChange={(value, index) => {
+              setBrandName(value);
+              setMaxNum(
+                couponList.find((item) => item.brandID === value).count,
+              );
+            }}>
+            {couponList.map((item) => (
+              <Picker.Item
+                label={item.brandID}
+                value={item.brandID}
+                key={item.brandID}
+              />
             ))}
           </Picker>
         </View>
-        <Question text="2. 판매할 쿠폰 개수를 입력하세요. (개)" />
+        <Question
+          text="2. 판매할 쿠폰 개수를 입력하세요. (개)"
+          subtext={maxNum}
+        />
         <TextInput
           style={styles.input}
           placeholder="예) 3"
@@ -160,9 +210,9 @@ const PostDeal = ({ route, navigation }) => {
           value={price}
           clearButtonMode="always"
         />
-        <Text style={styles.msg}>
+        {/* <Text style={styles.msg}>
           쿠폰 1개당 최대 판매 가능 가격은 해당 카페 기본 메뉴 가격의 10%입니다.
-        </Text>
+        </Text> */}
         {priceMsg ? (
           <View style={styles.errMsgContainer}>
             <Text style={styles.red}>{priceMsg}</Text>
@@ -294,11 +344,22 @@ const styles = StyleSheet.create({
     height: 2.5,
   },
   question: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 13,
+    marginBottom: 10,
+  },
+  questionSubtext: {
+    color: BLUE_COLOR,
+    fontSize: 13,
+    fontWeight: 'bold',
+    marginHorizontal: 5,
+  },
+  questionText: {
     color: BLACK_COLOR,
     fontSize: 14,
     fontWeight: 'bold',
-    marginTop: 13,
-    marginBottom: 10,
   },
   red: {
     color: RED_COLOR,

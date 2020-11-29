@@ -17,66 +17,49 @@ import {
   GREY_60_COLOR,
   WHITE_COLOR,
 } from '../../models/colors';
-import { username, userpoint } from '../../models/current';
 import { sortByDate } from '../../utils/sortby';
 import { numWithCommas } from '../../utils/format';
 
 const DealLog = ({ route, navigation }) => {
+  const { userId, phone, otherParam } = route.params;
   const [loading, setLoading] = useState(true);
+  const [userPoint, setUserPoint] = useState(0);
   const [wholeItemList, setWholeItemList] = useState([]);
 
-  const ref = firestore().collection('markethistory');
+  const userRef = firestore().collection('User').doc(userId);
 
   useEffect(() => {
-    let soldItems = [];
-    let purchasedItems = [];
-
-    ref.where('postedBy', '==', username).onSnapshot((querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-        const {
-          brandName,
-          date,
-          postedBy,
-          price,
-          purchaseNum,
-          purchasedBy,
-        } = doc.data();
-        soldItems.push({
-          couponId: doc.id,
-          brandName: brandName,
-          date: date,
-          postedBy: postedBy,
-          price: price,
-          purchaseNum: purchaseNum,
-          purchasedBy: purchasedBy,
-          isPurchaseLog: false,
-        });
-      });
+    userRef.onSnapshot(function (doc) {
+      if (doc.exists) {
+        setUserPoint(doc.data().totalPoint);
+      }
     });
 
-    ref.where('purchasedBy', '==', username).onSnapshot((querySnapshot) => {
+    return userRef.collection('dealLog').onSnapshot((querySnapshot) => {
+      let items = [];
       querySnapshot.forEach((doc) => {
         const {
+          brandLogo,
           brandName,
-          date,
-          postedBy,
-          price,
-          purchaseNum,
-          purchasedBy,
+          couponNum,
+          dateTime,
+          dealType,
+          totalPrice,
+          trader,
         } = doc.data();
-        purchasedItems.push({
+        items.push({
           couponId: doc.id,
+          brandLogo: brandLogo,
           brandName: brandName,
-          date: date,
-          postedBy: postedBy,
-          price: price,
-          purchaseNum: purchaseNum,
-          purchasedBy: purchasedBy,
-          isPurchaseLog: true,
+          date: dateTime,
+          postedBy: (dealType === '구매' && trader) || userId,
+          totalPrice: totalPrice,
+          purchaseNum: couponNum,
+          purchasedBy: (dealType === '구매' && userId) || trader,
+          isPurchaseLog: dealType === '구매',
         });
       });
-
-      setWholeItemList(sortByDate([...soldItems, ...purchasedItems]));
+      setWholeItemList(sortByDate(items));
 
       if (loading) {
         setLoading(false);
@@ -89,7 +72,7 @@ const DealLog = ({ route, navigation }) => {
       <View style={styles.container}>
         <View style={styles.pointContainer}>
           <Text style={styles.pointTitle}>My 포인트</Text>
-          <Text style={styles.point}>{numWithCommas(userpoint)}</Text>
+          <Text style={styles.point}>{numWithCommas(userPoint)}</Text>
           <TouchableOpacity
             onPress={() => {
               console.log('포인트 내역 상세보기');

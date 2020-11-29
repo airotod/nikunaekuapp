@@ -21,10 +21,10 @@ import {
   GREY_10_COLOR,
   WHITE_COLOR,
 } from '../../models/colors';
-import { username } from '../../models/current';
 import { sortByDate, sortByBrandName, sortByPrice } from '../../utils/sortby';
 
 const CouponMarket = ({ route, navigation }) => {
+  const { userId, phone, otherParam } = route.params;
   const [displayedItemList, setDisplayedItemList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [onlyOnSales, setOnlyOnSales] = useState(true);
@@ -35,31 +35,33 @@ const CouponMarket = ({ route, navigation }) => {
 
   let onlyOnSalesColor = onlyOnSales ? GREEN_COLOR : GREY_60_COLOR;
 
-  const ref = firestore().collection('posts');
+  const dealRef = firestore().collection('DealCenter');
 
   useEffect(() => {
-    return ref.onSnapshot((querySnapshot) => {
+    return dealRef.onSnapshot((querySnapshot) => {
       let items = [];
       querySnapshot.forEach((doc) => {
         const {
-          brandName,
-          possibleNum,
+          availableAmount,
+          brandID,
+          brandLogo,
+          clientID,
+          onSale,
           price,
-          purchased,
-          postedAt,
-          postedBy,
-          totalNum,
+          registrationAmount,
+          registrationAt,
         } = doc.data();
         items.push({
+          brandLogo: brandLogo,
+          brandName: brandID,
+          currentUser: userId,
           couponId: doc.id,
-          currentUser: username,
-          brandName: brandName,
-          possibleNum: possibleNum,
+          date: registrationAt,
+          possibleNum: availableAmount,
+          postedBy: clientID,
           price: price,
-          purchased: purchased,
-          date: postedAt,
-          postedBy: postedBy,
-          totalNum: totalNum,
+          purchased: !onSale,
+          totalNum: registrationAmount,
         });
       });
       setWholeItemList(items);
