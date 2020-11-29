@@ -11,10 +11,6 @@ const Back = ({ data }) => {
         resizeMode="contain"
         style={styles.img}
       />
-
-      {/* { <TouchableOpacity style={styles.text} onPress={() => console.log('click 상세보기')}>
-        <Text style={styles.text}>상세 보기</Text>
-      </TouchableOpacity>} */}
     </>
   );
 };
