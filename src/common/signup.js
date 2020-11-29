@@ -8,6 +8,8 @@ import SignUpForm from './signupscreen/signupform';
 import Terms from './signupscreen/terms';
 import CafeForm from './signupscreen/cafeform';
 import Certificate from './signupscreen/certificate';
+import Complete from './signupscreen/complete';
+import ProfileImage from './signupscreen/profileImage';
 
 const Stack = createStackNavigator();
 
@@ -34,6 +36,11 @@ const SignUp = ({ route, navigation }) => {
               component={SignUpForm}
               options={{ title: '회원가입 화면', headerShown: false }}
             />
+            <Stack.Screen
+              name="프로필 이미지 등록 화면"
+              component={ProfileImage}
+              options={{ title: '프로필 이미지 등록 화면', headerShown: false }}
+            />
           </>
         ) : (
           <>
@@ -53,6 +60,14 @@ const SignUp = ({ route, navigation }) => {
                 headerShown: false,
               }}
             />
+            <Stack.Screen
+              name="신청 완료 화면"
+              component={Complete}
+              options={{
+                title: '신청 완료 화면',
+                headerShown: false,
+              }}
+            />
           </>
         )}
       </Stack.Navigator>
@@ -62,12 +77,21 @@ const SignUp = ({ route, navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
+    alignItems: 'center',
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
   },
   mainText: {
     color: BLACK_COLOR,
+    fontSize: 24,
+    margin: 10,
+    fontWeight: 'bold',
+  },
+  text: {
+    color: BLACK_COLOR,
+    margin: 15,
+    fontSize: 14,
+    alignItems: 'stretch',
   },
 });
 

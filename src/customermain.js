@@ -4,10 +4,8 @@ import 'react-native-gesture-handler';
 
 import MyAccount from './common/myaccount';
 import DealCenter from './customer/dealcenter';
-import EnrollCoupon from './customer/enrollcoupon';
 import FindBrand from './customer/findbrand';
 import CustomerHome from './customer/home';
-import MyCoupon from './customer/mycoupon';
 import MyPoint from './customer/mypoint';
 
 import { GREY_80_COLOR, GREY_90_COLOR, WHITE_COLOR } from './models/colors';
@@ -42,18 +40,8 @@ const CustomerMain = ({ route, navigation }) => {
         initialParams={{ userId: userId, phone: phone }}
       />
       <Drawer.Screen
-        name="My 쿠폰"
-        component={MyCoupon}
-        initialParams={{ userId: userId, phone: phone }}
-      />
-      <Drawer.Screen
         name="My 포인트"
         component={MyPoint}
-        initialParams={{ userId: userId, phone: phone }}
-      />
-      <Drawer.Screen
-        name="쿠폰 등록"
-        component={EnrollCoupon}
         initialParams={{ userId: userId, phone: phone }}
       />
       <Drawer.Screen
