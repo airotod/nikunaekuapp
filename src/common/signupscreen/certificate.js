@@ -55,7 +55,7 @@ export default function Certificate({ route, navigation }) {
                   cafeName: account.cafename,
                   cafePhone: account.cafephone,
                   password: account.password,
-                  phone: account.userphone,
+                  phoneNumber: account.userphone,
                   region: account.region,
                   userId: account.userid,
                   userName: account.username,

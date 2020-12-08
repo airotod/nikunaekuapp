@@ -15,7 +15,7 @@ export default function StartScreen({ route, navigation }) {
     <View style={styles.container}>
       <Text style={styles.title}>
         안녕하세요{'\n'}
-        <Text style={styles.red}>APP NAME</Text> 입니다.
+        <Text style={styles.red}>니쿠내쿠</Text> 입니다.
       </Text>
       <View style={styles.buttonContainer}>
         <TouchableOpacity

@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
+import 'react-native-gesture-handler';
 
 import { BLACK_COLOR } from '../models/colors';
 import PhoneAuth from './signupscreen/phoneauth';

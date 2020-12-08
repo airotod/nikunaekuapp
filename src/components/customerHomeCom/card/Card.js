@@ -24,9 +24,9 @@ const Card = ({ data, navigation }) => {
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={flipHandler} style={styles.subcontainer}>
-        {/* <Text style={styles.text}>
-          {data.count}/{data.totalCount}
-        </Text> */}
+        <Text style={styles.text}>
+          {data.count}개
+        </Text>
         <Front data={data} isFront={isFront} />
         {!isFront && <Back data={data} />}
       </TouchableOpacity>
@@ -65,6 +65,12 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     right: 0,
+    // top: '30%',
+    // right: '35%',
+    // alignItems: 'center',
+    // justifyContent: 'center',
+    fontSize: 50,
+    fontSize: 20,
     padding: 4,
     backgroundColor: '#f8f8ff',
   },

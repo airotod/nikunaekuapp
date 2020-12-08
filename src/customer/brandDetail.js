@@ -33,6 +33,7 @@ const BrandDetail = ({ route, navigation }) => {
           tabBarOptions={{
             activeTintColor: RED_COLOR,
             inactiveTintColor: GREY_60_COLOR,
+            indicatorStyle: { backgroundColor: RED_COLOR },
             pressColor: GREY_20_COLOR,
             labelStyle: { fontSize: 16 },
             style: { backgroundColor: WHITE_COLOR, height: 44 },
