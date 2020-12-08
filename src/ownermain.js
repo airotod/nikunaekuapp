@@ -12,6 +12,8 @@ import { GREY_80_COLOR, GREY_90_COLOR, WHITE_COLOR } from './models/colors';
 const Drawer = createDrawerNavigator();
 
 const OwnerMain = ({ route, navigation }) => {
+  const { userId, phone, otherParam } = route.params;
+
   return (
     <Drawer.Navigator
       initialRouteName="홈"
@@ -26,10 +28,22 @@ const OwnerMain = ({ route, navigation }) => {
           fontSize: 18,
         },
       }}>
-      <Drawer.Screen name="홈" component={OwnerHome} />
-      <Drawer.Screen name="내 정보" component={MyAccount} />
-      <Drawer.Screen name="쿠폰 사용량" component={CouponLog} />
-      <Drawer.Screen name="고객 로그" component={CustomerLog} />
+      <Drawer.Screen
+        name="홈"
+        component={OwnerHome}
+        initialParams={{ userId: userId, phone: phone }} />
+      <Drawer.Screen
+        name="내 정보"
+        component={MyAccount}
+        initialParams={{ userId: userId, phone: phone }} />
+      <Drawer.Screen
+        name="쿠폰 사용량"
+        component={CouponLog}
+        initialParams={{ userId: userId, phone: phone }} />
+      <Drawer.Screen
+        name="고객 로그"
+        component={CustomerLog}
+        initialParams={{ userId: userId, phone: phone }} />
     </Drawer.Navigator>
   );
 };

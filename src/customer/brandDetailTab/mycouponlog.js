@@ -36,7 +36,7 @@ const CouponLogItem = ({ count, couponType, dateTime, storeID, trader }) => {
           style={styles.imageItem}
           source={require('../brandDetailTab/myCoupon_images/use_image.png')}
         />
-        <Text style={styles.couponText_use}>{count}개</Text>
+        <Text style={styles.couponText_use}>- {count}개</Text>
       </View>
     );
   } else {
@@ -46,7 +46,7 @@ const CouponLogItem = ({ count, couponType, dateTime, storeID, trader }) => {
           style={styles.imageItem}
           source={require('../brandDetailTab/myCoupon_images/reward_image.png')}
         />
-        <Text style={styles.couponText_reward}>+{count}개</Text>
+        <Text style={styles.couponText_reward}>+ {count}개</Text>
       </View>
     );
   }

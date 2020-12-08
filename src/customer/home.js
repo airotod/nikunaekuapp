@@ -6,7 +6,7 @@ import { BLACK_COLOR } from '../models/colors';
 
 import Card from '../components/customerHomeCom/card/Card';
 import firestore from '@react-native-firebase/firestore';
-
+import 'react-native-gesture-handler';
 
 const CustomerHome = ({ route, navigation }) => {
   const { userId, phone, otherParam } = route.params;

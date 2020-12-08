@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import firestore from '@react-native-firebase/firestore';
+import 'react-native-gesture-handler';
 
 import AccountItem from '../components/accountitem';
 import TopBar from '../components/topbar';
@@ -31,7 +32,7 @@ const MyAccount = ({ route, navigation }) => {
           .get()
           .then(async function (doc) {
             if (doc.exists) {
-              setLogo(doc.data().cafeLogo);
+              setLogo(doc.data().cafeLogo || doc.data().profileUrl);
             }
           });
       } catch (e) {

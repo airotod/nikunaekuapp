@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import firestore from '@react-native-firebase/firestore';
+import 'react-native-gesture-handler';
 
-import { BLACK_COLOR, GREY_90_COLOR, RED_COLOR } from '../models/colors';
+import { BLACK_COLOR, GREY_70_COLOR, GREY_90_COLOR, RED_COLOR } from '../models/colors';
 import { AuthContext } from '../utils/context';
 
 const SignIn = ({ route, navigation }) => {
@@ -15,7 +16,7 @@ const SignIn = ({ route, navigation }) => {
 
   async function _handleSignIn({ evet, signIn }) {
     if (!userId) {
-      setMsg('이메일 또는 전화번호를 입력해주세요.');
+      setMsg('아이디를 입력해주세요.');
     } else if (!userPw) {
       setMsg('비밀번호를 입력해주세요.');
     } else {
@@ -53,7 +54,7 @@ const SignIn = ({ route, navigation }) => {
           </Text>
           <TextInput
             style={styles.input}
-            placeholder="이메일 또는 전화번호"
+            placeholder="아이디"
             onChangeText={(text) => setUserId(text)}
             autoFocus={true}
           />
@@ -75,6 +76,16 @@ const SignIn = ({ route, navigation }) => {
               color={GREY_90_COLOR}
             />
           </View>
+      <View style={styles.signInContainer}>
+        <Text style={styles.signIn}>
+          이미 계정이 있으신가요?{'  '}
+          <Text
+            style={styles.signInButton}
+            onPress={() => navigation.pop()}>
+              회원가입
+          </Text>
+        </Text>
+      </View>
         </View>
       )}
     </AuthContext.Consumer>
@@ -103,6 +114,15 @@ const styles = StyleSheet.create({
   msg: {
     color: RED_COLOR,
     fontSize: 13,
+  },
+  signIn: {
+    color: GREY_70_COLOR,
+    fontSize: 14,
+  },
+  signInButton: {
+    color: BLACK_COLOR,
+    fontSize: 14,
+    fontWeight: 'bold',
   },
   title: {
     color: BLACK_COLOR,
