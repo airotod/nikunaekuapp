@@ -89,36 +89,40 @@ const MyWallet = ({ route, navigation }) => {
           ref.doc(friendId).onSnapshot((doc) => {
             if (!doc.exists) {
               Alert.alert("해당 아이디는 존재하지 않습니다.")
+              givePoint = 0;
               return;
             } else if (doc.data().userType != "customer") {
               Alert.alert("해당 아이디와 포인트를 주고받을 수 없습니다.")
+              givePoint = 0;
               return;
             }
-            const {totalPoint} = doc.data();
-            setFriendtotalpoint(totalPoint);
+            else {
+              const {totalPoint} = doc.data();
+              setFriendtotalpoint(totalPoint);
+              doc.update({
+                totalPoint: firestore.FieldValue.increment(Number(givePoint)),
+                savePoint: firestore.FieldValue.increment(Number(givePoint)),
+              })
+              ref.doc(friendId).collection('pointLog').add({
+                balance: friendtotalpoint + Number(givePoint),
+                dateTime: firestore.FieldValue.serverTimestamp(),
+                pointType: '포인트 선물 적립',
+                pointVolume: Number(givePoint),
+                trader: userId,
+              })
+              ref.doc(userId).update({
+                totalPoint: firestore.FieldValue.increment(-Number(givePoint)),
+                usedPoint: firestore.FieldValue.increment(Number(givePoint)),
+              })
+              ref.doc(userId).collection('pointLog').add({
+                balance: totalpoint - Number(givePoint),
+                dateTime: firestore.FieldValue.serverTimestamp(),
+                pointType: '포인트 선물',
+                trader: friendid,
+                pointVolume: -Number(givePoint),
+              })
+            }
           });
-          await ref.doc(friendId).update({
-            totalPoint: firestore.FieldValue.increment(Number(givePoint)),
-            savePoint: firestore.FieldValue.increment(Number(givePoint)),
-          })
-          await ref.doc(friendId).collection('pointLog').add({
-            balance: friendtotalpoint + Number(givePoint),
-            dateTime: firestore.FieldValue.serverTimestamp(),
-            pointType: '포인트 선물 적립',
-            pointVolume: Number(givePoint),
-            trader: userId,
-          })
-          await ref.doc(userId).update({
-            totalPoint: firestore.FieldValue.increment(-Number(givePoint)),
-            usedPoint: firestore.FieldValue.increment(Number(givePoint)),
-          })
-          await ref.doc(userId).collection('pointLog').add({
-            balance: totalpoint - Number(givePoint),
-            dateTime: firestore.FieldValue.serverTimestamp(),
-            pointType: '포인트 선물',
-            trader: friendid,
-            pointVolume: -Number(givePoint),
-          })
           setIsVisible2(false);
         },},
     ]);
@@ -134,6 +138,7 @@ const MyWallet = ({ route, navigation }) => {
         onPress: async () => {
           await ref.doc(userId).update({
             totalPoint: firestore.FieldValue.increment(-Number(withdrawalPoint)),
+            usedPoint: firestore.FieldValue.increment(Number(withdrawalPoint)),
           });
           await ref.doc(userId).collection('pointLog').add({
             balance: totalpoint - Number(withdrawalPoint),
