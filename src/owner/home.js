@@ -19,59 +19,75 @@ import firestore from '@react-native-firebase/firestore';
 
 const OwnerHome = ({ route, navigation }) => {
   const [owner, setOwner] = useState([]);
+  const [brandName, setBrand] = useState([]);
+  const [storeName, setStore] = useState([]);
+  const [seat, setSeat] = useState([]);
+  const [storeImg, setImg] = useState([]);
 
-  const ref = firestore().collection('owner');
+  const [todayC, setToday] = useState([]);
+  const [totalC, setTotal] = useState([]);
+
+  const { userId } = route.params;
+
+  var docRef = firestore().collection('User').doc(userId);
+  var BrandRef = firestore().collection('Brand')
+
+
+  docRef.get().then(function(doc) {
+      if (doc.exists) {
+        setBrand(doc.data().brandID)
+        setStore(doc.data().storeID)
+        BrandRef.doc(doc.data().brandID).get().then(function(brand) {
+          setImg(brand.data().logo)
+        }).catch(function(error) {
+          console.log("Error getting document:", error);
+        })
+      } 
+  }).catch(function(error) {
+      console.log("Error getting document:", error);
+  });
+
+  console.log("store img : ", storeImg)
 
   async function _changeSeat(seatNum) {
-    await ref
-      .doc('starbucks') // 이건 후에 수정하자!
+    await firestore().collection('Brand').doc(brandName).collection('Stores').doc(storeName) // 이건 후에 수정하자!
       .update({
-        checkSeat: seatNum, // 0 -> 선택 x, 1 -> 널널, 2 -> 보통, 3 -> 부족, 4 -> 만석
+        seatState: seatNum, // 0 -> 선택 x, 1 -> 널널, 2 -> 보통, 3 -> 부족, 4 -> 만석
         time: Date.now(),
       });
+      setSeat(seatNum)
   }
 
   function _changeSeat0() {
-    setTimeout(() => ref.doc('starbucks').update({ checkSeat: 0 }), 10000);
+    setTimeout(() =>  firestore().collection('Brand').doc(brandName).collection('Stores').doc(storeName) // 이건 후에 수정하자!
+    .update({seatState: 0}), 10000);
+    setSeat(0)
   }
 
+  let ref = firestore().collection('Brand');
+
   useEffect(() => {
-    return ref.onSnapshot((querySnapshot) => {
-      const list = [];
-      querySnapshot.forEach((doc) => {
-        const {
-          userName,
-          userId,
-          storeName,
-          storeImg,
-          weekCount,
-          totalCount,
-          checkSeat,
-          time,
-        } = doc.data();
-        if (userId === 'b970311') {
-          setOwner({
-            userName: userName,
-            userId: userId,
-            storeName: storeName,
-            storeImg: storeImg,
-            weekCount: weekCount,
-            totalCount: totalCount,
-            checkSeat: checkSeat,
-            time: time,
-          });
-        }
-      });
-      // if (Date.now() - owner.time > 10000) { // 한시간이 지나면 초기화(지금은 테스트라서 10초로 함)
-      //   firestore().collection("owner").doc("starbucks").update({ checkSeat: 0, time: Date.now() }); // 시간도 업데이트 안 시켜주면 버튼을 두번 클릭해야지 됨. 아마 update 시간 차이 때문인 것 같음.
-      // }
-    });
+    const getUserIdAsync = async () => {
+      try {
+        ref.doc(brandName).collection('Stores').doc(storeName).onSnapshot((doc) => {
+          if (doc.exists) {
+            const {totalCount, todayCount} = doc.data();
+            setTotal(totalCount)
+            setToday(todayCount)
+          }
+        })
+      } catch (e) {
+        // Restoring Id failed
+        console.log('Restoring Id failed or Get point data failed');
+      }
+    };
+    getUserIdAsync();
   }, []);
 
   return (
     <>
       <TopBar
-        title={owner.storeName}
+        title={brandName}
         navigation={navigation}
         drawerShown={true}
         myaccountShown={true}
@@ -80,7 +96,7 @@ const OwnerHome = ({ route, navigation }) => {
       />
       <View style={styles.container}>
         {/* 가게 이미지 */}
-        <Image style={styles.img} source={{ uri: owner.storeImg }} />
+        <Image style={styles.img} source={{ uri: storeImg }} />
         {/* 매장 좌석 체크 */}
         <View style={styles.seat}>
           <Text style={styles.mainText}> 매장 좌석 체크 </Text>
@@ -90,8 +106,8 @@ const OwnerHome = ({ route, navigation }) => {
                 styles.seatButton,
                 {
                   backgroundColor: GREEN_COLOR,
-                  borderWidth: owner.checkSeat === 1 ? 3 : 0,
-                  borderColor: owner.checkSeat === 1 ? BLACK_COLOR : '',
+                  borderWidth: seat === 1 ? 3 : 0,
+                  borderColor: seat === 1 ? BLACK_COLOR : '',
                 },
               ]}
               onPress={() => {
@@ -106,8 +122,8 @@ const OwnerHome = ({ route, navigation }) => {
                 styles.seatButton,
                 {
                   backgroundColor: BLUE_COLOR,
-                  borderWidth: owner.checkSeat === 2 ? 3 : 0,
-                  borderColor: owner.checkSeat === 2 ? BLACK_COLOR : '',
+                  borderWidth: seat === 2 ? 3 : 0,
+                  borderColor: seat === 2 ? BLACK_COLOR : '',
                 },
               ]}
               onPress={() => {
@@ -122,8 +138,8 @@ const OwnerHome = ({ route, navigation }) => {
                 styles.seatButton,
                 {
                   backgroundColor: YELLO_COLOR,
-                  borderWidth: owner.checkSeat === 3 ? 3 : 0,
-                  borderColor: owner.checkSeat === 3 ? BLACK_COLOR : '',
+                  borderWidth: seat === 3 ? 3 : 0,
+                  borderColor: seat === 3 ? BLACK_COLOR : '',
                 },
               ]}
               onPress={() => {
@@ -138,8 +154,8 @@ const OwnerHome = ({ route, navigation }) => {
                 styles.seatButton,
                 {
                   backgroundColor: DARK_RED_COLOR,
-                  borderWidth: owner.checkSeat === 4 ? 3 : 0,
-                  borderColor: owner.checkSeat === 4 ? BLACK_COLOR : '',
+                  borderWidth: seat === 4 ? 3 : 0,
+                  borderColor: seat === 4 ? BLACK_COLOR : '',
                 },
               ]}
               onPress={() => {
@@ -155,10 +171,10 @@ const OwnerHome = ({ route, navigation }) => {
         </View>
         {/* 쿠폰 사용량 */}
         <View style={styles.coupon}>
-          <Text style={styles.mainText}>실시간 쿠폰 사용량 (주별/전원)</Text>
+          <Text style={styles.mainText}>실시간 쿠폰 사용량 (일별/전원)</Text>
           <Text style={{ fontSize: 40 }}>
-            <Text style={{ color: 'red' }}>{owner.weekCount}</Text> /{' '}
-            <Text style={{ color: GREY_100_COLOR }}>{owner.totalCount}</Text>
+            <Text style={{ color: 'red' }}>{todayC}</Text> /{' '}
+            <Text style={{ color: GREY_100_COLOR }}>{totalC}</Text>
           </Text>
           <TouchableOpacity
             style={styles.couponButton}
