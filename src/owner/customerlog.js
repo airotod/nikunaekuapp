@@ -22,32 +22,31 @@ const CustomerLogItem = ({clientCumCount, clientID, count, dateTime, logType }) 
 
   if (logType=="사용") {
     IconItem = <View style={styles.itemcontainer}>
-                  {/* <Image
+                  <Image
                   style={styles.imageItem}
-                  source={require('./customerlog_images/use_image.png')} /> */}
+                  source={require('./customerlog_images/use_image.png')} />
                   <Text style={styles.pointText_use}>-{count}개</Text>
                 </View>;
-    cumContent = <Text style={styles.detailText}>누적 사용 개수 | {clientCumCount}</Text>;
+    cumContent = <Text style={styles.detailText}>누적 사용 개수 | {clientCumCount}개</Text>;
   } else {
     IconItem = <View style={styles.itemcontainer}>
-                  {/* <Image
+                  <Image
                   style={styles.imageItem}
-                  source={require('./customerlog_images/reward_image.png')} /> */}
+                  source={require('./customerlog_images/reward_image.png')} />
                   <Text style={styles.pointText_reward}>+{count}개</Text>
                 </View>;
-    cumContent = <Text style={styles.detailText}>누적 적립 개수 | {clientCumCount}</Text>;
+    cumContent = <Text style={styles.detailText}>누적 적립 개수 | {clientCumCount}개</Text>;
   }
-
-  idContent = <Text style={styles.detailText}>고객아이디 | {clientID}</Text>;
+  idContent = <Text style={styles.logtitleText}>고객아이디 | {clientID}</Text>;
   
 
   return (
       <View style={styles.listcontainer}>     
         {IconItem}      
         <View style={styles.linecontainer}>
-          {/* <Image
+          <Image
             style={styles.lineItem}
-            source={require('./customerlog_images/line_image.png')} /> */}
+            source={require('./customerlog_images/line_image.png')} />
         </View>
         <View style={styles.contextcontainer}>
           <View style={styles.detailcontainer}>
@@ -85,7 +84,7 @@ const CustomerLog = ({ route, navigation }) => {
                     clientCumCount: clientCumCount,
                     clientID: clientID, 
                     count: count,
-                    dataTime: dateTime,
+                    dateTime: dateTime,
                     logType: logType,
                   });
                 } else if ((selectedValue) == "적립"){
@@ -94,7 +93,7 @@ const CustomerLog = ({ route, navigation }) => {
                       clientCumCount: clientCumCount,
                       clientID: clientID, 
                       count: count,
-                      dataTime: dateTime,
+                      dateTime: dateTime,
                       logType: logType,
                     });
                   }
@@ -104,7 +103,7 @@ const CustomerLog = ({ route, navigation }) => {
                       clientCumCount: clientCumCount,
                       clientID: clientID, 
                       count: count,
-                      dataTime: dateTime,
+                      dateTime: dateTime,
                       logType: logType,
                     });
                   }                
@@ -118,7 +117,7 @@ const CustomerLog = ({ route, navigation }) => {
       }});
     }, [selectedValue]);
 
-  renderItem = ({ item, index }) => { };
+  // renderItem = ({ item, index }) => { };
 
   return (
     <>
@@ -233,6 +232,7 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   logtitleText: {
+    color: BLACK_COLOR,
     fontSize: 16,
   },
   detailcontainer2: {
