@@ -22,7 +22,7 @@ const Introduction = ({ route, navigation }) => {
   return (
     <>
       <View style={styles.container}>
-        <Text style={styles.mainText}>{description}</Text>
+        <Text style={styles.mainText}>{description && description.replace(/\\n/g, '\n')}</Text>
       </View>
     </>
   );
