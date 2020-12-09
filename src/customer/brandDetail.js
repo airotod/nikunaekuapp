@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 
 import { StyleSheet, Image } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-// import AsyncStorage from '@react-nativet-async-storage/async-storage';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 import TopBar from '../components/topbar';
 import {
@@ -11,15 +13,62 @@ import {
   RED_COLOR,
   WHITE_COLOR,
 } from '../models/colors';
+import firestore from '@react-native-firebase/firestore';
 
 import MyCouponLog from './brandDetailTab/mycouponlog';
 import Introduction from './brandDetailTab/introduction';
+import StoreList from './brandDetailTab/storelist';
 import { ScrollView } from 'react-native-gesture-handler';
 
 const Tab = createMaterialTopTabNavigator();
 
 const BrandDetail = ({ route, navigation }) => {
   const { data, otherParam } = route.params;
+  // const [brandList, setBrandList] = useState([]);
+  // const [userId, setUserId] = useState(null);
+
+  // useEffect(() => {
+  //   const getUserIdAsync = async () => {
+  //     try {
+  //       const getUserId = await AsyncStorage.getItem('userId');
+  //       setUserId(getUserId);
+  //       const ref = firestore().collection('Brand');
+
+  //       let userCoupons = [];
+  //       firestore()
+  //         .collection('User')
+  //         .doc(getUserId)
+  //         .collection('coupons')
+  //         .get()
+  //         .then(function (querySnapshot) {
+  //           let coupons = [];
+  //           querySnapshot.forEach(function (doc) {
+  //             coupons.push(doc.id);
+  //           });
+  //           userCoupons = coupons;
+  //         });
+
+  //       ref.onSnapshot((querySnapshot) => {
+  //         let items = [];
+  //         querySnapshot.forEach((doc) => {
+  //           const { brandName, logo } = doc.data();
+  //           if (userCoupons.includes(brandName)) {
+  //             items.push({
+  //               brandName: brandName,
+  //               logo: logo,
+  //             });
+  //           }
+  //         });
+  //         setBrandList(items);
+  //       });
+  //     } catch (e) {
+  //       // Restoring Id failed
+  //       console.log('Restoring Id failed');
+  //     }
+  //   };
+  //   getUserIdAsync();
+  // }, []);
+
 
   return (
     <>
@@ -49,6 +98,13 @@ const BrandDetail = ({ route, navigation }) => {
             options={{ tabBarLabel: '소개' }}
             initialParams={{ data: data }}
           />
+          <Tab.Screen
+            name="매장"
+            component={StoreList}
+            options={{ tabBarLabel: '매장' }}
+            initialParams={{ data: data }}
+          />
+
           <Tab.Screen
             name="쿠폰 내역"
             component={MyCouponLog}
