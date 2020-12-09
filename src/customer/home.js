@@ -29,23 +29,39 @@ const CustomerHome = ({ route, navigation }) => {
     });
   }, []);
 
-  return (
-    <>
-      <TopBar
-        title="니쿠내쿠"
-        navigation={navigation}
-        drawerShown={true}
-        myaccountShown={true}
-      />
-      <View style={styles.container}>
-        <ScrollView style={styles.cardContainer}>
-          {couponlist.map((info) => (
-            <Card key={info.id} data={info} navigation={navigation} />
-          ))}
-        </ScrollView>
-      </View>
-    </>
-  );
+if (couponlist.length == 0) {
+    return(
+      <>
+        <TopBar
+          title="니쿠내쿠"
+          navigation={navigation}
+          drawerShown={true}
+          myaccountShown={true}
+        />
+        <View style={styles.container}>
+          <Text style={styles.empty}>등록된 쿠폰이 없습니다.</Text>
+        </View>
+      </>
+    )
+  } else {
+    return (
+      <>
+        <TopBar
+          title="니쿠내쿠"
+          navigation={navigation}
+          drawerShown={true}
+          myaccountShown={true}
+        />
+        <View style={styles.container}>
+          <ScrollView style={styles.cardContainer}>
+            {couponlist.map((info) => (
+              <Card key={info.id} data={info} navigation={navigation} />
+            ))}
+          </ScrollView>
+        </View>
+      </>
+    );
+  }
 };
 
 const styles = StyleSheet.create({
@@ -57,6 +73,10 @@ const styles = StyleSheet.create({
   mainText: {
     color: BLACK_COLOR,
   },
+  empty:{
+    fontSize: 20,
+    fontWeight: 'bold'
+  }
 });
 
 export default CustomerHome;
