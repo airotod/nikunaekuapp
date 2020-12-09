@@ -84,7 +84,7 @@ const OwnerHome = ({ route, navigation }) => {
   return (
     <>
       <TopBar
-        title={brandName}
+        title={storeName}
         navigation={navigation}
         drawerShown={true}
         myaccountShown={true}
