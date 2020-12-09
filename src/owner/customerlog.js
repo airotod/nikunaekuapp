@@ -14,7 +14,7 @@ import { dateUTCWithKorean } from '../utils/format'
 const chartWidth = Dimensions.get('window').width;
 const charHeight = Dimensions.get('window').height;
 
-const CustomerLogItem = ({clientCumCount, clientID, count, dateTime, logType }) => {
+const CustomerLogItem = ({clientID, count, dateTime, logType }) => {
   let IconItem = null;
   let dateItems = dateTime && dateUTCWithKorean(dateTime.toDate());
   let idContent = null;
@@ -27,7 +27,7 @@ const CustomerLogItem = ({clientCumCount, clientID, count, dateTime, logType }) 
                   source={require('./customerlog_images/use_image.png')} />
                   <Text style={styles.pointText_use}>-{count}개</Text>
                 </View>;
-    cumContent = <Text style={styles.detailText}>누적 사용 개수 | {clientCumCount}개</Text>;
+    // cumContent = <Text style={styles.detailText}>누적 사용 개수 | {clientCumCount}개</Text>;
   } else {
     IconItem = <View style={styles.itemcontainer}>
                   <Image
@@ -35,7 +35,7 @@ const CustomerLogItem = ({clientCumCount, clientID, count, dateTime, logType }) 
                   source={require('./customerlog_images/reward_image.png')} />
                   <Text style={styles.pointText_reward}>+{count}개</Text>
                 </View>;
-    cumContent = <Text style={styles.detailText}>누적 적립 개수 | {clientCumCount}개</Text>;
+    // cumContent = <Text style={styles.detailText}>누적 적립 개수 | {clientCumCount}개</Text>;
   }
   idContent = <Text style={styles.logtitleText}>고객아이디 | {clientID}</Text>;
   
@@ -56,7 +56,7 @@ const CustomerLogItem = ({clientCumCount, clientID, count, dateTime, logType }) 
             </View>
           </View>
           <View style={styles.balancecontainer}>
-            {cumContent}
+            {/* {cumContent} */}
           </View>
         </View>
       </View>
@@ -81,7 +81,7 @@ const CustomerLog = ({ route, navigation }) => {
                 const {clientCumCount, clientID, count, dateTime, logType} = document.data();
                 if ((selectedValue) == "전체") {
                   items.push({
-                    clientCumCount: clientCumCount,
+                    // clientCumCount: clientCumCount,
                     clientID: clientID, 
                     count: count,
                     dateTime: dateTime,
@@ -90,7 +90,7 @@ const CustomerLog = ({ route, navigation }) => {
                 } else if ((selectedValue) == "적립"){
                   if (logType == "적립") {
                     items.push({
-                      clientCumCount: clientCumCount,
+                      // clientCumCount: clientCumCount,
                       clientID: clientID, 
                       count: count,
                       dateTime: dateTime,
@@ -100,7 +100,7 @@ const CustomerLog = ({ route, navigation }) => {
                 } else if ((selectedValue) == "사용"){
                   if (logType == "사용") {
                     items.push({
-                      clientCumCount: clientCumCount,
+                      // clientCumCount: clientCumCount,
                       clientID: clientID, 
                       count: count,
                       dateTime: dateTime,

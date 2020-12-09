@@ -53,7 +53,7 @@ const OwnerHome = ({ route, navigation }) => {
     await firestore().collection('Brand').doc(brandName).collection('Stores').doc(storeName) // 이건 후에 수정하자!
       .update({
         seatState: seatNum, // 0 -> 선택 x, 1 -> 널널, 2 -> 보통, 3 -> 부족, 4 -> 만석
-        time: Date.now(),
+        seatTime: Date.now(),
       });
       setSeat(seatNum)
   }
