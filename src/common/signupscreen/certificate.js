@@ -31,6 +31,7 @@ export default function Certificate({ route, navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
 
   const ref = firestore().collection('User');
+  const ref2 = firestore().collection('Brand');
 
   function _handleComplete(event) {
     setModalVisible(true);
@@ -41,6 +42,16 @@ export default function Certificate({ route, navigation }) {
       .ref('/cafeLogo_' + account.userid)
       .getDownloadURL()
       .then(async function (logoUrl) {
+        if (account.brandID === null) {
+          ref2.doc(account.storeID).set({
+            brandID: account.storeID,
+            description: account.des,
+            logo: logoUrl,
+          });
+          ref2.doc(account.storeID).collection('store').set({
+            
+          });
+        }
         storage()
           .ref('/resiNum_' + account.userid)
           .getDownloadURL()
@@ -52,18 +63,17 @@ export default function Certificate({ route, navigation }) {
                 await AsyncStorage.setItem('userType', 'owner');
                 await ref.doc(account.userid).set({
                   birthdate: account.birthdate,
-                  cafeName: account.cafename,
+                  brandID: account.brandID === null ? account.storeID : account.brandID,
+                  storeID: account.storeID,
                   cafePhone: account.cafephone,
                   password: account.password,
-                  phoneNumber: account.userphone,
+                  phoneNumber: account.phoneNumber,
                   region: account.region,
                   userId: account.userid,
                   userName: account.username,
                   userType: 'owner',
-                  cafeLogo: logoUrl,
-                  resiNum: resiUrl,
-                  comNum: comUrl,
-                  registeredAt: firestore.FieldValue.serverTimestamp(),
+                  idCard: resiUrl,
+                  businessLicense: comUrl,
                 });
                 setModalVisible(false);
               })
@@ -87,7 +97,7 @@ export default function Certificate({ route, navigation }) {
             <View style={styles.container}>
               <View style={styles.mainContents}>
                 <Text style={styles.question}>
-                  1. 카페 사진을 등록해주세요.
+                  ● 카페 사진을 등록해주세요.
                 </Text>
                 <View style={styles.img}>
                   <Text style={styles.imgAlt}>CAFE{'\n'}IMAGE</Text>
@@ -105,7 +115,7 @@ export default function Certificate({ route, navigation }) {
                   />
                 </View>
                 <Text style={styles.question}>
-                  2. 주민등록증을 등록해주세요.
+                  ● 주민등록증을 등록해주세요.
                 </Text>
                 <View style={styles.img}>
                   <Text style={styles.imgAlt}>주민등록증</Text>
@@ -123,7 +133,7 @@ export default function Certificate({ route, navigation }) {
                   />
                 </View>
                 <Text style={styles.question}>
-                  3. 사업자등록증을 등록해주세요.
+                  ● 사업자등록증을 등록해주세요.
                 </Text>
                 <View style={styles.img}>
                   <Text style={styles.imgAlt}>사업자등록증</Text>
