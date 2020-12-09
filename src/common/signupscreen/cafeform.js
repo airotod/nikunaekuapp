@@ -314,7 +314,7 @@ export default function CafeForm({ route, navigation }) {
             />
           </View>
           <Text style={styles.question}>
-            10. 매장 전화번호를 입력하세요. (선택)
+            10. 매장 전화번호를 입력하세요.
           </Text>
           <View style={styles.inputContainer}>
             <TextInput

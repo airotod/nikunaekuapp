@@ -20,7 +20,7 @@ import { AuthContext } from '../utils/context';
 import { set } from 'react-native-reanimated';
 
 const MyAccount = ({ route, navigation }) => {
-  const { userId, phone, otherParam } = route.params;
+  const { userId, phone, userType, otherParam } = route.params;
   const [logo, setLogo] = useState(null);
   const [store, setStore] = useState(null);
 
@@ -56,6 +56,10 @@ const MyAccount = ({ route, navigation }) => {
     await AsyncStorage.removeItem('userId');
     await AsyncStorage.removeItem('userType');
     await AsyncStorage.removeItem('phoneNumber');
+    if (userType === 'owner') {
+      await AsyncStorage.removeItem('brandId');
+      await AsyncStorage.removeItem('storeId');
+    }
   }
 
   return (

@@ -220,7 +220,7 @@ export default function Certificate({ route, navigation }) {
                 <View style={styles.modalView}>
                   <Text style={styles.msg}>
                     [확인]을 누르면 매장 등록 신청이 완료됩니다.{'\n'}
-                    정보를 올바르게 입력했는지 다시 한번 확인해보시기 바랍니다.
+                    올바른 이미지를 업로드했는지 다시 한번 확인해보시기 바랍니다.
                   </Text>
                   <View style={styles.buttonContainer}>
                     <StepButton

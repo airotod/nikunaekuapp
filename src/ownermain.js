@@ -6,13 +6,14 @@ import MyAccount from './common/myaccount';
 import CouponLog from './owner/couponlog';
 import CustomerLog from './owner/customerlog';
 import OwnerHome from './owner/home';
+import CouponUsing from './owner/couponUsing';
 
 import { GREY_80_COLOR, GREY_90_COLOR, WHITE_COLOR } from './models/colors';
 
 const Drawer = createDrawerNavigator();
 
 const OwnerMain = ({ route, navigation }) => {
-  const { userId, phone, otherParam } = route.params;
+  const { userId, phone, userType, brandId, storeId, otherParam } = route.params;
 
   return (
     <Drawer.Navigator
@@ -35,7 +36,7 @@ const OwnerMain = ({ route, navigation }) => {
       <Drawer.Screen
         name="내 정보"
         component={MyAccount}
-        initialParams={{ userId: userId, phone: phone }} />
+        initialParams={{ userId: userId, phone: phone, userType: userType }} />
       <Drawer.Screen
         name="쿠폰 사용량"
         component={CouponLog}
@@ -44,6 +45,10 @@ const OwnerMain = ({ route, navigation }) => {
         name="고객 로그"
         component={CustomerLog}
         initialParams={{ userId: userId, phone: phone }} />
+      <Drawer.Screen
+        name="쿠폰 적립/사용"
+        component={CouponUsing}
+        initialParams={{ userId: userId, phone: phone, brandId, storeId }} />
     </Drawer.Navigator>
   );
 };

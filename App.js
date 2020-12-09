@@ -30,6 +30,8 @@ const App = () => {
             userType: action.userType,
             phoneNumber: action.phoneNumber,
             brandName: action.brandName || null,
+            brandId: action.brandId || null,
+            storeId: action.storeId || null,
             isLoading: false,
           };
         case 'SIGN_IN':
@@ -40,6 +42,8 @@ const App = () => {
             userType: action.userType,
             phoneNumber: action.phoneNumber,
             brandName: action.brandName || null,
+            brandId: action.brandId || null,
+            storeId: action.storeId || null,
           };
         case 'SIGN_OUT':
           return {
@@ -49,6 +53,8 @@ const App = () => {
             userType: null,
             phoneNumber: null,
             brandName: null,
+            brandId: null,
+            storeId: null,
           };
         case 'SIGN_UP':
           return {
@@ -58,6 +64,8 @@ const App = () => {
             userType: action.userType,
             phoneNumber: null,
             brandName: null,
+            brandId: null,
+            storeId: null,
           };
       }
     },
@@ -68,6 +76,8 @@ const App = () => {
       userType: null,
       phoneNumber: null,
       brandName: null,
+      brandId: null,
+      storeId: null,
     },
   );
 
@@ -77,12 +87,16 @@ const App = () => {
       let userType;
       let phoneNumber;
       let brandName;
+      let brandId;
+      let storeId;
 
       try {
         userId = await AsyncStorage.getItem('userId');
         userType = await AsyncStorage.getItem('userType');
         phoneNumber = await AsyncStorage.getItem('phoneNumber');
         brandName = await AsyncStorage.getItem('brandName');
+        brandId = await AsyncStorage.getItem('brandId');
+        storeId = await AsyncStorage.getItem('storeId');
       } catch (e) {
         // Restoring Id failed
       }
@@ -92,6 +106,8 @@ const App = () => {
         userType: userType,
         phoneNumber: phoneNumber,
         brandName: brandName || null,
+        brandId: brandId || null,
+        storeId: storeId || null,
       });
     };
 
@@ -107,6 +123,8 @@ const App = () => {
           userType: data.userType,
           phoneNumber: data.phoneNumber,
           brandName: data.brandName,
+          brandId: data.brandId,
+          storeId: data.storeId,
         });
       },
       signOut: () => dispatch({ type: 'SIGN_OUT' }),
@@ -117,6 +135,8 @@ const App = () => {
           userType: data.userType,
           phoneNumber: data.phoneNumber,
           brandName: data.brandName,
+          brandId: data.brandId,
+          storeId: data.storeId,
         });
       },
     }),
@@ -168,6 +188,9 @@ const App = () => {
                   initialParams={{
                     userId: state.userId,
                     phone: state.phoneNumber,
+                    userType: state.userType,
+                    brandId: state.brandId,
+                    storeId: state.storeId,
                   }}
                 />
               </>
@@ -180,7 +203,7 @@ const App = () => {
                   initialParams={{
                     userId: state.userId,
                     phone: state.phoneNumber,
-                    brandName: state.brandName,
+                    userType: state.userType,
                   }}
                 />
                 <Stack.Screen
