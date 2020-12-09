@@ -59,13 +59,24 @@ export default function Certificate({ route, navigation }) {
       });
       ref2.doc(account.storeID).collection('Stores').doc(account.storeID).set({
         address: account.region,
-        contactNumber: account.cafePhone,
+        contactNumber: account.cafephone,
         seatTime: 0,
         seatState: 0,
         storeName: account.storeID,
         useCount: 0,
         saveCount: 0,
       });
+    } else {
+      ref2.doc(account.brandID).collection('Stores').doc(account.storeID).set({
+        address: account.region,
+        contactNumber: account.cafephone,
+        seatTime: 0,
+        seatState: 0,
+        storeName: account.storeID,
+        useCount: 0,
+        saveCount: 0,
+      });
+
     }
     await AsyncStorage.setItem('userType', 'owner');
     await ref.doc(account.userid).set({
