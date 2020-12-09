@@ -112,6 +112,8 @@ export default function CafeForm({ route, navigation }) {
       setErrMsg('비밀번호가 일치하지 않습니다.');
     } else if (!storeID) {
       setErrMsg('카페명을 입력해주세요.');
+    } else if (!userphone) {
+      setErrMsg('사장님 휴대폰 번호를 입력해주세요.');
     } else {
       setModalVisible(true);
     }
@@ -302,7 +304,17 @@ export default function CafeForm({ route, navigation }) {
             </Picker>
           </View>
           <Text style={styles.question}>
-            9. 카페 전화번호를 입력하세요. (선택)
+            9. 사장님 휴대폰 번호를 입력하세요.
+          </Text>
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder="예) 010-0000-0000"
+              onChangeText={(text) => setUserphone(text)}
+            />
+          </View>
+          <Text style={styles.question}>
+            10. 카페 전화번호를 입력하세요. (선택)
           </Text>
           <View style={styles.inputContainer}>
             <TextInput
