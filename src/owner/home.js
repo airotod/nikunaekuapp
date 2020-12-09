@@ -24,8 +24,8 @@ const OwnerHome = ({ route, navigation }) => {
   const [seat, setSeat] = useState('');
   const [storeImg, setImg] = useState('');
 
-  const [todayC, setToday] = useState('');
-  const [totalC, setTotal] = useState('');
+  const [todayC, setToday] = useState(0);
+  const [totalC, setTotal] = useState(0);
 
   const { userId } = route.params;
 
@@ -80,6 +80,17 @@ const OwnerHome = ({ route, navigation }) => {
   }
 
   let ref = firestore().collection('Brand');
+
+  ref.doc(brandName).collection('Stores').doc(storeName).get()
+  .then(function (doc) {
+    if (doc.exists) {
+      setTotal(doc.data().saveCount);
+      setToday(doc.data().useCount);
+    }
+  })
+  .catch(function (error) {
+    console.log('Error getting document:', error);
+  });
 
   useEffect(() => {
     const getUserIdAsync = async () => {

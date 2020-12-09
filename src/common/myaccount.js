@@ -34,11 +34,15 @@ const MyAccount = ({ route, navigation }) => {
           .get()
           .then(async function (doc) {
             if (doc.exists) {
-              if (doc.data().userType == 'owner') {
-                firestore().collection('Brand').doc(doc.data().brandID).get().then(async function (ownerDoc) {
-                  setLogo(ownerDoc.data().logo);
-                  setStore(doc.data().storeID);
-                })
+              if (userType == 'owner') {
+                firestore()
+                  .collection('Brand')
+                  .doc(doc.data().brandID)
+                  .get()
+                  .then(async function (ownerDoc) {
+                    setLogo(ownerDoc.data().logo);
+                    setStore(doc.data().storeID);
+                  });
               } else {
                 setLogo(doc.data().profileUrl);
               }
@@ -107,10 +111,12 @@ const MyAccount = ({ route, navigation }) => {
                 text="비밀번호 변경"
                 onPress={() => console.log('비밀번호 변경')}
               />
-              <AccountItem
-                text="결제수단 관리"
-                onPress={() => console.log('결제수단 관리')}
-              />
+              {userType === 'customer' && (
+                <AccountItem
+                  text="결제수단 관리"
+                  onPress={() => console.log('결제수단 관리')}
+                />
+              )}
               <AccountItem
                 text="탈퇴하기"
                 onPress={() => console.log('탈퇴하기')}

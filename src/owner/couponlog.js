@@ -15,6 +15,8 @@ import CouponLogStat from './couponlogtab/couponlogstat';
 const Tab = createMaterialTopTabNavigator();
 
 const CouponLog = ({ route, navigation }) => {
+  const {brandId, storeId} = route.params;
+
   return (
     <>
       <TopBar
@@ -43,6 +45,7 @@ const CouponLog = ({ route, navigation }) => {
           name="쿠폰 사용량 기록"
           component={CouponLogRecord}
           options={{ tabBarLabel: '기록' }}
+          initialParams={{brandId, storeId }}
         />
         <Tab.Screen
           name="쿠폰 사용량 통계"

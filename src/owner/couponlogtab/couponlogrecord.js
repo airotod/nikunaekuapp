@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Text, View, Dimensions, StyleSheet, SafeAreaView } from 'react-native';
 import {
   BLACK_COLOR,
@@ -8,6 +8,7 @@ import {
 } from '../../models/colors';
 
 import { LineChart, Path, XAxis, Grid } from 'react-native-svg-charts';
+import firestore from '@react-native-firebase/firestore';
 
 import { DATA } from './Data';
 import * as scale from 'd3-scale';
@@ -24,6 +25,8 @@ export function CouponUseage(num, explain) {
     </>
   );
 }
+
+
 
 class Area extends React.PureComponent {
   state = {
@@ -114,17 +117,104 @@ class Area extends React.PureComponent {
 }
 
 const CouponLogRecord = ({ route, navigation }) => {
+
+  const {brandId, storeId} = route.params;
+  const [todayCoupon, setToday] = useState([])
+  const [yesterCoupon, setYester] = useState([])
+  const [monthCoupon, setMonth] = useState([])
+  const [yearCoupon, setYear] = useState([])
+  const storeRef = firestore()
+    .collection('Brand')
+    .doc(brandId)
+    .collection('Stores')
+    .doc(storeId);
+
+  useEffect(() => {
+    return storeRef.collection('clientLog').onSnapshot((querySnapshot) => {
+      let today_items = [];
+      let yesterday_items = [];
+      let month_items = [];
+      let year_items = [];
+
+      var today_first = new Date();
+      var today_last = new Date();
+      var yesterday_first = new Date();
+
+      var month_first = new Date();
+      month_first.setDate(0);
+      month_first.setHours(24,0,0,0);
+
+
+      var temp_month_last = new Date();
+      temp_month_last.setMonth(0)
+      temp_month_last.setDate(0);
+      temp_month_last.setHours(24,0,0,0);
+      var year = temp_month_last.getFullYear();
+      var month = temp_month_last.getMonth();
+      var day = temp_month_last.getDate();
+      var month_last = new Date(year + 1, month, day);
+
+      today_first.setHours(0,0,0,0)
+      yesterday_first.setHours(0,0,0,0)
+      today_last.setHours(24,0,0,0)
+      yesterday_first.setDate(yesterday_first.getDate() - 1);
+
+      var now_year = new Date(new Date().getFullYear(), 1, -29);
+      var next_year = new Date(new Date().getFullYear()+1, 1, -29);
+
+      querySnapshot.forEach((doc) => {
+        const {
+          count,
+          dateTime,
+          logType
+        } = doc.data();
+
+        if(logType == "사용") {
+          if(today_first < dateTime.toDate() && today_last > dateTime.toDate()) {
+            today_items.push({
+              count : count,
+              dateTime : dateTime
+            });
+          }
+          if(yesterday_first < dateTime.toDate() && today_first > dateTime.toDate()) {
+            yesterday_items.push({
+              count : count,
+              dateTime : dateTime
+            });
+          }
+          if(month_first < dateTime.toDate() && month_last > dateTime.toDate()) {
+            month_items.push({
+              count : count,
+              dateTime : dateTime
+            });
+          }
+          if(now_year < dateTime.toDate() && next_year > dateTime.toDate()) {
+            year_items.push({
+              count : count,
+              dateTime : dateTime
+            });
+          }
+        }
+      });
+      setToday(today_items)
+      setYester(yesterday_items)
+      setMonth(month_items)
+      setYear(year_items)
+      //console.log("list : ", today_items)
+      //setWholeItemList(sortByDate(items));
+    });
+  }, []);
   return (
     <>
       <View style={styles.container}>
         <View style={styles.todayCoupon}>
           <Text style={styles.todayText}>오늘</Text>
-          <Text style={styles.todayCountText}>12</Text>
+          <Text style={styles.todayCountText}>{todayCoupon.length}</Text>
         </View>
         <View style={styles.usageFlex}>
-          {CouponUseage(10, '전날 사용량')}
-          {CouponUseage(12.5, '주 평균 사용량')}
-          {CouponUseage(19, '월 사용량')}
+          {CouponUseage(yesterCoupon.length, '전날 사용량')}
+          {CouponUseage(monthCoupon.length, '월 사용량')}
+          {CouponUseage(yearCoupon.length, '년 사용량')}
         </View>
       </View>
       <Area />

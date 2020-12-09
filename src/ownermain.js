@@ -40,7 +40,7 @@ const OwnerMain = ({ route, navigation }) => {
       <Drawer.Screen
         name="쿠폰 사용량"
         component={CouponLog}
-        initialParams={{ userId: userId, phone: phone }} />
+        initialParams={{ userId: userId, phone: phone, brandId, storeId }} />
       <Drawer.Screen
         name="고객 로그"
         component={CustomerLog}
