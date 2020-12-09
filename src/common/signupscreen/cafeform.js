@@ -181,7 +181,7 @@ export default function CafeForm({ route, navigation }) {
   return (
     <>
       <TopBar
-        title="카페 등록 절차"
+        title="매장 등록 절차"
         navigation={navigation}
         barColor={BLACK_COLOR}
       />
@@ -258,7 +258,7 @@ export default function CafeForm({ route, navigation }) {
               />
             )}
           </View>
-          <Text style={styles.question}>6. 카페 브랜드를 등록하세요.</Text>
+          <Text style={styles.question}>6. 브랜드를 등록하세요.</Text>
           <TermItem
             text="프랜차이즈 브랜드인가요?"
             value={isBrand}
@@ -280,7 +280,7 @@ export default function CafeForm({ route, navigation }) {
             <TextInput
               style={styles.input}
               multiline={true}
-              placeholder='고객들이 카페에 대해 잘 알 수 있게 카페 설명을 적어주세요.'
+              placeholder='고객들이 브랜드에 대해 잘 알 수 있게 브랜드 설명을 적어주세요.'
               onChangeText={(text) => setDes(text)}
             />
           </View>}
@@ -314,7 +314,7 @@ export default function CafeForm({ route, navigation }) {
             />
           </View>
           <Text style={styles.question}>
-            10. 카페 전화번호를 입력하세요. (선택)
+            10. 매장 전화번호를 입력하세요. (선택)
           </Text>
           <View style={styles.inputContainer}>
             <TextInput
