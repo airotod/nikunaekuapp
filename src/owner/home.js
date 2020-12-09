@@ -18,14 +18,14 @@ import {
 import firestore from '@react-native-firebase/firestore';
 
 const OwnerHome = ({ route, navigation }) => {
-  const [owner, setOwner] = useState([]);
-  const [brandName, setBrand] = useState([]);
-  const [storeName, setStore] = useState([]);
-  const [seat, setSeat] = useState([]);
-  const [storeImg, setImg] = useState([]);
+  const [owner, setOwner] = useState('');
+  const [brandName, setBrand] = useState('');
+  const [storeName, setStore] = useState('');
+  const [seat, setSeat] = useState('');
+  const [storeImg, setImg] = useState('');
 
-  const [todayC, setToday] = useState([]);
-  const [totalC, setTotal] = useState([]);
+  const [todayC, setToday] = useState('');
+  const [totalC, setTotal] = useState('');
 
   const { userId } = route.params;
 
@@ -33,18 +33,18 @@ const OwnerHome = ({ route, navigation }) => {
   var BrandRef = firestore().collection('Brand')
 
 
-  docRef.get().then(function(doc) {
-      if (doc.exists) {
-        setBrand(doc.data().brandID)
-        setStore(doc.data().storeID)
-        BrandRef.doc(doc.data().brandID).get().then(function(brand) {
-          setImg(brand.data().logo)
-        }).catch(function(error) {
-          console.log("Error getting document:", error);
-        })
-      } 
-  }).catch(function(error) {
-      console.log("Error getting document:", error);
+  docRef.get().then(function (doc) {
+    if (doc.exists) {
+      setBrand(doc.data().brandID)
+      setStore(doc.data().storeID)
+      BrandRef.doc(doc.data().brandID).get().then(function (brand) {
+        setImg(brand.data().logo)
+      }).catch(function (error) {
+        console.log("Error getting document:", error);
+      })
+    }
+  }).catch(function (error) {
+    console.log("Error getting document:", error);
   });
 
   console.log("store img : ", storeImg)
@@ -53,14 +53,14 @@ const OwnerHome = ({ route, navigation }) => {
     await firestore().collection('Brand').doc(brandName).collection('Stores').doc(storeName) // 이건 후에 수정하자!
       .update({
         seatState: seatNum, // 0 -> 선택 x, 1 -> 널널, 2 -> 보통, 3 -> 부족, 4 -> 만석
-        seatTime: Date.now(),
+        time: Date.now(),
       });
-      setSeat(seatNum)
+    setSeat(seatNum)
   }
 
   function _changeSeat0() {
-    setTimeout(() =>  firestore().collection('Brand').doc(brandName).collection('Stores').doc(storeName) // 이건 후에 수정하자!
-    .update({seatState: 0}), 10000);
+    setTimeout(() => firestore().collection('Brand').doc(brandName).collection('Stores').doc(storeName) // 이건 후에 수정하자!
+      .update({ seatState: 0 }), 10000);
     setSeat(0)
   }
 
@@ -71,7 +71,7 @@ const OwnerHome = ({ route, navigation }) => {
       try {
         ref.doc(brandName).collection('Stores').doc(storeName).onSnapshot((doc) => {
           if (doc.exists) {
-            const {totalCount, todayCount} = doc.data();
+            const { totalCount, todayCount } = doc.data();
             setTotal(totalCount)
             setToday(todayCount)
           }
@@ -95,9 +95,7 @@ const OwnerHome = ({ route, navigation }) => {
         myaccountColor={GREY_60_COLOR}
       />
       <View style={styles.container}>
-        {/* 가게 이미지 */}
         <Image style={styles.img} source={{ uri: storeImg }} />
-        {/* 매장 좌석 체크 */}
         <View style={styles.seat}>
           <Text style={styles.mainText}> 매장 좌석 체크 </Text>
           <View style={styles.buttonLayout}>
@@ -169,7 +167,6 @@ const OwnerHome = ({ route, navigation }) => {
             한시간 단위로 체크사항이 reset 됩니다.
           </Text>
         </View>
-        {/* 쿠폰 사용량 */}
         <View style={styles.coupon}>
           <Text style={styles.mainText}>실시간 쿠폰 사용량 (일별/전원)</Text>
           <Text style={{ fontSize: 40 }}>
