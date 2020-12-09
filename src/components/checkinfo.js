@@ -47,15 +47,15 @@ export default function CheckInfo({ data, visible, onClose, onConfirm }) {
                 생년월일: {dateWithKorean(data.birthdate)}
               </Text>
             )}
-            {data.cafename && (
-              <Text style={styles.modalText}>카페명: {data.cafename}</Text>
+            {data.storeID && (
+              <Text style={styles.modalText}>지점명: {data.cafename}</Text>
             )}
             {data.region && (
               <Text style={styles.modalText}>영업지역: {data.region}</Text>
             )}
             {data.cafephone && (
               <Text style={styles.modalText}>
-                카페 전화번호: {data.cafephone}
+                매장 전화번호: {data.cafephone}
               </Text>
             )}
           </View>
