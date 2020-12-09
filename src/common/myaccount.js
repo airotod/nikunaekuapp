@@ -17,10 +17,12 @@ import {
   WHITE_COLOR,
 } from '../models/colors';
 import { AuthContext } from '../utils/context';
+import { set } from 'react-native-reanimated';
 
 const MyAccount = ({ route, navigation }) => {
   const { userId, phone, otherParam } = route.params;
   const [logo, setLogo] = useState(null);
+  const [store, setStore] = useState(null);
 
   const ref = firestore().collection('User');
 
@@ -32,7 +34,14 @@ const MyAccount = ({ route, navigation }) => {
           .get()
           .then(async function (doc) {
             if (doc.exists) {
-              setLogo(doc.data().cafeLogo || doc.data().profileUrl);
+              if (doc.data().userType == 'owner') {
+                firestore().collection('Brand').doc(doc.data().brandID).get().then(async function (ownerDoc) {
+                  setLogo(ownerDoc.data().logo);
+                  setStore(doc.data().storeID);
+                })
+              } else {
+                setLogo(doc.data().profileUrl);
+              }
             }
           });
       } catch (e) {
@@ -77,6 +86,7 @@ const MyAccount = ({ route, navigation }) => {
                 )}
               </View>
               <View style={styles.myinfoTextContainer}>
+                {store && <Text style={styles.myinfoText}>{store}</Text>}
                 <Text style={styles.myinfoText}>{userId} 님</Text>
                 <Text style={styles.myinfoText}>{phone}</Text>
               </View>
