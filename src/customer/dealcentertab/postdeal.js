@@ -212,7 +212,7 @@ const PostDeal = ({ route, navigation }) => {
           clearButtonMode="always"
         />
         {/* <Text style={styles.msg}>
-          쿠폰 1개당 최대 판매 가능 가격은 해당 카페 기본 메뉴 가격의 10%입니다.
+          쿠폰 1개당 최대 판매 가능 가격은 해당 매장 기본 메뉴 가격의 10%입니다.
         </Text> */}
         {priceMsg ? (
           <View style={styles.errMsgContainer}>

@@ -173,7 +173,7 @@ const OwnerHome = ({ route, navigation }) => {
               navigation.navigate('쿠폰 사용량');
             }}>
             <Text style={{ fontSize: 16 }}>
-              내 카페 쿠폰 사용량 자세히 보기
+              내 브랜드 쿠폰 사용량 자세히 보기
             </Text>
           </TouchableOpacity>
         </View>
