@@ -96,6 +96,12 @@ const CouponUsing = ({ route, navigation }) => {
                         );
                         count = 0;
                         return;
+                      } else if (document.data().count < count) {
+                        Alert.alert(
+                          '해당 고객의 보유 수량을 초과하였습니다.',
+                        );
+                        count = 0;
+                        return;
                       } else {
                         storeRef.collection('clientLog').add({
                           clientID: customerId,

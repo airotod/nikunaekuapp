@@ -184,9 +184,9 @@ const OwnerHome = ({ route, navigation }) => {
             </Text>
           </View>
           <View style={styles.coupon}>
-            <Text style={styles.mainText}>실시간 쿠폰 사용량 (일별/전원)</Text>
+            <Text style={styles.mainText}>실시간 쿠폰 적립/사용량</Text>
             <Text style={{ fontSize: 40 }}>
-              <Text style={{ color: 'red' }}>{todayC}</Text> /{' '}
+              <Text style={{ color: GREEN_COLOR }}>{todayC}</Text> /{' '}
               <Text style={{ color: GREY_100_COLOR }}>{totalC}</Text>
             </Text>
             <TouchableOpacity
@@ -195,26 +195,7 @@ const OwnerHome = ({ route, navigation }) => {
                 navigation.navigate('쿠폰 사용량');
               }}>
               <Text style={{ fontSize: 16 }}>
-                내 카페 쿠폰 사용량 자세히 보기
-              </Text>
-            </TouchableOpacity>
-          </View>
-          <Text style={styles.sideText}>
-            한시간 단위로 체크사항이 reset 됩니다.
-          </Text>
-          <View style={styles.coupon}>
-            <Text style={styles.mainText}>실시간 쿠폰 사용량 (일별/전원)</Text>
-            <Text style={{ fontSize: 40 }}>
-              <Text style={{ color: 'red' }}>{todayC}</Text> /{' '}
-              <Text style={{ color: GREY_100_COLOR }}>{totalC}</Text>
-            </Text>
-            <TouchableOpacity
-              style={styles.couponButton}
-              onPress={() => {
-                navigation.navigate('쿠폰 사용량');
-              }}>
-              <Text style={{ fontSize: 16 }}>
-                내 브랜드 쿠폰 사용량 자세히 보기
+                매장 쿠폰 사용량 자세히 보기
               </Text>
             </TouchableOpacity>
           </View>

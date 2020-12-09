@@ -75,7 +75,7 @@ const DealLog = ({ route, navigation }) => {
           <Text style={styles.point}>{numWithCommas(userPoint)}</Text>
           <TouchableOpacity
             onPress={() => {
-              console.log('포인트 내역 상세보기');
+              navigation.navigate('My 포인트');
             }}
             style={styles.pointDetailContainer}>
             <Text style={styles.pointDetail}>포인트 내역 상세보기</Text>
