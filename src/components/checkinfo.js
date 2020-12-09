@@ -48,7 +48,7 @@ export default function CheckInfo({ data, visible, onClose, onConfirm }) {
               </Text>
             )}
             {data.storeID && (
-              <Text style={styles.modalText}>지점명: {data.cafename}</Text>
+              <Text style={styles.modalText}>지점명: {data.storeID}</Text>
             )}
             {data.region && (
               <Text style={styles.modalText}>영업지역: {data.region}</Text>
