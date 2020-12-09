@@ -48,7 +48,7 @@ export default function CafeForm({ route, navigation }) {
   const [username, setUsername] = useState(null);
   const [storeID, setStoreID] = useState(null);
   const [brandList, setBrandList] = useState([]);
-  const [isPersonal, setIsPersonal] = useState(false);
+  const [isBrand, setIsBrand] = useState(false);
   const [des, setDes] = useState(null);
 
   const ref = firestore().collection('User');
@@ -110,7 +110,7 @@ export default function CafeForm({ route, navigation }) {
       setErrMsg('비밀번호를 입력해주세요.');
     } else if (password1 !== password2) {
       setErrMsg('비밀번호가 일치하지 않습니다.');
-    } else if (!cafename) {
+    } else if (!storeID) {
       setErrMsg('카페명을 입력해주세요.');
     } else {
       setModalVisible(true);
@@ -154,12 +154,12 @@ export default function CafeForm({ route, navigation }) {
     });
   }
 
-  async function _whenPersonal(event) {
-    if (isPersonal === false) {
-      setIsPersonal(true);
+  async function _whenBrand(event) {
+    if (isBrand === false) {
+      setIsBrand(true);
       setCafename(null);
     } else {
-      setIsPersonal(false);
+      setIsBrand(false);
     }
   }
 
@@ -259,10 +259,10 @@ export default function CafeForm({ route, navigation }) {
           <Text style={styles.question}>6. 카페 브랜드를 등록하세요.</Text>
           <TermItem
             text="프랜차이즈 브랜드인가요?"
-            value={isPersonal}
-            onValueChange={_whenPersonal}
+            value={isBrand}
+            onValueChange={_whenBrand}
           />
-          {isPersonal &&
+          {isBrand &&
           <View style={styles.pickerContainer}>
             <Picker
               selectedValue={cafename}
@@ -273,7 +273,7 @@ export default function CafeForm({ route, navigation }) {
               ))}
             </Picker>
           </View>}
-          {!isPersonal &&
+          {!isBrand &&
           <View style={styles.bigInputContainer}>
             <TextInput
               style={styles.input}

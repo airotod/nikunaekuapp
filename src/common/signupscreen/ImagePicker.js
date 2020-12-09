@@ -3,7 +3,7 @@ import ImageResizer from 'react-native-image-resizer';
 import storage from '@react-native-firebase/storage';
 
 
-export function chooseImage({ userid, option }) {
+export function chooseImage({ userid, option, onClick }) {
   let newWidth;
   let newHeight;
 
@@ -73,6 +73,7 @@ export function chooseImage({ userid, option }) {
             .then((snapshot) => {
               //You can check the image is now uploaded in the storage bucket
               console.log(`${imageName} has been successfully uploaded.`);
+              onClick();
 
             })
             .catch((e) => console.log('uploading image error => ', e));

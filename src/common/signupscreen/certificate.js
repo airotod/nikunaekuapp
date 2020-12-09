@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Modal,
   StyleSheet,
@@ -6,6 +6,7 @@ import {
   View,
   TouchableOpacity,
   ScrollView,
+  Image,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import firestore from '@react-native-firebase/firestore';
@@ -29,60 +30,103 @@ import { chooseImage } from './ImagePicker';
 export default function Certificate({ route, navigation }) {
   const { account, otherParam } = route.params;
   const [modalVisible, setModalVisible] = useState(false);
+  const [logoUrl, setLogoUrl] = useState(false);
+  const [resiUrl, setResiUrl] = useState(false);
+  const [comUrl, setComUrl] = useState(false);
+  const [logoChanged, setLogoChanged] = useState(false);
+  const [resiChanged, setResiChanged] = useState(false);
+  const [comChanged, setComChanged] = useState(false);
+  const [ errMsg, setErrMsg ] = useState(false);
 
   const ref = firestore().collection('User');
   const ref2 = firestore().collection('Brand');
 
   function _handleComplete(event) {
-    setModalVisible(true);
+    if (!logoUrl || !resiUrl || !comUrl) {
+      setErrMsg('업로드 되지 않은 이미지가 있습니다.');
+    } else {
+      setErrMsg(false);
+      setModalVisible(true);
+    }
   }
 
   async function _handleSignUp(event) {
-    storage()
-      .ref('/cafeLogo_' + account.userid)
-      .getDownloadURL()
-      .then(async function (logoUrl) {
-        if (account.brandID === null) {
-          ref2.doc(account.storeID).set({
-            brandID: account.storeID,
-            description: account.des,
-            logo: logoUrl,
-          });
-          ref2.doc(account.storeID).collection('store').set({
-            
-          });
-        }
-        storage()
-          .ref('/resiNum_' + account.userid)
-          .getDownloadURL()
-          .then(async function (resiUrl) {
-            storage()
-              .ref('/comNum_' + account.userid)
-              .getDownloadURL()
-              .then(async function (comUrl) {
-                await AsyncStorage.setItem('userType', 'owner');
-                await ref.doc(account.userid).set({
-                  birthdate: account.birthdate,
-                  brandID: account.brandID === null ? account.storeID : account.brandID,
-                  storeID: account.storeID,
-                  cafePhone: account.cafephone,
-                  password: account.password,
-                  phoneNumber: account.phoneNumber,
-                  region: account.region,
-                  userId: account.userid,
-                  userName: account.username,
-                  userType: 'owner',
-                  idCard: resiUrl,
-                  businessLicense: comUrl,
-                });
-                setModalVisible(false);
-              })
-              .catch((e) => console.log('download comNum url error: ', e));
-          })
-          .catch((e) => console.log('download resiNum url error: ', e));
-      })
-      .catch((e) => console.log('download cafeLogo url error: ', e));
+    if (account.brandID === null) {
+      ref2.doc(account.storeID).set({
+        brandID: account.storeID,
+        description: account.des,
+        logo: logoUrl,
+      });
+      ref2.doc(account.storeID).collection('Stores').doc(account.storeID).set({
+        address: account.region,
+        contactNumber: account.cafePhone,
+        seatTime: 0,
+        seatState: 0,
+        storeName: account.storeID,
+        useCount: 0,
+        saveCount: 0,
+      });
+    }
+    await AsyncStorage.setItem('userType', 'owner');
+    await ref.doc(account.userid).set({
+      birthdate: account.birthdate,
+      brandID: account.brandID === null ? account.storeID : account.brandID,
+      storeID: account.storeID,
+      password: account.password,
+      phoneNumber: account.phoneNumber,
+      userId: account.userid,
+      userName: account.username,
+      userType: 'owner',
+      idCard: resiUrl,
+      businessLicense: comUrl,
+    });
+    setModalVisible(false);
   }
+
+  useEffect(() => {
+    if (logoChanged === true) {
+      storage()
+        .ref('/cafeLogo_' + account.userid)
+        .getDownloadURL()
+        .then(async function (url) {
+          setLogoUrl(url);
+        })
+        .catch((e) => console.log('download logo url error: ', e));
+      setLogoChanged(false);
+    } else if (resiChanged === true) {
+      storage()
+        .ref('/resiNum_' + account.userid)
+        .getDownloadURL()
+        .then(async function (url) {
+          setResiUrl(url);
+        })
+        .catch((e) => console.log('download resiNum url error: ', e));
+      setResiChanged(false);
+    } else if (comChanged === true) {
+      storage()
+        .ref('/comNum_' + account.userid)
+        .getDownloadURL()
+        .then(async function (url) {
+          setComUrl(url);
+        })
+        .catch((e) => console.log('download comNum url error: ', e));
+      setComChanged(false);
+    } if (account.brandID !== null) {
+      try {
+        ref2
+          .doc(account.brandID)
+          .get()
+          .then(async function (doc) {
+            if (doc.exists) {
+              setLogoUrl(doc.data().logo);
+            }
+          });
+      } catch (e) {
+        // Restoring Id failed
+        console.log('Brand logo downloading failed');
+      }
+    }
+  }, [logoChanged, resiChanged, comChanged])
 
   return (
     <AuthContext.Consumer>
@@ -97,57 +141,56 @@ export default function Certificate({ route, navigation }) {
             <View style={styles.container}>
               <View style={styles.mainContents}>
                 <Text style={styles.question}>
-                  ● 카페 사진을 등록해주세요.
+                  ● 카페 로고를 등록해주세요.
                 </Text>
-                <View style={styles.img}>
-                  <Text style={styles.imgAlt}>CAFE{'\n'}IMAGE</Text>
-                </View>
-                <View style={styles.buttonContainer1}>
-                  <StepButton
-                    text="선택"
-                    onPress={() => {
-                      chooseImage({
-                        userid: account.userid,
-                        option: 'cafeLogo',
-                      });
-                    }}
-                    buttonColor={RED_COLOR}
-                  />
-                </View>
+                {account.brandID !== null ? <Image source={{ uri: logoUrl }} style={styles.img} /> :
+                <TouchableOpacity
+                  style={styles.img}
+                  onPress={() => {
+                    chooseImage({
+                      userid: account.userid,
+                      option: 'cafeLogo',
+                      onClick: () => setLogoChanged(true)
+                    });
+                  }}
+                  activeOpacity={0.5}>
+                  {!logoUrl ? <Text style={styles.imgAlt}>CAFE{'\n'}IMAGE</Text>
+                    : <Image source={{ uri: logoUrl }} style={styles.img2} />}
+                </TouchableOpacity>}
                 <Text style={styles.question}>
                   ● 주민등록증을 등록해주세요.
                 </Text>
-                <View style={styles.img}>
-                  <Text style={styles.imgAlt}>주민등록증</Text>
-                </View>
-                <View style={styles.buttonContainer1}>
-                  <StepButton
-                    text="선택"
-                    onPress={() => {
-                      chooseImage({
-                        userid: account.userid,
-                        option: 'resiNum',
-                      });
-                    }}
-                    buttonColor={RED_COLOR}
-                  />
-                </View>
+                <TouchableOpacity
+                  style={styles.img}
+                  onPress={() => {
+                    chooseImage({
+                      userid: account.userid,
+                      option: 'resiNum',
+                      onClick: () => setResiChanged(true)
+                    });
+                  }}
+                  activeOpacity={0.5}>
+                  {!resiUrl ? <Text style={styles.imgAlt}>주민등록증</Text>
+                    : <Image source={{ uri: resiUrl }} style={styles.img2} />}
+                </TouchableOpacity>
                 <Text style={styles.question}>
                   ● 사업자등록증을 등록해주세요.
                 </Text>
-                <View style={styles.img}>
-                  <Text style={styles.imgAlt}>사업자등록증</Text>
-                </View>
-                <View style={styles.buttonContainer1}>
-                  <StepButton
-                    text="선택"
-                    onPress={() => {
-                      chooseImage({ userid: account.userid, option: 'comNum' });
-                    }}
-                    buttonColor={RED_COLOR}
-                  />
-                </View>
+                <TouchableOpacity
+                  style={styles.img}
+                  onPress={() => {
+                    chooseImage({
+                      userid: account.userid,
+                      option: 'comNum',
+                      onClick: () => setComChanged(true)
+                    });
+                  }}
+                  activeOpacity={0.5}>
+                  {!comUrl ? <Text style={styles.imgAlt}>사업자등록증</Text>
+                    : <Image source={{ uri: comUrl }} style={styles.img2} />}
+                </TouchableOpacity>
               </View>
+              {errMsg && <Text style={styles.redMsg}>{errMsg}</Text>}
               <View style={styles.buttonContainer}>
                 <StepButton
                   text="이전"
@@ -229,10 +272,28 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     width: '90%',
   },
+  img2: {
+    alignItems: 'center',
+    alignSelf: 'center',
+    backgroundColor: GREY_30_COLOR,
+    borderRadius: 15,
+    height: 160,
+    justifyContent: 'center',
+    marginTop: 20,
+    marginBottom: 20,
+    width: '100%',
+  },
   imgAlt: {
     color: GREY_50_COLOR,
     fontSize: 24,
     textAlign: 'center',
+  },
+  redMsg: {
+    color: RED_COLOR,
+    fontSize: 13,
+    fontWeight: 'bold',
+    marginBottom: 5,
+    textAlign: 'right',
   },
   mainContents: {
     flex: 1,

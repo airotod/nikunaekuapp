@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   View,
   Image,
+  ImageBackground,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -32,30 +33,41 @@ import { dateWithKorean } from '../../utils/format';
 
 export default function ProfileImage({ route, navigation }) {
   const { account, otherParam } = route.params;
+  const [imageUrl, setImageUrl] = useState(false);
+  const [urlChanged, setUrlChanged] = useState(false);
 
   const ref = firestore().collection('User');
 
   async function _handleSignUp(event) {
-    storage().ref('/profile_' + account.userid).getDownloadURL().then(async function (url) {
-      await AsyncStorage.setItem('userId', account.userid);
-      await AsyncStorage.setItem('userType', 'customer');
-      await ref.doc(account.userid).set({
-        birthDate: account.birthdate,
-        password: account.password,
-        phoneNumber: account.userphone,
-        totalPoint: 0,
-        usedPoint: 0,
-        savePoint: 0,
-        chargePoint: 0,
-        profileUrl: url,
-        userId: account.userid,
-        userName: account.username,
-        nickName: account.nickname,
-        userType: 'customer',
-        registeredAt: firestore.FieldValue.serverTimestamp(),
-      });
-    }).catch((e) => console.log('download url error: ', e));
+    await AsyncStorage.setItem('userId', account.userid);
+    await AsyncStorage.setItem('userType', 'customer');
+    await ref.doc(account.userid).set({
+      birthDate: account.birthdate,
+      password: account.password,
+      phoneNumber: account.userphone,
+      totalPoint: 0,
+      usedPoint: 0,
+      savePoint: 0,
+      chargePoint: 0,
+      profileUrl: imageUrl,
+      userId: account.userid,
+      userName: account.username,
+      nickName: account.nickname,
+      userType: 'customer',
+      registeredAt: firestore.FieldValue.serverTimestamp(),
+    });
   }
+
+  useEffect(() => {
+    storage()
+      .ref('/profile_' + account.userid)
+      .getDownloadURL()
+      .then(async function (url) {
+        setImageUrl(url);
+      })
+      .catch((e) => console.log('download profile url error: ', e));
+    setUrlChanged(false);
+  }, [urlChanged])
 
   return (
     <AuthContext.Consumer>
@@ -73,29 +85,29 @@ export default function ProfileImage({ route, navigation }) {
                 프로필 이미지를 등록 하실 수 있습니다.{'\n'}
                 이미지를 등록하지 않더라도 서비스 이용이 가능합니다.
               </Text>
-              <View style={styles.img}>
-                <Text style={styles.imgAlt}>
-                  사진을{'\n'}등록하세요.{'\n'}(선택)
-                </Text>
-              </View>
-              <View style={styles.buttonContainer}>
-                <StepButton
-                  text="선택"
-                  onPress={() => {
-                    console.log('before..', account.userid);
-                    chooseImage({userid: account.userid, option: 'profile'});
-                  }}
-                  buttonColor={RED_COLOR}
-                />
-                <StepButton
-                  text="완료"
-                  onPress={() => {
-                    signIn({ userId: account.userid, userType: 'customer' });
-                    _handleSignUp();
-                  }}
-                  buttonColor={RED_COLOR}
-                />
-              </View>
+              <TouchableOpacity
+                style={styles.img}
+                onPress={() => {
+                  chooseImage({
+                    userid: account.userid,
+                    option: 'profile',
+                    onClick: () => setUrlChanged(true)
+                  });
+                }}
+                activeOpacity={0.5}>
+                {!imageUrl ? <Text style={styles.imgAlt}>사진을{'\n'}등록하세요.{'\n'}(선택)</Text>
+                  : <Image source={{ uri: imageUrl }} style={styles.img} />}
+              </TouchableOpacity>
+            </View>
+            <View style={styles.buttonContainer}>
+              <StepButton
+                text="완료"
+                onPress={() => {
+                  signIn({ userId: account.userid, userType: 'customer' });
+                  _handleSignUp();
+                }}
+                buttonColor={RED_COLOR}
+              />
             </View>
           </ScrollView>
         </>
@@ -107,9 +119,9 @@ export default function ProfileImage({ route, navigation }) {
 const styles = StyleSheet.create({
   buttonContainer: {
     alignItems: 'flex-end',
-    flexDirection: 'row',
     justifyContent: 'space-between',
     marginVertical: 15,
+    marginRight: 15,
   },
   container: {
     flex: 1,
