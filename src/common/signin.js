@@ -28,11 +28,7 @@ const SignIn = ({ route, navigation }) => {
             let userType = doc.data().userType;
             let getPassword = doc.data().password;
             let phoneNumber = null;
-            if (userType == "customer") {
-              phoneNumber = doc.data().phoneNumber;
-            } else {
-              phoneNumber = doc.data().cafePhone;
-            }
+            phoneNumber = doc.data().phoneNumber;
             if (userPw !== getPassword) {
               setMsg('비밀번호가 일치하지 않습니다.');
             } else {
