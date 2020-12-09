@@ -13,7 +13,7 @@ import { GREY_80_COLOR, GREY_90_COLOR, WHITE_COLOR } from './models/colors';
 const Drawer = createDrawerNavigator();
 
 const CustomerMain = ({ route, navigation }) => {
-  const { userId, phone, otherParam } = route.params;
+  const { userId, phone, userType, otherParam } = route.params;
 
   return (
     <Drawer.Navigator
@@ -37,7 +37,7 @@ const CustomerMain = ({ route, navigation }) => {
       <Drawer.Screen
         name="내 정보"
         component={MyAccount}
-        initialParams={{ userId: userId, phone: phone }}
+        initialParams={{ userId: userId, phone: phone, userType: userType }}
       />
       <Drawer.Screen
         name="My 포인트"
