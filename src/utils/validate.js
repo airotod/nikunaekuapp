@@ -45,3 +45,19 @@ export function checkSSN(num) {
   const SSCRegrex = /^(?:[0-9]{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[1,2][0-9]|3[0,1]))-[1-4][0-9]{6}$/;
   return SSCRegrex.test(num);
 }
+
+export function checkPW(word) {
+  const num = word.search(/[0-9]/g);
+  const eng = word.search(/[a-z]/ig);
+  const spe = word.search(/[`~!@@#$%^&*|₩₩₩'₩";:₩/?]/gi);
+
+  if (word.length < 10) {
+    return '비밀번호는 10글자 이상이어야 합니다.'
+  } else if (word.search(/\s/) !== -1) {
+    return '비밀번호는 공백을 입력할 수 없습니다.'
+  } else if ((num < 0 && eng < 0) || (eng < 0 && spe < 0) || (spe < 0 && num < 0)) {
+    return '비밀번호는 영어, 숫자, 특수문자 중 2가지 이상 조합해주세요.'
+  } else {
+    return ''
+  }
+}

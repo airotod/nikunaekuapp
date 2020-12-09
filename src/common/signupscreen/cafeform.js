@@ -8,11 +8,11 @@ import {
   View,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import firestore from '@react-native-firebase/firestore';
+import CheckBox from '@react-native-community/checkbox';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-community/picker';
+import firestore from '@react-native-firebase/firestore';
 import 'react-native-gesture-handler';
-
 import CheckInfo from '../../components/checkinfo';
 import StepButton from '../../components/stepbutton';
 import TopBar from '../../components/topbar';
@@ -28,7 +28,7 @@ import {
 } from '../../models/colors';
 import { regions } from '../../models/regions';
 import { dateWithKorean } from '../../utils/format';
-import CheckBox from '@react-native-community/checkbox';
+import { checkPW } from '../../utils/validate';
 
 export default function CafeForm({ route, navigation }) {
   const [birthdate, setBirthdate] = useState(new Date());
@@ -108,6 +108,9 @@ export default function CafeForm({ route, navigation }) {
       setErrMsg('아이디 중복 확인을 진행해주세요.');
     } else if (!password1) {
       setErrMsg('비밀번호를 입력해주세요.');
+    // } else if (checkPW(password1)) {
+    //   // 영어, 숫자, 특수문자 최소 2개 포함, 총 10글자 이상
+    //   setErrMsg(checkPW(password1));
     } else if (password1 !== password2) {
       setErrMsg('비밀번호가 일치하지 않습니다.');
     } else if (!storeID) {
@@ -265,25 +268,25 @@ export default function CafeForm({ route, navigation }) {
             onValueChange={_whenBrand}
           />
           {isBrand &&
-          <View style={styles.pickerContainer}>
-            <Picker
-              selectedValue={cafename}
-              style={styles.picker}
-              onValueChange={(value, index) => setCafename(value)}>
-              {brandList.map((item) => (
-                <Picker.Item label={item} value={item} key={item} />
-              ))}
-            </Picker>
-          </View>}
+            <View style={styles.pickerContainer}>
+              <Picker
+                selectedValue={cafename}
+                style={styles.picker}
+                onValueChange={(value, index) => setCafename(value)}>
+                {brandList.map((item) => (
+                  <Picker.Item label={item} value={item} key={item} />
+                ))}
+              </Picker>
+            </View>}
           {!isBrand &&
-          <View style={styles.bigInputContainer}>
-            <TextInput
-              style={styles.input}
-              multiline={true}
-              placeholder='고객들이 브랜드에 대해 잘 알 수 있게 브랜드 설명을 적어주세요.'
-              onChangeText={(text) => setDes(text)}
-            />
-          </View>}
+            <View style={styles.bigInputContainer}>
+              <TextInput
+                style={styles.input}
+                multiline={true}
+                placeholder='고객들이 브랜드에 대해 잘 알 수 있게 브랜드 설명을 적어주세요.'
+                onChangeText={(text) => setDes(text)}
+              />
+            </View>}
           <Text style={styles.question}>7. 지점명을 입력하세요. (브랜드명 + 지점명)</Text>
           <View style={styles.inputContainer}>
             <TextInput
