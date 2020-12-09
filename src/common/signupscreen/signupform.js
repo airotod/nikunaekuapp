@@ -11,12 +11,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import firestore from '@react-native-firebase/firestore';
 import 'react-native-gesture-handler';
-
 import CheckInfo from '../../components/checkinfo';
 import StepButton from '../../components/stepbutton';
 import TopBar from '../../components/topbar';
-import { AuthContext } from '../../utils/context';
-
 import {
   BLACK_COLOR,
   GREEN_COLOR,
@@ -25,7 +22,9 @@ import {
   RED_COLOR,
   WHITE_COLOR,
 } from '../../models/colors';
+import { AuthContext } from '../../utils/context';
 import { dateWithKorean } from '../../utils/format';
+import { checkPW } from '../../utils/validate';
 
 export default function SignUpForm({ route, navigation }) {
   const [birthdate, setBirthdate] = useState(new Date());
@@ -93,6 +92,9 @@ export default function SignUpForm({ route, navigation }) {
       setErrMsg('아이디 중복 확인을 진행해주세요.');
     } else if (!password1) {
       setErrMsg('비밀번호를 입력해주세요.');
+    // } else if (checkPW(password1)) {
+    //   // 영어, 숫자, 특수문자 최소 2개 포함, 총 10글자 이상
+    //   setErrMsg(checkPW(password1));
     } else if (password1 !== password2) {
       setErrMsg('비밀번호가 일치하지 않습니다.');
     } else if (!username) {
