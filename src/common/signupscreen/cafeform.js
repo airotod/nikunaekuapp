@@ -111,7 +111,7 @@ export default function CafeForm({ route, navigation }) {
     } else if (password1 !== password2) {
       setErrMsg('비밀번호가 일치하지 않습니다.');
     } else if (!storeID) {
-      setErrMsg('카페명을 입력해주세요.');
+      setErrMsg('지점명을 입력해주세요.');
     } else if (!userphone) {
       setErrMsg('사장님 휴대폰 번호를 입력해주세요.');
     } else {

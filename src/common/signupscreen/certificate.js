@@ -144,7 +144,7 @@ export default function Certificate({ route, navigation }) {
       {({ signUp }) => (
         <>
           <TopBar
-            title="카페 등록 절차"
+            title="매장 등록 절차"
             navigation={navigation}
             barColor={BLACK_COLOR}
           />
@@ -152,7 +152,7 @@ export default function Certificate({ route, navigation }) {
             <View style={styles.container}>
               <View style={styles.mainContents}>
                 <Text style={styles.question}>
-                  ● 카페 로고를 등록해주세요.
+                  ● 브랜드 로고를 등록해주세요.
                 </Text>
                 {account.brandID !== null ? <Image source={{ uri: logoUrl }} style={styles.img} /> :
                 <TouchableOpacity
@@ -219,7 +219,7 @@ export default function Certificate({ route, navigation }) {
               <View style={styles.centeredView}>
                 <View style={styles.modalView}>
                   <Text style={styles.msg}>
-                    [확인]을 누르면 카페 등록 신청이 완료됩니다.{'\n'}
+                    [확인]을 누르면 매장 등록 신청이 완료됩니다.{'\n'}
                     정보를 올바르게 입력했는지 다시 한번 확인해보시기 바랍니다.
                   </Text>
                   <View style={styles.buttonContainer}>

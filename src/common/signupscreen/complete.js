@@ -18,7 +18,7 @@ export default function Complete({ route, navigation }) {
       {({ signOut }) => (
         <>
           <TopBar
-            title="카페 등록 절차"
+            title="매장 등록 절차"
             navigation={navigation}
             barColor={BLACK_COLOR}
           />
