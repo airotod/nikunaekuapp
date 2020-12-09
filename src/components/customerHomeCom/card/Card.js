@@ -35,7 +35,7 @@ const Card = ({ data, navigation }) => {
         <TouchableOpacity
           style={styles.text1}
           onPress={() => navigation.navigate('상세 정보', { data: data })}>
-          <Text>상세 정보</Text>
+          <Text style={styles.detail}>상세 정보</Text>
         </TouchableOpacity>
       )}
     </View>
@@ -76,11 +76,16 @@ const styles = StyleSheet.create({
   },
   text1: {
     position: 'absolute',
-    bottom: 0,
-    right: 0,
+    bottom: '5%',
+    right: '2%',
     padding: 4,
-    backgroundColor: '#f8f8ff',
+    backgroundColor: 'green',
+    borderRadius: 100,
   },
+  detail:{
+    color: 'white',
+    fontWeight: 'bold'
+  }
 });
 
 export default Card;
