@@ -13,11 +13,14 @@ const StoreItem = ({ storeName, address, contactNumber, seatState }) => {
     return (
       <View style={styles.storeItem}>
         <Text style={styles.storeName}>{storeName}</Text>
-        <Text style={styles.storeSeat}>잔여석: {seatState}</Text>
         <View style={styles.detail}>
             <Text style={styles.detailText}>주소: {address}</Text>
             <Text style={styles.detailText}>연락처: {contactNumber}</Text>
         </View>
+        <View style={styles.seat}>
+            <Text style={styles.storeSeat}>잔여석</Text>
+            <Text style={styles.storeSeat}>{seatState}</Text>
+      </View>
       </View>
     );
   };
@@ -78,11 +81,16 @@ const StoreItem = ({ storeName, address, contactNumber, seatState }) => {
         fontWeight: 'bold',
     },
     storeSeat: {
-      flex: 1,
-      fontSize: 12,
-      color: BLACK_COLOR,
-      fontWeight: 'bold',
-  },
+        flex: 1,
+        fontSize: 17,
+        color: BLACK_COLOR,
+        fontWeight: 'bold',
+    },
+    seat: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     scrollcontainer: {
         flex: 1,
         backgroundColor: GREY_10_COLOR,
@@ -94,7 +102,7 @@ const StoreItem = ({ storeName, address, contactNumber, seatState }) => {
     detailText: {
         fontSize: 13,
         color: BLACK_COLOR,
-    }
+    },
   });
   
 
