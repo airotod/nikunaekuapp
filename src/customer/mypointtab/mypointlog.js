@@ -217,12 +217,12 @@ const styles = StyleSheet.create({
   },
   pointText_use: {
     margin: 5,
-    fontSize: 16,
+    fontSize: 14,
     color: RED_COLOR,
   },
   pointText_reward: {
     margin: 5,
-    fontSize: 16,
+    fontSize: 14,
     color: GREEN_COLOR,
   },
   linecontainer: {

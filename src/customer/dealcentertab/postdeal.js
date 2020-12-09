@@ -29,11 +29,9 @@ import { checkNumber } from '../../utils/validate';
 const Question = ({ text, subtext }) => {
   return (
     <View style={styles.question}>
-      <Text style={styles.questionText}>{text}</Text>
-      {subtext && (
-        <Text style={styles.questionSubtext}>보유 수량 : {subtext}개</Text>
-      )}
-    </View>
+    <Text style={styles.questionText}>{text}</Text>
+    <Text style={styles.questionSubtext}>{subtext && `보유 수량 : ${subtext}개`}</Text>
+  </View>
   );
 };
 

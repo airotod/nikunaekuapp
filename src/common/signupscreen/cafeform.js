@@ -19,13 +19,16 @@ import TopBar from '../../components/topbar';
 import {
   BLACK_COLOR,
   GREEN_COLOR,
+  GREY_20_COLOR,
   GREY_30_COLOR,
+  GREY_40_COLOR,
   GREY_50_COLOR,
   RED_COLOR,
   WHITE_COLOR,
 } from '../../models/colors';
 import { regions } from '../../models/regions';
 import { dateWithKorean } from '../../utils/format';
+import CheckBox from '@react-native-community/checkbox';
 
 export default function CafeForm({ route, navigation }) {
   const [birthdate, setBirthdate] = useState(new Date());
@@ -43,6 +46,10 @@ export default function CafeForm({ route, navigation }) {
   const [userid, setUserid] = useState(null);
   const [userphone, setUserphone] = useState(null);
   const [username, setUsername] = useState(null);
+  const [storeID, setStoreID] = useState(null);
+  const [brandList, setBrandList] = useState([]);
+  const [isPersonal, setIsPersonal] = useState(false);
+  const [des, setDes] = useState(null);
 
   const ref = firestore().collection('User');
 
@@ -57,14 +64,16 @@ export default function CafeForm({ route, navigation }) {
   let account = {
     birthdate: birthdate,
     cafephone: cafephone,
-    cafename: cafename,
+    brandID: cafename,
     region: region,
     nickname: nickname || userid,
     password: password1,
+    storeID: storeID,
     userid: userid,
-    userphone: userphone,
+    phoneNumber: userphone,
     username: username,
     usertype: 'owner',
+    des: des,
   };
 
   function _handleUserId(text) {
@@ -118,6 +127,42 @@ export default function CafeForm({ route, navigation }) {
     setBirthdate(currentDate);
   }
 
+  function TermItem({ text, textWeight, value, onValueChange }) {
+    return (
+      <View style={styles.itemContainer}>
+        <CheckBox
+          tintColors={{ true: RED_COLOR, false: GREY_40_COLOR }}
+          value={value}
+          onValueChange={onValueChange}
+          style={styles.checkbox}
+        />
+        <Text style={[styles.itemText, { fontWeight: textWeight || 'normal' }]}>
+          {text}
+        </Text>
+      </View>
+    );
+  }
+
+  function _getbrandList(event) {
+    const brandRef = firestore().collection('Brand');
+    brandRef.get().then(function (querySnapshot) {
+      let items = [];
+      querySnapshot.forEach(function (doc) {
+        items.push(doc.id.slice(0,));
+      });
+      setBrandList(items);
+    });
+  }
+
+  async function _whenPersonal(event) {
+    if (isPersonal === false) {
+      setIsPersonal(true);
+      setCafename(null);
+    } else {
+      setIsPersonal(false);
+    }
+  }
+
   useEffect(() => {
     const getUserPhone = async () => {
       try {
@@ -128,6 +173,7 @@ export default function CafeForm({ route, navigation }) {
       }
     };
     getUserPhone();
+    _getbrandList();
   }, []);
 
   return (
@@ -155,15 +201,15 @@ export default function CafeForm({ route, navigation }) {
               onChangeText={(text) => _handleUserId(text)}
             />
           </View>
-              <View style={styles.buttonContainer}>
-              {duplicatedMsg && <Text style={styles.redMsg}>{duplicatedMsg}</Text>}
-                <TouchableOpacity
-                  style={[styles.button, buttonColor]}
-                  onPress={_handleDuplicated}
-                  activeOpacity={duplicated ? 1 : 0.2}>
-                  <Text style={styles.buttonText}>중복 확인</Text>
-                </TouchableOpacity>
-              </View>
+          <View style={styles.buttonContainer}>
+            {duplicatedMsg && <Text style={styles.redMsg}>{duplicatedMsg}</Text>}
+            <TouchableOpacity
+              style={[styles.button, buttonColor]}
+              onPress={_handleDuplicated}
+              activeOpacity={duplicated ? 1 : 0.2}>
+              <Text style={styles.buttonText}>중복 확인</Text>
+            </TouchableOpacity>
+          </View>
           <Text style={styles.question}>3. 비밀번호를 입력하세요.</Text>
           <View style={styles.inputContainer}>
             <TextInput
@@ -210,15 +256,41 @@ export default function CafeForm({ route, navigation }) {
               />
             )}
           </View>
-          <Text style={styles.question}>6. 등록할 카페명을 입력하세요.</Text>
+          <Text style={styles.question}>6. 카페 브랜드를 등록하세요.</Text>
+          <TermItem
+            text="프랜차이즈 브랜드인가요?"
+            value={isPersonal}
+            onValueChange={_whenPersonal}
+          />
+          {isPersonal &&
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={cafename}
+              style={styles.picker}
+              onValueChange={(value, index) => setCafename(value)}>
+              {brandList.map((item) => (
+                <Picker.Item label={item} value={item} key={item} />
+              ))}
+            </Picker>
+          </View>}
+          {!isPersonal &&
+          <View style={styles.bigInputContainer}>
+            <TextInput
+              style={styles.input}
+              multiline={true}
+              placeholder='고객들이 카페에 대해 잘 알 수 있게 카페 설명을 적어주세요.'
+              onChangeText={(text) => setDes(text)}
+            />
+          </View>}
+          <Text style={styles.question}>7. 지점명을 입력하세요. (브랜드명 + 지점명)</Text>
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.input}
-              placeholder="예) 니쿠내쿠"
-              onChangeText={(text) => setCafename(text)}
+              placeholder="예1) 스타벅스 신촌점"
+              onChangeText={(text) => setStoreID(text)}
             />
           </View>
-          <Text style={styles.question}>7. 영업 지역을 선택하세요.</Text>
+          <Text style={styles.question}>8. 영업 지역을 선택하세요.</Text>
           <View style={styles.pickerContainer}>
             <Picker
               selectedValue={region}
@@ -230,7 +302,7 @@ export default function CafeForm({ route, navigation }) {
             </Picker>
           </View>
           <Text style={styles.question}>
-            8. 카페 전화번호를 입력하세요. (선택)
+            9. 카페 전화번호를 입력하세요. (선택)
           </Text>
           <View style={styles.inputContainer}>
             <TextInput
@@ -261,6 +333,22 @@ export default function CafeForm({ route, navigation }) {
 }
 
 const styles = StyleSheet.create({
+  itemContainer: {
+    alignItems: 'center',
+    backgroundColor: WHITE_COLOR,
+    borderColor: GREY_20_COLOR,
+    borderWidth: 1,
+    flexDirection: 'row',
+    height: 55,
+    paddingHorizontal: 10,
+  },
+  itemText: {
+    color: BLACK_COLOR,
+    fontSize: 16,
+  },
+  checkbox: {
+    marginRight: 5,
+  },
   button: {
     alignItems: 'center',
     height: 28,
@@ -305,6 +393,14 @@ const styles = StyleSheet.create({
     backgroundColor: WHITE_COLOR,
     height: 40,
     justifyContent: 'center',
+    paddingHorizontal: 10,
+    marginVertical: 5,
+    width: '100%',
+  },
+  bigInputContainer: {
+    backgroundColor: WHITE_COLOR,
+    height: 200,
+    justifyContent: 'flex-start',
     paddingHorizontal: 10,
     marginVertical: 5,
     width: '100%',

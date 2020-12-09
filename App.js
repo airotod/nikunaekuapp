@@ -187,6 +187,7 @@ const App = () => {
                   name="상세 정보"
                   component={BrandDetail}
                   // options={{ headerShown: false }}
+                  
                 />
                 <Stack.Screen
                   name="멤버십 가입"
