@@ -47,8 +47,6 @@ const OwnerHome = ({ route, navigation }) => {
     console.log("Error getting document:", error);
   });
 
-  console.log("store img : ", storeImg)
-
   async function _changeSeat(seatNum) {
     await firestore().collection('Brand').doc(brandName).collection('Stores').doc(storeName) // 이건 후에 수정하자!
       .update({
@@ -77,7 +75,6 @@ const OwnerHome = ({ route, navigation }) => {
           }
         })
       } catch (e) {
-        // Restoring Id failed
         console.log('Restoring Id failed or Get point data failed');
       }
     };
@@ -114,7 +111,6 @@ const OwnerHome = ({ route, navigation }) => {
               }}>
               <Text style={styles.buttonText}>널널</Text>
             </TouchableOpacity>
-
             <TouchableOpacity
               style={[
                 styles.seatButton,
@@ -130,7 +126,6 @@ const OwnerHome = ({ route, navigation }) => {
               }}>
               <Text style={styles.buttonText}>보통</Text>
             </TouchableOpacity>
-
             <TouchableOpacity
               style={[
                 styles.seatButton,
@@ -146,7 +141,6 @@ const OwnerHome = ({ route, navigation }) => {
               }}>
               <Text style={styles.buttonText}>부족</Text>
             </TouchableOpacity>
-
             <TouchableOpacity
               style={[
                 styles.seatButton,
