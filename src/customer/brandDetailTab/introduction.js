@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, LogBox } from 'react-native';
 
 import { BLACK_COLOR } from '../../models/colors';
 
 import firestore from '@react-native-firebase/firestore';
+
+LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+LogBox.ignoreAllLogs();//Ignore all log notifications
 
 const Introduction = ({ route, navigation }) => {
   const { data, otherParam } = route.params;

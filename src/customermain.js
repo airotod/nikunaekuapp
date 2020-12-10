@@ -10,6 +10,10 @@ import CustomerHome from './customer/home';
 import MyPoint from './customer/mypoint';
 import StartScreen from './startscreen';
 
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+LogBox.ignoreAllLogs();//Ignore all log notifications
+
 import { GREY_80_COLOR, GREY_90_COLOR, WHITE_COLOR } from './models/colors';
 
 const Drawer = createDrawerNavigator();

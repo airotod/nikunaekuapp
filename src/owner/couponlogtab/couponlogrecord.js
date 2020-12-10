@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, Dimensions, StyleSheet, SafeAreaView } from 'react-native';
+import { Text, View, Dimensions, StyleSheet, SafeAreaView, LogBox } from 'react-native';
 import {
   BLACK_COLOR,
   ORANGE_10_COLOR,
@@ -12,6 +12,9 @@ import firestore from '@react-native-firebase/firestore';
 
 import { DATA } from './Data';
 import * as scale from 'd3-scale';
+
+LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+LogBox.ignoreAllLogs();//Ignore all log notifications
 
 const { height } = Dimensions.get('window');
 

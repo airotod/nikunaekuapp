@@ -13,6 +13,10 @@ import Loading from '../../components/loading';
 import DealItem from '../../components/dealitem';
 import SortButton from '../../components/sortbutton';
 
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+LogBox.ignoreAllLogs();//Ignore all log notifications
+
 import {
   BLACK_COLOR,
   GREY_60_COLOR,

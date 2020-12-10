@@ -19,6 +19,9 @@ import {
 } from '../../models/colors';
 import { dateUTCWithKorean } from '../../utils/format';
 import { ScrollView } from 'react-native-gesture-handler';
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+LogBox.ignoreAllLogs();//Ignore all log notifications
 
 const chartWidth = Dimensions.get('window').width;
 const charHeight = Dimensions.get('window').height;

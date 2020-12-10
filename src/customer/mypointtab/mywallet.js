@@ -1,7 +1,10 @@
 import React, {useEffect, useState}  from 'react';
-import { StyleSheet, Text, View, TextInput, Button, Alert, Modal, TouchableOpacity, KeyboardAvoidingView} from 'react-native';
+import { StyleSheet, Text, View, TextInput, Button, Alert, Modal, TouchableOpacity, KeyboardAvoidingView, LogBox} from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
+LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+LogBox.ignoreAllLogs();//Ignore all log notifications
 
 import { 
   GREY_10_COLOR,

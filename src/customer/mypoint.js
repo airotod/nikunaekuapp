@@ -12,6 +12,10 @@ import {
 import MyPointLog from './mypointtab/mypointlog';
 import MyWallet from './mypointtab/mywallet';
 
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+LogBox.ignoreAllLogs();//Ignore all log notifications
+
 const Tab = createMaterialTopTabNavigator();
 
 const MyPoint = ({ route, navigation }) => {

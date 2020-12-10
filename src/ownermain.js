@@ -10,6 +10,10 @@ import OwnerHome from './owner/home';
 import CouponUsing from './owner/couponUsing';
 import StartScreen from './startscreen';
 
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+LogBox.ignoreAllLogs();//Ignore all log notifications
+
 import { GREY_80_COLOR, GREY_90_COLOR, WHITE_COLOR } from './models/colors';
 
 const Drawer = createDrawerNavigator();
@@ -51,12 +55,6 @@ const OwnerMain = ({ route, navigation }) => {
         name="쿠폰 적립/사용"
         component={CouponUsing}
         initialParams={{ userId: userId, phone: phone, brandId, storeId }} />
-      <Drawer.Screen
-        name="비밀번호 변경"
-        component={FindPW} />
-      <Drawer.Screen
-        name="시작화면"
-        component={StartScreen} />
     </Drawer.Navigator>
   );
 };

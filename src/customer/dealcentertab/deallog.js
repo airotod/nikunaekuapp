@@ -20,6 +20,10 @@ import {
 import { sortByDate } from '../../utils/sortby';
 import { numWithCommas } from '../../utils/format';
 
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+LogBox.ignoreAllLogs();//Ignore all log notifications
+
 const DealLog = ({ route, navigation }) => {
   const { userId, phone, otherParam } = route.params;
   const [loading, setLoading] = useState(true);
