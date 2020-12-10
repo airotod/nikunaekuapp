@@ -66,7 +66,7 @@ const MyAccount = ({ route, navigation }) => {
     }
   }
 
-  async function _handleWithdrawal() {
+  async function _handleWithdrawal({ signOut }) {
     Alert.alert('회원 탈퇴', '정말 니쿠내쿠에서 탈퇴하시겠습니까?', [
       {
         text: '취소',
@@ -78,10 +78,14 @@ const MyAccount = ({ route, navigation }) => {
           await AsyncStorage.removeItem('userId');
           await AsyncStorage.removeItem('userType');
           await AsyncStorage.removeItem('phoneNumber');
+          if (userType === 'owner') {
+            await AsyncStorage.removeItem('brandId');
+            await AsyncStorage.removeItem('storeId');
+          }
           ref.doc(userId).delete().then(() => {
             console.log('User deleted!');
           });
-          navigation.navigate('시작화면')
+          signOut();
         },
       }
     ]);
@@ -115,8 +119,8 @@ const MyAccount = ({ route, navigation }) => {
                     }}
                   />
                 ) : (
-                  <Icon name="person" size={50} color={GREY_40_COLOR} />
-                )}
+                    <Icon name="person" size={50} color={GREY_40_COLOR} />
+                  )}
               </View>
               <View style={styles.myinfoTextContainer}>
                 {store && <Text style={styles.myinfoText}>{store}</Text>}
@@ -145,7 +149,7 @@ const MyAccount = ({ route, navigation }) => {
               <AccountItem
                 text="탈퇴하기"
                 onPress={() => {
-                  _handleWithdrawal();
+                  _handleWithdrawal({ signOut: signOut });
                 }}
               />
             </View>
