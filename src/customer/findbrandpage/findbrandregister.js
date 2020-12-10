@@ -62,9 +62,9 @@ const FindBrandRegister = ({ route, navigation }) => {
           initialParams={{data:data}}
         />
         <Tab.Screen
-          name="쿠폰 내역"
+          name="매장 목록"
           component={StoreList}
-          options={{ tabBarLabel: '쿠폰 내역' }}
+          options={{ tabBarLabel: '매장 목록' }}
           initialParams={{data:data}}
         />
       </Tab.Navigator>
