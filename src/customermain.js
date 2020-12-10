@@ -58,10 +58,17 @@ const CustomerMain = ({ route, navigation }) => {
       />
       <Drawer.Screen
         name="비밀번호 변경"
-        component={FindPW} />
+        component={FindPW}
+        option={() => ({
+          drawerLabel: () => null,
+          title: null,
+          drawerIcon: () => null,
+        })}
+      />
       <Drawer.Screen
         name="시작화면"
-        component={StartScreen} />
+        component={StartScreen}
+      />
     </Drawer.Navigator>
   );
 };
