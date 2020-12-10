@@ -79,6 +79,14 @@ const DealItem = ({
       usedPoint: firebase.firestore.FieldValue.increment(price * purchaseNum),
       totalPoint: firebase.firestore.FieldValue.increment(-price * purchaseNum),
     });
+    console.log(currentUser, brandName, purchaseNum);
+    await userRef
+      .doc(currentUser)
+      .collection('coupons')
+      .doc(brandName)
+      .update({
+        count: firebase.firestore.FieldValue.increment(purchaseNum),
+    });
     await userRef
       .doc(currentUser)
       .collection('dealLog')
@@ -90,7 +98,7 @@ const DealItem = ({
         dealType: '구매',
         totalPrice: price * purchaseNum,
         trader: postedBy,
-      });
+    });
     await userRef
       .doc(postedBy)
       .collection('dealLog')
@@ -102,7 +110,39 @@ const DealItem = ({
         dealType: '판매',
         totalPrice: price * purchaseNum,
         trader: currentUser,
-      });
+    });
+    let userPoint = null;
+    await userRef.doc(currentUser).get().then(async function (doc) {
+      userPoint = doc.data().totalPoint
+    });
+    await userRef
+      .doc(currentUser)
+      .collection('pointLog')
+      .add({
+        balance: userPoint,
+        brandID: brandName,
+        count: purchaseNum,
+        dataTime: firestore.FieldValue.serverTimestamp(),
+        pointType: "포인트 사용",
+        pointVolumn: -purchaseNum * price,
+        trader: postedBy,
+    });
+    let opponentPoint = null;
+    await userRef.doc(postedBy).get().then(async function (doc) {
+      opponentPoint = doc.data().totalPoint
+    });
+    await userRef
+      .doc(postedBy)
+      .collection('pointLog')
+      .add({
+        balance: opponentPoint,
+        brandID: brandName,
+        count: purchaseNum,
+        dataTime: firestore.FieldValue.serverTimestamp(),
+        pointType: "포인트 적립",
+        pointVolumn: purchaseNum * price,
+        trader: currentUser,
+    });
   }
 
   useEffect(() => {
