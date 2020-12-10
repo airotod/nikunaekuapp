@@ -12,6 +12,7 @@ import FindID from './src/common/signinscreen/findID';
 import FindPW from './src/common/signinscreen/findPW';
 import SignUp from './src/common/signup';
 import Complete from './src/common/signupscreen/complete';
+import MyAccount from './src/common/myaccount';
 
 import { AuthContext } from './src/utils/context';
 import BrandDetail from './src/customer/brandDetail';
@@ -178,6 +179,15 @@ const App = () => {
                     component={FindPW}
                     options={{ title: '비밀번호 찾기', headerShown: false }}
                   />
+                  <Stack.Screen
+                    name="내 정보"
+                    component={MyAccount}
+                    initialParams={{
+                      userId: state.userId,
+                      phone: state.phoneNumber,
+                      userType: state.userType,
+                    }}
+                  />
                 </>
               ) : (
                 <>
@@ -205,6 +215,20 @@ const App = () => {
                     storeId: state.storeId,
                   }}
                 />
+                <Stack.Screen
+                  name="내 정보"
+                  component={MyAccount}
+                  initialParams={{
+                    userId: state.userId,
+                    phone: state.phoneNumber,
+                    userType: state.userType,
+                  }}
+                />
+                <Stack.Screen
+                  name="비밀번호 찾기"
+                  component={FindPW}
+                  options={{ title: '비밀번호 찾기', headerShown: false }}
+                />
               </>
             ) : (
               <>
@@ -217,6 +241,20 @@ const App = () => {
                     phone: state.phoneNumber,
                     userType: state.userType,
                   }}
+                />
+                <Stack.Screen
+                  name="내 정보"
+                  component={MyAccount}
+                  initialParams={{
+                    userId: state.userId,
+                    phone: state.phoneNumber,
+                    userType: state.userType,
+                  }}
+                />
+                <Stack.Screen
+                  name="비밀번호 찾기"
+                  component={FindPW}
+                  options={{ title: '비밀번호 찾기', headerShown: false }}
                 />
                 <Stack.Screen
                   name="상세 정보"

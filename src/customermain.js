@@ -56,19 +56,6 @@ const CustomerMain = ({ route, navigation }) => {
         component={DealCenter}
         initialParams={{ userId: userId, phone: phone }}
       />
-      <Drawer.Screen
-        name="비밀번호 변경"
-        component={FindPW}
-        option={() => ({
-          drawerLabel: () => null,
-          title: null,
-          drawerIcon: () => null,
-        })}
-      />
-      <Drawer.Screen
-        name="시작화면"
-        component={StartScreen}
-      />
     </Drawer.Navigator>
   );
 };
