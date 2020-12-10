@@ -58,17 +58,22 @@ const MyWallet = ({ route, navigation }) => {
       }, {
         text: '충전',
         onPress: async () => {
-          await ref.doc(userId).update({
-            totalPoint: firestore.FieldValue.increment(Number(addPoint)),
-            chargePoint: firestore.FieldValue.increment(Number(addPoint)),
-          });
-          await ref.doc(userId).collection('pointLog').add({
-            balance: totalpoint + Number(addPoint),
-            dateTime: firestore.FieldValue.serverTimestamp(),
-            pointType: '포인트 충전',
-            pointVolume: Number(addPoint),
-          })
-          setIsVisible1(false);},
+          if (addPoint <= 0) {
+            Alert.alert('금액을 잘못 입력하셨습니다.');
+          } else {
+            await ref.doc(userId).update({
+              totalPoint: firestore.FieldValue.increment(Number(addPoint)),
+              chargePoint: firestore.FieldValue.increment(Number(addPoint)),
+            });
+            await ref.doc(userId).collection('pointLog').add({
+              balance: totalpoint + Number(addPoint),
+              dateTime: firestore.FieldValue.serverTimestamp(),
+              pointType: '포인트 충전',
+              pointVolume: Number(addPoint),
+            })
+            setIsVisible1(false);
+          }
+        },
       },
     ]);
   }
@@ -84,47 +89,51 @@ const MyWallet = ({ route, navigation }) => {
         onPress: async () => {
           if (friendId == userId) {
             Alert.alert('자기 자신에게 포인트를 선물할 수 없습니다.');
-            return;
-          }
-          ref.doc(friendId).onSnapshot((doc) => {
-            if (!doc.exists) {
-              Alert.alert("해당 아이디는 존재하지 않습니다.")
-              givePoint = 0;
-              return;
-            } else if (doc.data().userType != "customer") {
-              Alert.alert("해당 아이디와 포인트를 주고받을 수 없습니다.")
-              givePoint = 0;
-              return;
-            }
-            else {
-              const {totalPoint} = doc.data();
-              setFriendtotalpoint(totalPoint);
-              doc.update({
+          } else if (givePoint <= 0) {
+            Alert.alert('금액을 잘못 입력하셨습니다.');
+          } else {
+            let totalP = 0;
+            ref.doc(friendId).onSnapshot((doc) => {
+              if (!doc.exists) {
+                Alert.alert("해당 아이디는 존재하지 않습니다.")
+                givePoint = 0;
+              } else if (doc.data().userType != "customer") {
+                Alert.alert("해당 아이디와 포인트를 주고받을 수 없습니다.")
+                givePoint = 0;
+              } else {
+                const {totalPoint} = doc.data();
+                totalP = totalPoint;
+              }
+            });
+            if (givePoint > 0) {
+              setFriendtotalpoint(totalP);
+              await ref.doc(friendId).update({
                 totalPoint: firestore.FieldValue.increment(Number(givePoint)),
                 savePoint: firestore.FieldValue.increment(Number(givePoint)),
-              })
-              ref.doc(friendId).collection('pointLog').add({
+              });
+              await ref.doc(friendId).collection('pointLog').add({
                 balance: friendtotalpoint + Number(givePoint),
                 dateTime: firestore.FieldValue.serverTimestamp(),
                 pointType: '포인트 선물 적립',
                 pointVolume: Number(givePoint),
                 trader: userId,
-              })
-              ref.doc(userId).update({
+              });
+              await ref.doc(userId).update({
                 totalPoint: firestore.FieldValue.increment(-Number(givePoint)),
                 usedPoint: firestore.FieldValue.increment(Number(givePoint)),
-              })
-              ref.doc(userId).collection('pointLog').add({
-                balance: totalpoint - Number(givePoint),
+              });
+              await ref.doc(userId).collection('pointLog').add({
+                balance: totalP - Number(givePoint),
                 dateTime: firestore.FieldValue.serverTimestamp(),
                 pointType: '포인트 선물',
                 trader: friendid,
                 pointVolume: -Number(givePoint),
-              })
+              });
             }
-          });
-          setIsVisible2(false);
-        },},
+            setIsVisible2(false);
+          }
+        },
+      },
     ]);
   }
   
@@ -136,18 +145,23 @@ const MyWallet = ({ route, navigation }) => {
       }, {
         text: '인출',
         onPress: async () => {
-          await ref.doc(userId).update({
-            totalPoint: firestore.FieldValue.increment(-Number(withdrawalPoint)),
-            usedPoint: firestore.FieldValue.increment(Number(withdrawalPoint)),
-          });
-          await ref.doc(userId).collection('pointLog').add({
-            balance: totalpoint - Number(withdrawalPoint),
-            dateTime: firestore.FieldValue.serverTimestamp(),
-            pointType: '포인트 인출',
-            pointVolume: -Number(withdrawalPoint),
-          })
-          setIsVisible3(false);
-        },},
+          if (withdrawalPoint <= 0) {
+            Alert.alert('금액을 잘못 입력하셨습니다.');
+          } else {
+            await ref.doc(userId).update({
+              totalPoint: firestore.FieldValue.increment(-Number(withdrawalPoint)),
+              usedPoint: firestore.FieldValue.increment(Number(withdrawalPoint)),
+            });
+            await ref.doc(userId).collection('pointLog').add({
+              balance: totalpoint - Number(withdrawalPoint),
+              dateTime: firestore.FieldValue.serverTimestamp(),
+              pointType: '포인트 인출',
+              pointVolume: -Number(withdrawalPoint),
+            })
+            setIsVisible3(false);
+          }
+        },
+      },
     ]);
   }
 
