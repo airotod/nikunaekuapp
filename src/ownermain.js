@@ -51,12 +51,6 @@ const OwnerMain = ({ route, navigation }) => {
         name="쿠폰 적립/사용"
         component={CouponUsing}
         initialParams={{ userId: userId, phone: phone, brandId, storeId }} />
-      <Drawer.Screen
-        name="비밀번호 변경"
-        component={FindPW} />
-      <Drawer.Screen
-        name="시작화면"
-        component={StartScreen} />
     </Drawer.Navigator>
   );
 };

@@ -78,10 +78,13 @@ const MyAccount = ({ route, navigation }) => {
           await AsyncStorage.removeItem('userId');
           await AsyncStorage.removeItem('userType');
           await AsyncStorage.removeItem('phoneNumber');
+          if (userType === 'owner') {
+            await AsyncStorage.removeItem('brandId');
+            await AsyncStorage.removeItem('storeId');
+          }
           ref.doc(userId).delete().then(() => {
             console.log('User deleted!');
           });
-          navigation.navigate('시작화면')
         },
       }
     ]);
@@ -145,6 +148,7 @@ const MyAccount = ({ route, navigation }) => {
               <AccountItem
                 text="탈퇴하기"
                 onPress={() => {
+                  signOut();
                   _handleWithdrawal();
                 }}
               />
