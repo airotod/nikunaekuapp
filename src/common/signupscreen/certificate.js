@@ -165,7 +165,7 @@ export default function Certificate({ route, navigation }) {
                     });
                   }}
                   activeOpacity={0.5}>
-                  {!logoUrl ? <Text style={styles.imgAlt}>CAFE{'\n'}IMAGE</Text>
+                  {!logoUrl ? <Text style={styles.imgAlt}>Brand{'\n'}Logo</Text>
                     : <Image source={{ uri: logoUrl }} style={styles.img2} />}
                 </TouchableOpacity>}
                 <Text style={styles.question}>

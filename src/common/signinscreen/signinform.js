@@ -1,27 +1,13 @@
 import React, { useState } from 'react';
-import {
-  Button,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Button, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import firestore from '@react-native-firebase/firestore';
 import 'react-native-gesture-handler';
 
-import {
-  BLACK_COLOR,
-  GREY_70_COLOR,
-  GREY_80_COLOR,
-  GREY_90_COLOR,
-  RED_COLOR,
-  WHITE_COLOR,
-} from '../models/colors';
-import { AuthContext } from '../utils/context';
+import { BLACK_COLOR, GREY_70_COLOR, GREY_80_COLOR, GREY_90_COLOR, RED_COLOR, WHITE_COLOR } from '../../models/colors';
+import { AuthContext } from '../../utils/context';
 
-const SignIn = ({ route, navigation }) => {
+export default function SignInForm({ route, navigation }) {
   const [userId, setUserId] = useState(null);
   const [userPw, setUserPw] = useState(null);
   const [msg, setMsg] = useState(null);
@@ -72,6 +58,10 @@ const SignIn = ({ route, navigation }) => {
     }
   }
 
+  function _handleFindID(event) {
+    navigation.navigate('아이디 찾기');
+  }
+  
   return (
     <AuthContext.Consumer>
       {({ signIn }) => (
@@ -106,11 +96,19 @@ const SignIn = ({ route, navigation }) => {
           </View>
           <View style={styles.signInContainer}>
             <Text style={styles.signIn}>
-              이미 계정이 있으신가요?{'  '}
+              계정이 없으신가요?{'  '}
               <Text
                 style={styles.signInButton}
                 onPress={() => navigation.pop()}>
                 회원가입
+              </Text>
+            </Text>
+            <Text style={styles.signIn}>
+              ID/PW를 잊어버리셨나요?{'  '}
+              <Text
+                style={styles.signInButton}
+                onPress={_handleFindID}>
+                ID/PW 찾기
               </Text>
             </Text>
           </View>
@@ -171,5 +169,3 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
-
-export default SignIn;

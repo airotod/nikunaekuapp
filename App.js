@@ -7,9 +7,12 @@ import CustomerMain from './src/customermain';
 import OwnerMain from './src/ownermain';
 import StartScreen from './src/startscreen';
 
-import SignIn from './src/common/signin';
+import SignInForm from './src/common/signinscreen/signinform';
+import FindID from './src/common/signinscreen/findID';
+import FindPW from './src/common/signinscreen/findPW';
 import SignUp from './src/common/signup';
 import Complete from './src/common/signupscreen/complete';
+import MyAccount from './src/common/myaccount';
 
 import { AuthContext } from './src/utils/context';
 import BrandDetail from './src/customer/brandDetail';
@@ -157,14 +160,33 @@ const App = () => {
                     options={{ title: '시작화면', headerShown: false }}
                   />
                   <Stack.Screen
-                    name="로그인"
-                    component={SignIn}
-                    options={{ headerShown: false }}
-                  />
-                  <Stack.Screen
                     name="회원가입"
                     component={SignUp}
                     options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="로그인"
+                    component={SignInForm}
+                    options={{ title: '로그인', headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="아이디 찾기"
+                    component={FindID}
+                    options={{ title: '아이디 찾기', headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="비밀번호 찾기"
+                    component={FindPW}
+                    options={{ title: '비밀번호 찾기', headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="내 정보"
+                    component={MyAccount}
+                    initialParams={{
+                      userId: state.userId,
+                      phone: state.phoneNumber,
+                      userType: state.userType,
+                    }}
                   />
                 </>
               ) : (
@@ -193,6 +215,20 @@ const App = () => {
                     storeId: state.storeId,
                   }}
                 />
+                <Stack.Screen
+                  name="내 정보"
+                  component={MyAccount}
+                  initialParams={{
+                    userId: state.userId,
+                    phone: state.phoneNumber,
+                    userType: state.userType,
+                  }}
+                />
+                <Stack.Screen
+                  name="비밀번호 찾기"
+                  component={FindPW}
+                  options={{ title: '비밀번호 찾기', headerShown: false }}
+                />
               </>
             ) : (
               <>
@@ -205,6 +241,20 @@ const App = () => {
                     phone: state.phoneNumber,
                     userType: state.userType,
                   }}
+                />
+                <Stack.Screen
+                  name="내 정보"
+                  component={MyAccount}
+                  initialParams={{
+                    userId: state.userId,
+                    phone: state.phoneNumber,
+                    userType: state.userType,
+                  }}
+                />
+                <Stack.Screen
+                  name="비밀번호 찾기"
+                  component={FindPW}
+                  options={{ title: '비밀번호 찾기', headerShown: false }}
                 />
                 <Stack.Screen
                   name="상세 정보"

@@ -11,6 +11,10 @@ import {
 } from './models/colors';
 
 export default function StartScreen({ route, navigation }) {
+  function _handleFindID(event) {
+    navigation.navigate('아이디 찾기');
+  }
+  
   return (
     <View style={styles.container}>
       <Text style={styles.title}>
@@ -36,6 +40,14 @@ export default function StartScreen({ route, navigation }) {
             style={styles.signInButton}
             onPress={() => navigation.navigate('로그인')}>
             로그인
+          </Text>
+        </Text>
+        <Text style={styles.signIn}>
+          ID/PW를 잊어버리셨나요?{'  '}
+          <Text
+            style={styles.signInButton}
+            onPress={_handleFindID}>
+            ID/PW 찾기
           </Text>
         </Text>
       </View>

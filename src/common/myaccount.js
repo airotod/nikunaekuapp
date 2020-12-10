@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { StyleSheet, Text, View, Image, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import firestore from '@react-native-firebase/firestore';
@@ -66,6 +66,31 @@ const MyAccount = ({ route, navigation }) => {
     }
   }
 
+  async function _handleWithdrawal() {
+    Alert.alert('회원 탈퇴', '정말 니쿠내쿠에서 탈퇴하시겠습니까?', [
+      {
+        text: '취소',
+        onPress: () => console.log('회원 탈퇴를 취소합니다.'),
+      },
+      {
+        text: '확인',
+        onPress: async () => {
+          await AsyncStorage.removeItem('userId');
+          await AsyncStorage.removeItem('userType');
+          await AsyncStorage.removeItem('phoneNumber');
+          ref.doc(userId).delete().then(() => {
+            console.log('User deleted!');
+          });
+          navigation.navigate('시작화면')
+        },
+      }
+    ]);
+  }
+
+  function _handleChangePW(event) {
+    navigation.navigate('비밀번호 찾기');
+  }
+
   return (
     <AuthContext.Consumer>
       {({ signOut }) => (
@@ -109,7 +134,7 @@ const MyAccount = ({ route, navigation }) => {
               />
               <AccountItem
                 text="비밀번호 변경"
-                onPress={() => console.log('비밀번호 변경')}
+                onPress={_handleChangePW}
               />
               {userType === 'customer' && (
                 <AccountItem
@@ -119,7 +144,9 @@ const MyAccount = ({ route, navigation }) => {
               )}
               <AccountItem
                 text="탈퇴하기"
-                onPress={() => console.log('탈퇴하기')}
+                onPress={() => {
+                  _handleWithdrawal();
+                }}
               />
             </View>
             <View style={styles.flexContainer}></View>
