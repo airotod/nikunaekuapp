@@ -162,10 +162,10 @@ export default function CafeForm({ route, navigation }) {
   async function _whenBrand(event) {
     if (isBrand === false) {
       setIsBrand(true);
-      setCafename(null);
     } else {
       setIsBrand(false);
     }
+    setCafename(null);
   }
 
   useEffect(() => {

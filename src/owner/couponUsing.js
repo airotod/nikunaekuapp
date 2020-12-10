@@ -135,7 +135,7 @@ const CouponUsing = ({ route, navigation }) => {
                           .add({
                             count: count,
                             countType: '사용',
-                            dataTime: firestore.FieldValue.serverTimestamp(),
+                            dateTime: firestore.FieldValue.serverTimestamp(),
                             storeID: storeId,
                           });
                       }
@@ -217,8 +217,8 @@ const CouponUsing = ({ route, navigation }) => {
                           .collection('couponLog')
                           .add({
                             count: count,
-                            countType: '적립',
-                            dataTime: firestore.FieldValue.serverTimestamp(),
+                            couponType: '적립',
+                            dateTime: firestore.FieldValue.serverTimestamp(),
                             storeID: storeId,
                           });
                       }

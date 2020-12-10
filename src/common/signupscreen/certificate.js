@@ -53,7 +53,7 @@ export default function Certificate({ route, navigation }) {
   async function _handleSignUp(event) {
     if (account.brandID === null) {
       ref2.doc(account.storeID).set({
-        brandID: account.storeID,
+        brandName: account.storeID,
         description: account.des,
         logo: logoUrl,
       });
