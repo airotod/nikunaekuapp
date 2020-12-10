@@ -7,6 +7,7 @@ import {
     GREY_10_COLOR,
     RED_COLOR,
     WHITE_COLOR,
+    GREEN_COLOR,
   } from '../../models/colors';
 LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
 LogBox.ignoreAllLogs();//Ignore all log notifications
@@ -21,7 +22,7 @@ const StoreItem = ({ storeName, address, contactNumber, seatState }) => {
         </View>
         <View style={styles.seat}>
             <Text style={styles.storeSeat}>잔여석</Text>
-            <Text style={styles.storeSeat}>{seatState}</Text>
+            <Text style={styles.storeSeat1}>{seatState == 0 ? '모름' : (seatState == 1 ? '널널': (seatState == 2 ? '보통' : (seatState == 3 ? '부족' : '만석')))}</Text>
       </View>
       </View>
     );
@@ -86,6 +87,12 @@ const StoreItem = ({ storeName, address, contactNumber, seatState }) => {
         flex: 1,
         fontSize: 17,
         color: BLACK_COLOR,
+        fontWeight: 'bold',
+    },
+    storeSeat1: {
+        flex: 1,
+        fontSize: 17,
+        color: GREEN_COLOR,
         fontWeight: 'bold',
     },
     seat: {
