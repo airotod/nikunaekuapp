@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, LogBox } from 'react-native';
 import TopBar from '../components/topbar';
 import Loading from '../components/loading';
 import {
@@ -16,6 +16,9 @@ import {
   BLUE_COLOR,
 } from '../models/colors';
 import firestore from '@react-native-firebase/firestore';
+
+LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+LogBox.ignoreAllLogs();//Ignore all log notifications
 
 const OwnerHome = ({ route, navigation }) => {
   const [owner, setOwner] = useState('');

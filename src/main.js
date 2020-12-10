@@ -5,6 +5,10 @@ import 'react-native-gesture-handler';
 import NavigateButton from './components/navigatebutton';
 import { RED_COLOR } from './models/colors';
 
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+LogBox.ignoreAllLogs();//Ignore all log notifications
+
 const MainScreen = ({ route, navigation }) => {
   return (
     <View style={styles.container}>

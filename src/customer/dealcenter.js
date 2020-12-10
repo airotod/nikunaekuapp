@@ -13,6 +13,10 @@ import CouponMarket from './dealcentertab/couponmarket';
 import DealLog from './dealcentertab/deallog';
 import PostDeal from './dealcentertab/postdeal';
 
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+LogBox.ignoreAllLogs();//Ignore all log notifications
+
 const Tab = createMaterialTopTabNavigator();
 
 const DealCenter = ({ route, navigation }) => {

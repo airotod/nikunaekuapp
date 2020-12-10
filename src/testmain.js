@@ -9,6 +9,10 @@ import FirestoreAddTest from './test/firestoreaddtest';
 import { GREY_80_COLOR, GREY_90_COLOR, WHITE_COLOR } from './models/colors';
 import FirestoreUploadTest from './test/firestoreuploadtest';
 
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+LogBox.ignoreAllLogs();//Ignore all log notifications
+
 const Drawer = createDrawerNavigator();
 
 const TestMain = ({ route, navigation }) => {

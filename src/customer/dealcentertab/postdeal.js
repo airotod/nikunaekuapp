@@ -26,6 +26,10 @@ import {
 import { sortByDate } from '../../utils/sortby';
 import { checkNumber } from '../../utils/validate';
 
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+LogBox.ignoreAllLogs();//Ignore all log notifications
+
 const Question = ({ text, subtext }) => {
   return (
     <View style={styles.question}>

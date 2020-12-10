@@ -18,8 +18,12 @@ import {
 
 import { LineChart, Path, XAxis, Grid } from 'react-native-svg-charts';
 
+import { LogBox } from 'react-native';
 import { DATA } from './Data';
 import * as scale from 'd3-scale';
+
+LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+LogBox.ignoreAllLogs();//Ignore all log notifications
 
 const { height } = Dimensions.get('window');
 

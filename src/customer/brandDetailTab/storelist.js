@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList, StyleSheet, Text, View, ScrollView } from 'react-native';
+import { FlatList, StyleSheet, Text, View, ScrollView, LogBox  } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
@@ -8,6 +8,8 @@ import {
     RED_COLOR,
     WHITE_COLOR,
   } from '../../models/colors';
+LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+LogBox.ignoreAllLogs();//Ignore all log notifications
 
 const StoreItem = ({ storeName, address, contactNumber, seatState }) => {
     return (

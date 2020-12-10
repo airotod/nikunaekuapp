@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, ScrollView, Text } from 'react-native';
+import { StyleSheet, View, ScrollView, Text, LogBox} from 'react-native';
 
 import TopBar from '../components/topbar';
 import { BLACK_COLOR } from '../models/colors';
@@ -7,6 +7,9 @@ import { BLACK_COLOR } from '../models/colors';
 import Card from '../components/customerHomeCom/card/Card';
 import firestore from '@react-native-firebase/firestore';
 import 'react-native-gesture-handler';
+
+LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+LogBox.ignoreAllLogs();//Ignore all log notifications
 
 const CustomerHome = ({ route, navigation }) => {
   const { userId, phone, otherParam } = route.params;

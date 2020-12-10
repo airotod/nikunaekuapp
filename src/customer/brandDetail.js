@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { StyleSheet, Image } from 'react-native';
+import { StyleSheet, Image, LogBox } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -19,6 +19,9 @@ import MyCouponLog from './brandDetailTab/mycouponlog';
 import Introduction from './brandDetailTab/introduction';
 import StoreList from './brandDetailTab/storelist';
 import { ScrollView } from 'react-native-gesture-handler';
+
+LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+LogBox.ignoreAllLogs();//Ignore all log notifications
 
 const Tab = createMaterialTopTabNavigator();
 

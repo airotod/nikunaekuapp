@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { FlatList, StyleSheet, Text, View, Image, Dimensions} from 'react-native';
+import { FlatList, StyleSheet, Text, View, Image, Dimensions, LogBox} from 'react-native';
 import { Picker } from '@react-native-community/picker';
 import firestore from '@react-native-firebase/firestore';
 
@@ -10,6 +10,9 @@ import { BLACK_COLOR, GREY_60_COLOR,
   GREY_70_COLOR,
   GREEN_COLOR } from '../models/colors';
 import { dateUTCWithKorean } from '../utils/format'
+
+LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+LogBox.ignoreAllLogs();//Ignore all log notifications
 
 const chartWidth = Dimensions.get('window').width;
 const charHeight = Dimensions.get('window').height;
